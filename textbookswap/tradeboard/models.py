@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-
+from django.db.models import Manager
 
 class Post(models.Model):
     seller = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -26,7 +26,7 @@ class Post(models.Model):
         default='default_book.png', upload_to='book_pics')
     date_posted = models.DateTimeField(default=timezone.now)
 
-    edition = models.PositiveSmallIntegerField()
+    edition = models.PositiveSmallIntegerField(default=0)
 
     IN_PROGRESS = "In progress"
     COMPLETE = "Complete"
@@ -36,6 +36,8 @@ class Post(models.Model):
     )
     transaction_state = models.CharField(
         max_length=50, choices=states, default=IN_PROGRESS)
+
+    objects=Manager()
 
     class Meta:
         verbose_name = 'Post'
