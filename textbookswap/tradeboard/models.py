@@ -4,12 +4,14 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.models import Manager
 
+
 class Post(models.Model):
     seller = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=100)
 
-    def validate_ISBN(self, value):
-        if (len(value) != 10 or len(value) != 13):
+    def validate_ISBN(value):
+        print(not(f'{value}'.isnumeric()))
+        if (len(value) != 10 and len(value) != 13):
             raise ValidationError(f'number of digits in {value} is neither 10 nor 13',
                                   params={'value': value},
                                   )
@@ -37,7 +39,7 @@ class Post(models.Model):
     transaction_state = models.CharField(
         max_length=50, choices=states, default=IN_PROGRESS)
 
-    objects=Manager()
+    objects = Manager()
 
     class Meta:
         verbose_name = 'Post'
