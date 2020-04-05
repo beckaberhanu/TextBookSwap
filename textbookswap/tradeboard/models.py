@@ -26,7 +26,7 @@ class Post(models.Model):
         default='default_book.png', upload_to='book_pics')
     date_posted = models.DateTimeField(default=timezone.now)
 
-    edition = models.PositiveSmallIntegerField()
+    edition = models.PositiveSmallIntegerField(default=0)
 
     IN_PROGRESS = "In progress"
     COMPLETE = "Complete"
