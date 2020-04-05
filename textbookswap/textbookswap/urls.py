@@ -7,6 +7,7 @@ from tradeboard.views import BookCreateView
 urlpatterns = [
     path('book/new/', BookCreateView.as_view(), name='book_new'),
     path('admin/', admin.site.urls),
-    path('register/',user_views.register, name='register'),
+    path('register/', user_views.register, name='register'),
+    path('login/', user_views.login, name='login'),
     path('', tradeboard_view.home, name='tradeboard-home')
 ]
