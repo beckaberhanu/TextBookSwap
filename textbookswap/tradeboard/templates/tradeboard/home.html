@@ -4,4 +4,16 @@
 {% block content %}
     <h1 style = "color:red">Welcome to the homepage</h1>
     <a href="{% url 'book_new' %}"> Sell Book</a>
+
+    {% for post in posts %}
+        <h2 style = "color:green">{{post.title}}</h2>
+        <p>{{post.description}}</p>
+        <ul>
+            <li>Seller: {{post.seller}}</li>
+            <li>Edition: {{post.edition}}</li>
+            <li>ISBN: {{post.ISBN}}</li>
+            <li>Author: {{post.author}}</li>
+            <li>Date Posted: {{post.date_posted}}</li>
+        </ul>
+    {% endfor %}
 {% endblock %}
