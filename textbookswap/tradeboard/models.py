@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.models import Manager
 
+# link for a good video on creating forms custom html forms: https://www.youtube.com/watch?v=9jDEnSm4nt8
+
 
 class Post(models.Model):
     seller = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -26,10 +28,14 @@ class Post(models.Model):
     description = models.TextField(max_length=1000)
     image = models.ImageField(
         default='default_book.png', upload_to='book_pics')
-    date_posted = models.DateTimeField(default=timezone.now)
+    date_posted = models.DateTimeField(default=timezone.now)  # UTC time
 
-    edition = models.PositiveSmallIntegerField(default=0)
+    edition = models.PositiveSmallIntegerField(blank=True, null=True)
 
+    price = models.PositiveSmallIntegerField(default=0)
+    swappable = models.BooleanField(default=False)
+
+    # ****************************************************************************************
     IN_PROGRESS = "In progress"
     COMPLETE = "Complete"
     states = (
@@ -38,6 +44,16 @@ class Post(models.Model):
     )
     transaction_state = models.CharField(
         max_length=50, choices=states, default=IN_PROGRESS)
+    # ****************************************************************************************
+    OTHER = "Other"
+    TEXTBOOK = "Textbook"
+    post_types = (
+        (OTHER, "Other"),
+        (TEXTBOOK, "Textbook"),
+    )
+    post_type = models.CharField(
+        max_length=50, choices=post_types, default=OTHER)
+    # ****************************************************************************************
 
     objects = Manager()
 

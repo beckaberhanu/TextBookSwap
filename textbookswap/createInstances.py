@@ -1,4 +1,5 @@
 from tradeboard.models import Post
+from django.utils.lorem_ipsum import WORDS as lorem_words
 from users.models import WishList
 from django.contrib.auth.models import User
 import random
@@ -9,6 +10,13 @@ def randomString(stringLength):
     """Generate a random string with the combination of numbers, and lowercase and uppercase letters """
     letters = string.ascii_letters + string.digits
     return ''.join(random.choice(letters) for i in range(stringLength))
+
+
+def randomLorem(stringLength):
+    output = ''
+    while len(output) < stringLength-20:
+        output += ' ' + random.choice(list(lorem_words))
+    return output[1].upper()+output[2:]
 
 
 def randomText(stringLength):
@@ -44,7 +52,7 @@ def createPostInstances(number=10):
         ISBN = randomNumbers(13)
         author = randomText(random.randrange(5, 20, 1))
         edition = random.randrange(1, 15, 1)
-        description = randomText(random.randrange(200, 900, 1))
+        description = randomLorem(random.randrange(200, 900, 1))
         post = Post.objects.create(
             seller=user, title=title, description=description, ISBN=ISBN, author=author, edition=edition)
 
