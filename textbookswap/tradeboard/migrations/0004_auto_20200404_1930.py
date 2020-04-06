@@ -15,11 +15,6 @@ class Migration(migrations.Migration):
             name='post',
             options={'verbose_name': 'Post', 'verbose_name_plural': 'Posts'},
         ),
-        migrations.AddField(
-            model_name='post',
-            name='edition',
-            field=models.PositiveSmallIntegerField(default=0),
-        ),
         migrations.AlterField(
             model_name='post',
             name='ISBN',
