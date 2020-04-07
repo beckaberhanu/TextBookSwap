@@ -8,6 +8,7 @@ media
 tradebaord/migrations
 users/migrations
 
+
 # Backup files # 
 *.bak 
 
@@ -65,4 +66,3 @@ sftp-config.json
 .history
 
 .DS_Store
-textbookswap/textbookswap/settings.py
