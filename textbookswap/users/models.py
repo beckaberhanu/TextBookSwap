@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from tradeboard.models import Post
-
+from PIL import Image
 
 class Profile(models.Model):
     # 1-1 field pointing to correspoding user
@@ -18,6 +18,15 @@ class Profile(models.Model):
         # Name the model will appear under in the Django Admin page.
         verbose_name_plural = 'Profiles'
 
+    def save(self, *args, **kwargs):
+        super(Profile, self).save(*args, **kwargs)
+
+        img = Image.open(self.image.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
 
 # may need to reconsider the name. For the functionality it is serving right now it maybe batter to just call it bookmarks.
 class WishList(models.Model):
