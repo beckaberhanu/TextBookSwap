@@ -6,7 +6,7 @@
     <a href="{% url 'book_new' %}"> Sell Book</a>
 
     {% for post in posts %}
-        <h2 style = "color:green">{{post.title}}</h2>
+        <h2 style = "color:green"><a  href="{% url 'detail_book' post.pk %}">{{post.title}}</a></h2>
         <p>{{post.description}}</p>
         <img src = "{{ post.image.url }}" height = "40" width = "40">
         <ul>
