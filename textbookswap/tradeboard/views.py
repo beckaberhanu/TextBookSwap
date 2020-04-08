@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Post
+from django.views.generic import DetailView
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 
@@ -16,3 +17,7 @@ class BookCreateView(CreateView):
     template_name = "tradeboard/new_book.html"
     fields = '__all__'
     success_url = reverse_lazy('tradeboard-home')
+
+class BlogDetailView(DetailView):
+    model = Post
+    template_name = 'tradeboard/detail_book.html'

@@ -5,9 +5,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from tradeboard import views as tradeboard_view
 from users import views as user_views
-from tradeboard.views import BookCreateView
+from tradeboard.views import BookCreateView, BlogDetailView
 
 urlpatterns = [
+    path('post/<int:pk>/', BlogDetailView.as_view(), name='detail_book'),
     path('book/new/', BookCreateView.as_view(), name='book_new'),
     path('admin/', admin.site.urls),
     path('register/', user_views.register, name='register'),
