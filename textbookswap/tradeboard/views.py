@@ -30,7 +30,7 @@ def home(request):
 class BookCreateView(CreateView):
     model = Post
     template_name = "tradeboard/new_book.html"
-    fields = '__all__'
+    fields = ['seller', 'title', 'ISBN', 'author', 'description', 'image', 'edition', 'price']
     success_url = reverse_lazy('tradeboard-home')
 
 
@@ -43,7 +43,8 @@ class BookDetailView(DetailView):
 class BookUpdateView(UpdateView):
     model = Post
     template_name = 'tradeboard/edit_book.html'
-    fields = '__all__'
+    fields = ['seller', 'title', 'ISBN', 'author', 'description', 'image', 'edition', 'price', 'transaction_state']
+    success_url = reverse_lazy('tradeboard-home') #Make Detail view Instead
 
 
 class BookDeleteView(DeleteView):
