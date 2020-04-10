@@ -5,6 +5,13 @@
     <h1 style = "color:red">Welcome to the homepage</h1>
     <a href="{% url 'book_new' %}"> Sell Book</a>
 
+    <form method="POST">
+        {% csrf_token %}
+        {{search_form.as_p}}
+        <input type = "submit" value = "search" name="filter">
+        <button type = "submit" value = "clear" name="clear">clear</button>
+    </form>
+
     {% for post in posts %}
         <h2 style = "color:green"><a  href="{% url 'detail_book' post.pk %}">{{post.title}}</a></h2>
         <p>{{post.description}}</p>
@@ -12,7 +19,11 @@
         <ul>
             <li>Seller: {{post.seller}}</li>
             <li>Edition: {{post.edition}}</li>
-            <li>ISBN: {{post.ISBN}}</li>
+            {% if post.ISBN == matches.ISBN %}
+                <li>ISBN: <mark>{{post.ISBN}}</mark></li>
+            {% else %}
+                <li>ISBN: {{post.ISBN}}</li>
+            {% endif %}
             <li>Author: {{post.author}}</li>
             <li>Date Posted: {{post.date_posted}}</li>
         </ul>

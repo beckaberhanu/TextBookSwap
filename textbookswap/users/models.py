@@ -4,6 +4,7 @@ from django.utils import timezone
 from tradeboard.models import Post
 from PIL import Image
 
+
 class Profile(models.Model):
     # 1-1 field pointing to correspoding user
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -29,6 +30,8 @@ class Profile(models.Model):
             img.save(self.image.path)
 
 # may need to reconsider the name. For the functionality it is serving right now it maybe batter to just call it bookmarks.
+
+
 class WishList(models.Model):
     # 1-1 field pointing to correspoding user
     user = models.OneToOneField(User, on_delete=models.CASCADE)
