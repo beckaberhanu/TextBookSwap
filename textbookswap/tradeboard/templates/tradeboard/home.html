@@ -19,11 +19,7 @@
         <ul>
             <li>Seller: {{post.seller}}</li>
             <li>Edition: {{post.edition}}</li>
-            {% if post.ISBN == matches.ISBN %}
-                <li>ISBN: <mark>{{post.ISBN}}</mark></li>
-            {% else %}
-                <li>ISBN: {{post.ISBN}}</li>
-            {% endif %}
+            <li>ISBN: {{post.ISBN}}</li>
             <li>Author: {{post.author}}</li>
             <li>Date Posted: {{post.date_posted}}</li>
         </ul>

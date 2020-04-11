@@ -11,26 +11,35 @@ from django.urls import reverse_lazy
 def home(request):
     posts = Post.objects.all()
     search_form = BookSearchForm()
-    print("**********************")
-    matches = {}
     if request.method == "POST":
-        print("wyayayaya")
         search_form = BookSearchForm(request.POST)
         if request.POST.get('clear'):
             posts = Post.objects.all()
+            search_form = BookSearchForm()
         elif search_form.is_valid():
-            ISBN_fil = search_form.cleaned_data.get('ISBN')
-            posts = Post.objects.filter(
-                ISBN=ISBN_fil)
-            matches = {'ISBN': ISBN_fil}
-            print(len(ISBN_fil))
-    return render(request, 'tradeboard/home.html', {'posts': posts, 'search_form': search_form, 'matches': matches})
+            search_filters = search_form.cleaned_data
+            posts = Post.objects.all()
+            if search_filters['title']:
+                posts = posts.filter(title=search_filters['title'])
+            if search_filters['author']:
+                posts = posts.filter(author=search_filters['author'])
+            if search_filters['edition']:
+                posts = posts.filter(edition=search_filters['edition'])
+            if search_filters['price']:
+                posts = posts.filter(price__lte=search_filters['price'])
+            if search_filters['posted_since']:
+                posts = posts.filter(
+                    date_posted__gte=search_filters['posted_since'])
+            if search_filters['ISBN']:
+                posts = posts | Post.objects.filter(
+                    ISBN=search_filters['ISBN'])
+    return render(request, 'tradeboard/home.html', {'posts': posts, 'search_form': search_form})
 
 
 class BookCreateView(CreateView):
     model = Post
     template_name = "tradeboard/new_book.html"
-    fields = ['seller', 'title', 'ISBN', 'author', 'description', 'image', 'edition', 'price']
+    fields = '__all__'
     success_url = reverse_lazy('tradeboard-home')
 
 
@@ -43,8 +52,7 @@ class BookDetailView(DetailView):
 class BookUpdateView(UpdateView):
     model = Post
     template_name = 'tradeboard/edit_book.html'
-    fields = ['seller', 'title', 'ISBN', 'author', 'description', 'image', 'edition', 'price', 'transaction_state']
-    success_url = reverse_lazy('tradeboard-home') #Make Detail view Instead
+    fields = '__all__'
 
 
 class BookDeleteView(DeleteView):
