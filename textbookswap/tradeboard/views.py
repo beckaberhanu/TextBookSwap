@@ -18,21 +18,30 @@ def home(request):
             search_form = BookSearchForm()
         elif search_form.is_valid():
             search_filters = search_form.cleaned_data
-            posts = Post.objects.all()
+            posts = Post.objects.none()
+            print(posts)
             if search_filters['title']:
+                print('title')
                 posts = posts.filter(title=search_filters['title'])
             if search_filters['author']:
+                print('author')
                 posts = posts.filter(author=search_filters['author'])
             if search_filters['edition']:
+                print('edition')
                 posts = posts.filter(edition=search_filters['edition'])
-            if search_filters['price']:
-                posts = posts.filter(price__lte=search_filters['price'])
-            if search_filters['posted_since']:
-                posts = posts.filter(
-                    date_posted__gte=search_filters['posted_since'])
             if search_filters['ISBN']:
+                print('isbn')
                 posts = posts | Post.objects.filter(
                     ISBN=search_filters['ISBN'])
+                print(posts)
+            if search_filters['price']:
+                print('price')
+                posts = posts.filter(price__lte=search_filters['price'])
+            if search_filters['posted_since']:
+                print('postedsince')
+                posts = posts.filter(
+                    date_posted__gte=search_filters['posted_since'])
+                print(posts)
     return render(request, 'tradeboard/home.html', {'posts': posts, 'search_form': search_form})
 
 
