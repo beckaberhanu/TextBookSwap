@@ -1,27 +1,91 @@
 {% extends 'tradeboard/base.html' %}
-
+{% load static %}
 
 {% block content %}
-    <h1 style = "color:red">Welcome to the homepage</h1>
-    <a href="{% url 'book_new' %}"> Sell Book</a>
+    <link rel="stylesheet" type="text/css" href="{% static 'tradeboard/tb_main.css' %}">
+    
+    
 
-    <form method="POST">
-        {% csrf_token %}
-        {{search_form.as_p}}
-        <input type = "submit" value = "search" name="filter">
-        <button type = "submit" value = "clear" name="clear">clear</button>
-    </form>
+    <div class = "panels">
+        <div class = "left-panel">
+            <h1 style = "color:red">Welcome to the homepage</h1>
+            <a href="{% url 'book_new' %}"> Sell Book</a>
+        </div>
+        <div class = "mid-panel">
+            {% for post in posts %}
+                <div class = "post">
+                    <div class = "post-minimized">
+                        <div class = "mini-left-tile">
+                            <div class = "top-row">
+                                <h2 class = "book-title"><a class = "book-title-link" href="{% url 'detail_book' post.pk %}">{{post.title}}</a></h2>
+                                <small class = "date"> {{post.date_posted|date:"m/d/Y"}}</small>
+                            </div>
+                            <hr class = "divider"/>
+                            <div class = "preview">
+                                <p class = "pre">ISBN: {{post.ISBN}} |</p>
+                                <p class = "pre">Author: {{post.author}} |</p>
+                                <p class = "pre">Edition: {{post.edition}}</p>
+                            </div>
+                        </div>
+                        <div class = "mini-right-tile">
+                            <img class = "bookmark" src = "{% static 'bookmark_inactive.svg' %}"/>
+                            <hr class = "divider-1"/>
+                            <img class = "expand"src = "{% static 'expand.svg' %}"/>
+                        </div>
+                    </div>
 
-    {% for post in posts %}
-        <h2 style = "color:green"><a  href="{% url 'detail_book' post.pk %}">{{post.title}}</a></h2>
-        <p>{{post.description}}</p>
-        <img src = "{{ post.image.url }}" height = "40" width = "40">
-        <ul>
-            <li>Seller: {{post.seller}}</li>
-            <li>Edition: {{post.edition}}</li>
-            <li>ISBN: {{post.ISBN}}</li>
-            <li>Author: {{post.author}}</li>
-            <li>Date Posted: {{post.date_posted}}</li>
-        </ul>
-    {% endfor %}
+                    <div class = "post-maximized">
+                        <div class = "left-tile">
+                            <div class = "info">
+                                <div class = "details">
+                                    <p class = "d-title">Price</p>
+                                    <p class = "d-info"> {{post.price}} </p>
+                                </div>
+                                <div class = "details">
+                                    <p class = "d-title">Edition</p>
+                                    <p class = "d-info"> {{post.edition}} </p>
+                                </div>
+                                <div class = "details">
+                                    <p class = "d-title">Book type</p>
+                                    <p class = "d-info"> {{post.post_type}} </p>
+                                </div>
+                                <div class = "details">
+                                    <p class = "d-title">ISBN</p>
+                                    <p class = "d-info"> {{post.ISBN}} </p>
+                                </div>
+                                <div class = "details">
+                                    <p class = "d-title">Author</p>
+                                    <p class = "d-info"> {{post.author}} </p>
+                                </div>
+                            </div>
+                            <div class = "seller-info">
+                                <img class = "contact-pic" src = "{{ post.seller.profile.image.url }}"/> <br>
+                                <div class = "identifier">
+                                    <p class = "fl-name">{{post.seller.first_name}} {{post.seller.last_name}}</p><br>
+                                    <hr class = "divider-2"/>
+                                    <p class = "username">@{{post.seller.username}}</p>
+                                </div>
+                            </div>
+                            <div class = "contact-btn">
+                                <img src = "{% static 'message.svg' %}">
+                                <p>Contact</p>
+                            </div>
+                        </div>
+                        <div class = "right-tile">
+                            <p class = "description">{{post.description}}</p>
+                            <img class = "book-pic" src = "{{ post.image.url }}">
+                        </div>
+                    </div>
+                </div>            
+            {% endfor %}
+        </div>
+        <div class = "right-panel">
+            <form method="POST">
+                {% csrf_token %}
+                {{search_form.as_p}}
+                <input type = "submit" value = "search" name="filter">
+                <button type = "submit" value = "clear" name="clear">clear</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}
