@@ -34,15 +34,15 @@ def randomNumbers(stringLength):
 def createUserInstances(number=10):
     for i in range(number):
         username = randomString(random.randrange(5, 20, 1))
+        firstname = randomText(random.randrange(3, 15, 1))
+        lastname = randomText(random.randrange(3, 15, 1))
         email = randomString(random.randrange(5, 20, 1))+"@macmail.com"
-        print("****************************")
-        print(len(User.objects.filter(username=username)))
         while (len(User.objects.filter(username=username)) > 0 or len(User.objects.filter(email=email)) > 0):
             username = randomString(random.randrange(5, 20, 1))
             email = randomString(random.randrange(5, 20, 1))+"@macmail.com"
         password = randomString(random.randrange(5, 20, 1))
         user = User.objects.create_user(
-            username=username, email=email, password=password)
+            username=username, email=email, password=password, first_name=firstname, last_name=lastname)
 
 
 def createPostInstances(number=10):
@@ -52,9 +52,11 @@ def createPostInstances(number=10):
         ISBN = randomNumbers(13)
         author = randomText(random.randrange(5, 20, 1))
         edition = random.randrange(1, 15, 1)
-        description = randomLorem(random.randrange(200, 900, 1))
+        description = randomLorem(random.randrange(60, 270, 1))
+        price = random.randrange(0, 25, 1)
+        booktype = random.choice(['Other', 'Textbook'])
         post = Post.objects.create(
-            seller=user, title=title, description=description, ISBN=ISBN, author=author, edition=edition)
+            seller=user, title=title, description=description, ISBN=ISBN, author=author, edition=edition, price=price, post_type=booktype)
 
 
 def createWishlistInstances(maxnumber=10):
@@ -68,6 +70,15 @@ def createWishlistInstances(maxnumber=10):
         for i in range(random.randrange(min(maxnumber, len(allPosts)))):
             post = random.choice(allPosts)
             wishList.posts.add(post)
+
+
+def reinitialize():
+    deleteAllPostInstances()
+    deleteAllUserInstances()
+    deleteAllWishListInstances()
+    createUserInstances()
+    createPostInstances()
+    createWishlistInstances
 
 
 def deleteAllPostInstances():

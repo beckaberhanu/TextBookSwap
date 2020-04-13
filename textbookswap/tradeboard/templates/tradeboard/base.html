@@ -9,3 +9,11 @@
     {% endif %}
 </div>
 {% block content %}{% endblock %}
+{% load static %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'tradeboard/tb_main.css' %}">
+</head>
+
+<body>
+    {% block content %}{% endblock %}
+</body>

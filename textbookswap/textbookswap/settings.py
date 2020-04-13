@@ -80,7 +80,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'mydb',
-        'USER': os.environ['mydb_USER'] ,
+        'USER': os.environ['mydb_USER'],
         'PASSWORD': os.environ['mydb_PASSWORD'],
         'HOST': 'localhost',
         'PORT': '5432',
@@ -126,8 +126,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'assets'),
+)
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-LOGIN_REDIRECT_URL='tradeboard-home'
+LOGIN_REDIRECT_URL = 'tradeboard-home'
 LOGIN_URL = 'login'
