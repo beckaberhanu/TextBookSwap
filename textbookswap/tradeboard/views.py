@@ -4,10 +4,10 @@ from .models import Post
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
-
+@login_required
 def home(request):
     posts = Post.objects.all()
     search_form = BookSearchForm()
