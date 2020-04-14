@@ -1,16 +1,15 @@
-<h1>Macalester Textbook Swap</h1>
 {% load static %}
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'tradeboard/tb_main.css' %}">
 </head>
 <div class="navbar-nav">
-    {% if user.is_authenticated %}
-    <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
-    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+    {% comment %} {% if user.is_authenticated %}
+        <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
+        <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
     {% else %}
-    <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-    <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-    {% endif %}
+        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+    {% endif %} {% endcomment %}
 </div>
 <body>
     {% block content %}{% endblock %}

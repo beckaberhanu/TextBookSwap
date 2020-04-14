@@ -2,87 +2,143 @@
 {% load static %}
 
 {% block content %}
+
     <link rel="stylesheet" type="text/css" href="{% static 'tradeboard/tb_main.css' %}">
     
     
 
     <div class = "panels">
         <div class = "left-panel">
-            <h1 style = "color:red">Welcome to the homepage</h1>
-            <a href="{% url 'book_new' %}"> Sell Book</a>
+            <div class = "profile-section">
+                {% comment %} <h1>Macalester Textbook Swap</h1> {% endcomment %}
+                <img class= "profile-pic" src = "{{user.profile.image.url}}"/>
+                {% comment %} <h1 style = "color:red">Welcome to the homepage</h1> {% endcomment %}
+                <div class = "profile-info">
+                    <h2 class = "fl-users-name">{{user.first_name}} {{user.last_name}}</h2>
+                </div>
+                <hr/>
+                {% comment %} <a href="{% url 'book_new' %}"> Sell Book</a> {% endcomment %}
+            </div>
         </div>
         <div class = "mid-panel">
-            {% for post in posts %}
-                <div class = "post">
-                    <div class = "post-minimized">
-                        <div class = "mini-left-tile">
-                            <div class = "top-row">
-                                <h2 class = "book-title"><a class = "book-title-link" href="{% url 'detail_book' post.pk %}">{{post.title}}</a></h2>
-                                <small class = "date"> {{post.date_posted|date:"m/d/Y"}}</small>
+            <div class = "quick-search">
+                <input class = "search-in" type="search" name="quick search" placeholder = "Quick Search">
+            </div>
+            <div class = "tab-bar">
+                <button class = "tab-btn active-tab" type="button" name="tradeboard">Trade Board</button>
+                <button class = "tab-btn" type="button" name="wishlist">My WishList</button>
+                <button class = "tab-btn" type="button" name="sell-list">My Selling List</button>
+            </div>
+            <div class = "mid-panel-scroll">
+                {% for post in posts %}
+                    <div class = "post">
+                        <div class = "post-minimized">
+                            <div class = "mini-left-tile">
+                                <div class = "top-row">
+                                    <h2 class = "book-title"><a class = "book-title-link" href="{% url 'detail_book' post.pk %}">{{post.title}}</a></h2>
+                                    <small class = "date"> {{post.date_posted|date:"m/d/Y"}}</small>
+                                </div>
+                                <hr class = "divider"/>
+                                <div class = "preview">
+                                    <p class = "pre">ISBN: {{post.ISBN}} |</p>
+                                    <p class = "pre">Author: {{post.author}} |</p>
+                                    <p class = "pre">Edition: {{post.edition}}</p>
+                                </div>
                             </div>
-                            <hr class = "divider"/>
-                            <div class = "preview">
-                                <p class = "pre">ISBN: {{post.ISBN}} |</p>
-                                <p class = "pre">Author: {{post.author}} |</p>
-                                <p class = "pre">Edition: {{post.edition}}</p>
+                            <div class = "mini-right-tile">
+                                <img class = "bookmark" src = "{% static 'bookmark_inactive.svg' %}"/>
+                                <hr class = "divider-1"/>
+                                <img class = "expand"src = "{% static 'expand.svg' %}"/>
                             </div>
                         </div>
-                        <div class = "mini-right-tile">
-                            <img class = "bookmark" src = "{% static 'bookmark_inactive.svg' %}"/>
-                            <hr class = "divider-1"/>
-                            <img class = "expand"src = "{% static 'expand.svg' %}"/>
-                        </div>
-                    </div>
 
-                    <div class = "post-maximized">
-                        <div class = "left-tile">
-                            <div class = "info">
-                                <div class = "details">
-                                    <p class = "d-title">Price</p>
-                                    <p class = "d-info"> {{post.price}} </p>
+                        <div class = "post-maximized">
+                            <div class = "left-tile">
+                                <div class = "info">
+                                    <div class = "details">
+                                        <p class = "d-title">Price</p>
+                                        <p class = "d-info"> {{post.price}} </p>
+                                    </div>
+                                    <div class = "details">
+                                        <p class = "d-title">Edition</p>
+                                        <p class = "d-info"> {{post.edition}} </p>
+                                    </div>
+                                    <div class = "details">
+                                        <p class = "d-title">Book type</p>
+                                        <p class = "d-info"> {{post.post_type}} </p>
+                                    </div>
+                                    <div class = "details">
+                                        <p class = "d-title">ISBN</p>
+                                        <p class = "d-info"> {{post.ISBN}} </p>
+                                    </div>
+                                    <div class = "details">
+                                        <p class = "d-title">Author</p>
+                                        <p class = "d-info"> {{post.author}} </p>
+                                    </div>
                                 </div>
-                                <div class = "details">
-                                    <p class = "d-title">Edition</p>
-                                    <p class = "d-info"> {{post.edition}} </p>
+                                <div class = "seller-info">
+                                    <img class = "contact-pic" src = "{{ post.seller.profile.image.url }}"/> <br>
+                                    <div class = "identifier">
+                                        <p class = "fl-name">{{post.seller.first_name}} {{post.seller.last_name}}</p><br>
+                                        <hr class = "divider-2"/>
+                                        <p class = "username">@{{post.seller.username}}</p>
+                                    </div>
                                 </div>
-                                <div class = "details">
-                                    <p class = "d-title">Book type</p>
-                                    <p class = "d-info"> {{post.post_type}} </p>
-                                </div>
-                                <div class = "details">
-                                    <p class = "d-title">ISBN</p>
-                                    <p class = "d-info"> {{post.ISBN}} </p>
-                                </div>
-                                <div class = "details">
-                                    <p class = "d-title">Author</p>
-                                    <p class = "d-info"> {{post.author}} </p>
+                                <div class = "contact-btn">
+                                    <img src = "{% static 'message.svg' %}">
+                                    <p>Contact</p>
                                 </div>
                             </div>
-                            <div class = "seller-info">
-                                <img class = "contact-pic" src = "{{ post.seller.profile.image.url }}"/> <br>
-                                <div class = "identifier">
-                                    <p class = "fl-name">{{post.seller.first_name}} {{post.seller.last_name}}</p><br>
-                                    <hr class = "divider-2"/>
-                                    <p class = "username">@{{post.seller.username}}</p>
-                                </div>
-                            </div>
-                            <div class = "contact-btn">
-                                <img src = "{% static 'message.svg' %}">
-                                <p>Contact</p>
+                            <div class = "right-tile">
+                                <p class = "description">{{post.description}}</p>
+                                <img class = "book-pic" src = "{{ post.image.url }}">
                             </div>
                         </div>
-                        <div class = "right-tile">
-                            <p class = "description">{{post.description}}</p>
-                            <img class = "book-pic" src = "{{ post.image.url }}">
-                        </div>
-                    </div>
-                </div>            
-            {% endfor %}
+                    </div>            
+                {% endfor %}
+            </div>
         </div>
         <div class = "right-panel">
             <form method="POST">
                 {% csrf_token %}
-                {{search_form.as_p}}
+                {% comment %} {{search_form.as_p}} {% endcomment %}
+
+    {% comment %} ******************************** {% endcomment %}
+                
+                {{ search_form.non_field_errors }}
+                <div class="cont-title-field">
+                    {{ search_form.title.errors }}
+                        <label for="{{ form.title.id_for_label }}">Title</label>
+                    {{ search_form.title }}
+                </div>
+                <div class="cont-author-field">
+                    {{ search_form.author.errors }}
+                        <label for="{{ form.author.id_for_label }}">Author</label>
+                    {{ search_form.author}}
+                </div>
+                <div class="cont-ISBN-field">
+                    {{ search_form.ISBN.errors }}
+                        <label for="{{ form.ISBN.id_for_label }}">ISBN</label>
+                    {{ search_form.ISBN }}
+                </div>
+                <div class="cont-edition-field">
+                    {{ search_form.edition.errors }}
+                        <label for="{{ form.edition.id_for_label }}">Edition</label>
+                    {{ search_form.edition }}
+                </div>
+                <div class="cont-price-field">
+                    {{ search_form.price.errors }}
+                        <label for="{{ form.price.id_for_label }}">Price</label>
+                    {{ search_form.price }}
+                </div>
+                <div class="cont-posted-since-field">
+                    {{ search_form.posted_since.errors }}
+                        <label for="{{ form.posted_since.id_for_label }}">Posted Since</label>
+                    {{ search_form.posted_since }}
+                </div>
+                <div class="cont-book-type-field"> 
+
+                </div>
                 <input type = "submit" value = "search" name="filter">
                 <button type = "submit" value = "clear" name="clear">clear</button>
             </form>
