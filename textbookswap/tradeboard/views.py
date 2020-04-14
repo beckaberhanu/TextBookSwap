@@ -4,6 +4,7 @@ from .models import Post
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
@@ -48,7 +49,7 @@ def home(request):
 class BookCreateView(CreateView):
     model = Post
     template_name = "tradeboard/new_book.html"
-    fields = '__all__'
+    fields = ['seller', 'title', 'ISBN', 'author', 'description', 'image', 'edition', 'price'] #remember to take out seller later Nadav!
     success_url = reverse_lazy('tradeboard-home')
 
 
@@ -61,11 +62,22 @@ class BookDetailView(DetailView):
 class BookUpdateView(UpdateView):
     model = Post
     template_name = 'tradeboard/edit_book.html'
-    fields = '__all__'
+    fields = ['title', 'ISBN', 'author', 'description', 'image', 'edition', 'price']
 
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.seller != self.request.user:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
 class BookDeleteView(DeleteView):
     model = Post
     template_name = 'tradeboard/delete_book.html'
     success_url = reverse_lazy('tradeboard-home')
     context_object_name = "book"
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.seller != self.request.user:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
