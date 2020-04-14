@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .forms import BookSearchForm
 from .models import Post
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
@@ -81,3 +81,14 @@ class BookDeleteView(DeleteView):
         if obj.seller != self.request.user:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
+
+class SellingListView(ListView):
+    model = Post
+    template_name = 'tradeboard/selling_list.html'
+
+    # https://stackoverflow.com/questions/48143089/django-display-data-for-current-user-only
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     adaccount_list = Account.objects.filter(user=user)\
+    #                      .values_list('adaccounts', flat=True)
+    #     return Performance.objects.filter(adaccount__in=adaccount_list)

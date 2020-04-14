@@ -1,0 +1,10 @@
+{% extends 'tradeboard/base.html' %}
+
+{% block content %}
+    {% for book in object_list %}
+        <div class="post-entry">
+            <h2><a  href="{% url 'detail_book' book.pk %}">{{ book.title}}</a></h2>
+            <p>{{book.body}}</post></p>
+        </div>
+    {% endfor %}
+{% endblock content %}
