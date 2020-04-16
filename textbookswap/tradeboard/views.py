@@ -8,6 +8,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+
 @login_required
 def home(request):
     posts = Post.objects.all()
@@ -19,7 +20,7 @@ def home(request):
             search_form = BookSearchForm()
         elif search_form.is_valid():
             search_filters = search_form.cleaned_data
-            posts = Post.objects.none()
+            posts = Post.objects.all()
             print(posts)
             if search_filters['title']:
                 print('title')
@@ -49,7 +50,8 @@ def home(request):
 class BookCreateView(CreateView):
     model = Post
     template_name = "tradeboard/new_book.html"
-    fields = ['seller', 'title', 'ISBN', 'author', 'description', 'image', 'edition', 'price'] #remember to take out seller later Nadav!
+    fields = ['seller', 'title', 'ISBN', 'author', 'description', 'image',
+              'edition', 'price']  # remember to take out seller later Nadav!
     success_url = reverse_lazy('tradeboard-home')
 
 
@@ -62,13 +64,15 @@ class BookDetailView(DetailView):
 class BookUpdateView(UpdateView):
     model = Post
     template_name = 'tradeboard/edit_book.html'
-    fields = ['title', 'ISBN', 'author', 'description', 'image', 'edition', 'price']
+    fields = ['title', 'ISBN', 'author',
+              'description', 'image', 'edition', 'price']
 
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj.seller != self.request.user:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
+
 
 class BookDeleteView(DeleteView):
     model = Post
@@ -81,6 +85,7 @@ class BookDeleteView(DeleteView):
         if obj.seller != self.request.user:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
+
 
 class SellingListView(ListView):
     model = Post

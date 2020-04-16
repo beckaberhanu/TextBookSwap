@@ -5,7 +5,8 @@ from .models import Post
 
 
 class BookSearchForm(forms.Form):
-    title = forms.CharField(label="Title", max_length=50, required=False)
+    title = forms.CharField(label="Title", max_length=50, required=False,
+                            widget=forms.TextInput(attrs={'class': "filter-text-input"}))
 
     def validate_ISBN(value):
         print(not(f'{value}'.isnumeric()))
@@ -20,12 +21,13 @@ class BookSearchForm(forms.Form):
                                   )
 
     ISBN = forms.CharField(label="ISBN", max_length=13,
-                           validators=[validate_ISBN], required=False)
+                           validators=[validate_ISBN], required=False, widget=forms.TextInput(attrs={'class': "filter-text-input"}))
 
-    author = forms.CharField(label="Author", max_length=50, required=False)
+    author = forms.CharField(label="Author", max_length=50, required=False,
+                             widget=forms.TextInput(attrs={'class': "filter-text-input"}))
     edition = forms.IntegerField(
-        label="Edition", min_value=1, max_value=15, required=False)
+        label="Edition", min_value=1, max_value=15, required=False, widget=forms.NumberInput(attrs={'class': "filter-int-input"}))
     price = forms.IntegerField(
-        label="Maximum price", min_value=1, max_value=15, required=False)
+        label="Maximum price", min_value=1, max_value=15, required=False, widget=forms.NumberInput(attrs={'class': "filter-int-input"}))
     posted_since = forms.DateField(
-        label='posted since, ', initial="2020-04-08", widget=forms.SelectDateWidget, required=False)
+        label='posted since, ', initial="2020-04-08", widget=forms.SelectDateWidget(attrs={'class': "filter-date-select"}), required=False)
