@@ -1,4 +1,6 @@
 from django.db import models
+from django.dispatch import receiver
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils import timezone
 from tradeboard.models import Post
@@ -94,3 +96,16 @@ class Message(models.Model):
         verbose_name = 'Message'
         # Name the model will appear under in the Django Admin page.
         verbose_name_plural = 'Messages'
+
+
+@receiver(models.signals.post_delete, sender=Profile)
+def submission_delete(sender, instance, **kwargs):
+    """
+    Deletes image from filesystem
+    when corresponding `Profile` object is deleted.
+    """
+    if not (instance.image.path == settings.MEDIA_ROOT + "/default_profile.png"):
+        instance.image.delete(False)
+    else:
+        print("Did match")
+    # more on how this works here https://stackoverflow.com/questions/16041232/django-delete-filefield

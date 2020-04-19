@@ -1,10 +1,12 @@
+from django.conf import settings
 from django.db import models
+from django.dispatch import receiver
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.models import Manager
 
-# link for a good video on creating forms custom html forms: https://www.youtube.com/watch?v=9jDEnSm4nt8
+# link for a good video on creating custom html forms: https://www.youtube.com/watch?v=9jDEnSm4nt8
 
 
 class Post(models.Model):
@@ -57,7 +59,23 @@ class Post(models.Model):
 
     objects = Manager()
 
+    def __str__(self):
+        return(f"Post| Seller: {self.seller} | Title: {self.title} | ID: {self.pk}")
+
     class Meta:
         verbose_name = 'Post'
         # Name the model will appear under in the Django Admin page.
         verbose_name_plural = 'Posts'
+
+
+@receiver(models.signals.post_delete, sender=Post)
+def submission_delete(sender, instance, **kwargs):
+    """
+    Deletes image from filesystem
+    when corresponding `Post` object is deleted.
+    """
+    if not (instance.image.path == settings.MEDIA_ROOT + "/default_book.png"):
+        instance.image.delete(False)
+    else:
+        print("Did match")
+    # more on how this works here https://stackoverflow.com/questions/16041232/django-delete-filefield
