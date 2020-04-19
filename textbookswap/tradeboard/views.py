@@ -6,6 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 # Create your views here.
 
 
@@ -91,9 +92,6 @@ class SellingListView(ListView):
     model = Post
     template_name = 'tradeboard/selling_list.html'
 
-    # https://stackoverflow.com/questions/48143089/django-display-data-for-current-user-only
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     adaccount_list = Account.objects.filter(user=user)\
-    #                      .values_list('adaccounts', flat=True)
-    #     return Performance.objects.filter(adaccount__in=adaccount_list)
+    def get_queryset(self):
+        user = self.request.user
+        return Post.objects.filter(seller=user)
