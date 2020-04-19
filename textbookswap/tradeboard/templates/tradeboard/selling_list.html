@@ -1,10 +1,88 @@
 {% extends 'tradeboard/base.html' %}
+{% load static %}
 
 {% block content %}
-    {% for book in object_list %}
+    <!-- {% for book in object_list %}
         <div class="post-entry">
             <h2><a  href="{% url 'detail_book' book.pk %}">{{ book.title}}</a></h2>
             <p>{{book.body}}</post></p>
         </div>
-    {% endfor %}
+    {% endfor %} -->
+    <div class = "mid-panel-scroll">
+        {% for post in object_list %}
+            <div class = "post">
+                <div class = "post-minimized">
+                    <div class = "mini-left-tile">
+                        <div class = "top-row">
+                            <h2 class = "book-title"><a class = "book-title-link" href="{% url 'detail_book' post.pk %}">{{post.title}}</a></h2>
+                            <small class = "date"> {{post.date_posted|date:"m/d/Y"}}</small>
+                        </div>
+                        <hr class = "divider"/>
+                        <div class = "preview">
+                            <p class = "pre">ISBN: {{post.ISBN}} |</p>
+                            <p class = "pre">Author: {{post.author}} |</p>
+                            <p class = "pre">Edition: {{post.edition}}</p>
+                        </div>
+                    </div>
+                    <div class = "mini-right-tile">
+                        <img class = "bookmark" src = "{% static 'bookmark_inactive.svg' %}"/>
+                        <hr class = "divider-1"/>
+                        <img class = "expand"src = "{% static 'expand.svg' %}"/>
+                    </div>
+                </div>
+
+                <div class = "post-maximized">
+                    <div class = "left-tile">
+                        <div class = "info">
+                            <div class = "details">
+                                <p class = "d-title">Price</p>
+                                <p class = "d-info"> {{post.price}} </p>
+                            </div>
+                            <div class = "details">
+                                <p class = "d-title">Edition</p>
+                                <p class = "d-info"> {{post.edition}} </p>
+                            </div>
+                            <div class = "details">
+                                <p class = "d-title">Book type</p>
+                                <p class = "d-info"> {{post.post_type}} </p>
+                            </div>
+                            <div class = "details">
+                                <p class = "d-title">ISBN</p>
+                                <p class = "d-info"> {{post.ISBN}} </p>
+                            </div>
+                            <div class = "details">
+                                <p class = "d-title">Author</p>
+                                <p class = "d-info"> {{post.author}} </p>
+                            </div>
+                        </div>
+                        <div class = "seller-info">
+                            <img class = "contact-pic" src = "{{ post.seller.profile.image.url }}"/> <br>
+                            <div class = "identifier">
+                                <p class = "fl-name">{{post.seller.first_name}} {{post.seller.last_name}}</p><br>
+                                <hr class = "divider-2"/>
+                                <p class = "username">@{{post.seller.username}}</p>
+                            </div>
+                        </div>
+                        <div class = "contact-btn">
+                            <img src = "{% static 'message.svg' %}">
+                            <p>Contact</p>
+                        </div>
+                    </div>
+                    <div class = "right-tile">
+                        <p class = "description">{{post.description}}</p>
+                        <img class = "book-pic" src = "{{ post.image.url }}">
+                    </div>
+                </div>            
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        accordions=document.querySelectorAll("div.post-minimized");
+        for(var i=0; i<accordions.length;i++){
+            accordions[i].onclick=function(){
+                this.nextElementSibling.classList.toggle("show")
+            }
+        }
+    </script>
 {% endblock content %}
