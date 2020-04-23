@@ -31,8 +31,8 @@
             </div>
             <div class = "mid-panel-scroll">
                 {% for post in posts %}
-                    <div class = "post">
-                        <div class = "post-minimized">
+                    <div class = "post" id= "post-{{post.pk}}">
+                        <div class = "post-minimized" id="post-min-{{post.pk}}">
                             <div class = "mini-left-tile">
                                 <div class = "top-row">
                                     <h2 class = "book-title"><a class = "book-title-link" href="{% url 'detail_book' post.pk %}">{{post.title}}</a></h2>
@@ -40,28 +40,28 @@
                                 </div>
                                 <hr class = "divider"/>
                                 <div class = "preview">
-                                    <p class = "pre">ISBN: {{post.ISBN}} |</p>
-                                    <p class = "pre">Author: {{post.author}} |</p>
-                                    <p class = "pre">Edition: {{post.edition}}</p>
+                                    <p class = "pre">Price: {{post.price}}$ | Author: {{post.author}} | Edition: {{post.edition}}</p>
                                 </div>
                             </div>
                             <div class = "mini-right-tile">
                                 <img class = "bookmark" src = "{% static 'bookmark_inactive.svg' %}"/>
                                 <hr class = "divider-1"/>
-                                <img class = "expand"src = "{% static 'expand.svg' %}"/>
+                                <img class = "expand" id= "exp-{{post.pk}}"src = "{% static 'expand.svg' %}"/>
                             </div>
                         </div>
 
                         <div class = "post-maximized">
                             <div class = "left-tile">
                                 <div class = "info">
-                                    <div class = "details">
-                                        <p class = "d-title">Price</p>
-                                        <p class = "d-info"> {{post.price}} </p>
-                                    </div>
-                                    <div class = "details">
-                                        <p class = "d-title">Edition</p>
-                                        <p class = "d-info"> {{post.edition}} </p>
+                                    <div class = "arrange-as-row dets">
+                                        <div class = "details">
+                                            <p class = "d-title">Price</p>
+                                            <p class = "d-info"> {{post.price}} </p>
+                                        </div>
+                                        <div class = "details">
+                                            <p class = "d-title">Edition</p>
+                                            <p class = "d-info"> {{post.edition}} </p>
+                                        </div>
                                     </div>
                                     <div class = "details">
                                         <p class = "d-title">Book type</p>
@@ -84,10 +84,10 @@
                                         <p class = "username">@{{post.seller.username}}</p>
                                     </div>
                                 </div>
-                                <div class = "contact-btn">
-                                    <img src = "{% static 'message.svg' %}">
-                                    <p>Contact</p>
-                                </div>
+                                <button class = "contact-btn">
+                                    <img height=12px width=12px src = "{% static 'message.svg' %}">
+                                    Contact
+                                </button>
                             </div>
                             <div class = "right-tile">
                                 <p class = "description">{{post.description}}</p>
@@ -99,10 +99,25 @@
             </div>
         </div>
         <div class = "right-panel">
+            <div class = "nav">
+                {% if user.is_authenticated %}
+                    <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
+                    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                    <a href="{% url 'book_new' %}"> Sell Book</a> 
+                {% else %}
+                    <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                    <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </div>
+
             <form class= "search-filters" method="POST">
+                <div class="hint">
+                    <p class = "hint-text">You can narrow down your search result by applying the following filters</p>
+                    <div class="vertical-accent-bar"></div>
+                </div>
                 {% csrf_token %}
                 {{ search_form.non_field_errors }}
-                <div class="search title-field">
+                <div class = "search title-field">
                     {{ search_form.title.errors }}
                         <label class = "filter-label f-title" for="{{ form.title.id_for_label }}">Title</label>
                     {{ search_form.title }}
@@ -131,26 +146,35 @@
                         {{ search_form.price }}
                     </div>
                 </div>
-                <div class = "search posted-since-field">
-                    {{ search_form.posted_since.errors }}
+                <div class = "arrange-as-row">
+                    <div class = "search posted-since-field">
+                        {{ search_form.posted_since.errors }}
                         <label class = "filter-label" for="{{ form.posted_since.id_for_label }}">Posted Since</label>
-                    <div >{{ search_form.posted_since }} </div>
-                </div>
-                <div class = "search book-type-field"> 
+                        <div class = "cont-date-select" >{{ search_form.posted_since }} </div>
+                    </div>
+                    <div class = "search book-type-field">
+                        {{ search_form.post_type.errors }}
+                        <label class = "filter-label" for="{{ form.post_type.id_for_label }}">Book Type</label>
+                        {{ search_form.post_type }}
+                    </div>
                 </div>
                 <div>
-                    <input class= "search-btn"type = "submit" value = "Apply Filter" name="filter">
-                    <button class= "clear-btn"type = "submit" value = "clear" name="clear">Clear</button>
+                    <input class= "search-btn" type = "submit" value = "Apply Filter" name="filter">
+                    <button class= "clear-btn" type = "submit" value = "clear" name="clear">Clear<img height=15px width=15px src = "{% static 'bookmark_inactive.svg' %}"/></button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        accordions=document.querySelectorAll("div.post-minimized");
-        for(var i=0; i<accordions.length;i++){
-            accordions[i].onclick=function(){
-                this.nextElementSibling.classList.toggle("show")
+        expands=document.querySelectorAll("img.expand");
+        for(var i=0; i<expands.length;i++){
+            expands[i].onclick=function(){
+                //console.log("post-min-"+ this.id.substring(4,6));
+                //console.log(this);
+                this.classList.toggle("expanded");
+                min = document.getElementById("post-min-"+ this.id.substring(4,6));
+                min.nextElementSibling.classList.toggle("show");
             }
         }
     </script>

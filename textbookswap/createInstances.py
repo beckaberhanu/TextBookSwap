@@ -78,7 +78,7 @@ def reinitialize():
     deleteAllWishListInstances()
     createUserInstances()
     createPostInstances()
-    createWishlistInstances
+    createWishlistInstances()
 
 
 def deleteAllPostInstances():
@@ -91,3 +91,49 @@ def deleteAllUserInstances():
 
 def deleteAllWishListInstances():
     WishList.objects.all().delete()
+
+def createRealInstances():
+    titleList=["Fundamentals of Wavelets",
+    "Data Smart",
+    "God Created the Integers",
+    "Superfreakonomics",
+    "Orientalism",
+    "Nature of Statistical Learning Theory, The Integration of the Indian States",
+    "Drunkard's Walk, The Image Processing & Mathematical Morphology",
+    "How to Think Like Sherlock Holmes",
+    "Data Scientists at Work",
+    "Slaughterhouse Five",
+    "Birth of a Theorem",
+    "Structure & Interpretation of Computer Programs",
+    "Age of Wrath, The Trial, The Statistical Decision Theory"
+    ]
+    authorList=[
+    "Goswami, Jaideva",
+    "Foreman, John",
+    "Hawking, Stephen",
+    "Dubner, Stephen",
+    "Said, Edward",
+    "Vapnik, Vladimir",
+    "Menon, V P",
+    "Mlodinow, Leonard",
+    "Shih, Frank",
+    "Konnikova, Maria",
+    "Sebastian Gutierrez",
+    "Vonnegut, Kurt",
+    "Villani, Cedric",
+    ]
+    
+    for i in range(len(titleList)):
+        user = random.choice(User.objects.all())
+        title = titleList[i]
+        ISBN = randomNumbers(13)
+        author = authorList[i]
+        edition = random.randrange(1, 15, 1)
+        description = ("Most existing books on wavelets are either too mathematical or they focus on too narrow a specialty. "
+        "This book provides a thorough treatment of the subject from an engineering point of view. "
+        "It is a one-stop source of theory, algorithms, applications, and computer codes related to wavelets. ")
+        price = random.randrange(10, 500, 1)
+        booktype = random.choice(['Other', 'Textbook'])
+        post = Post.objects.create(
+            seller=user, title=title, description=description, ISBN=ISBN, author=author, edition=edition, price=price, post_type=booktype)
+

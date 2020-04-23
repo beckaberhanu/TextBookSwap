@@ -6,6 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 # Create your views here.
 
 
@@ -19,31 +20,7 @@ def home(request):
             posts = Post.objects.all()
             search_form = BookSearchForm()
         elif search_form.is_valid():
-            search_filters = search_form.cleaned_data
-            posts = Post.objects.all()
-            print(posts)
-            if search_filters['title']:
-                print('title')
-                posts = posts.filter(title=search_filters['title'])
-            if search_filters['author']:
-                print('author')
-                posts = posts.filter(author=search_filters['author'])
-            if search_filters['edition']:
-                print('edition')
-                posts = posts.filter(edition=search_filters['edition'])
-            if search_filters['ISBN']:
-                print('isbn')
-                posts = posts | Post.objects.filter(
-                    ISBN=search_filters['ISBN'])
-                print(posts)
-            if search_filters['price']:
-                print('price')
-                posts = posts.filter(price__lte=search_filters['price'])
-            if search_filters['posted_since']:
-                print('postedsince')
-                posts = posts.filter(
-                    date_posted__gte=search_filters['posted_since'])
-                print(posts)
+            posts = search_form.filter()
     return render(request, 'tradeboard/home.html', {'posts': posts, 'search_form': search_form})
 
 
@@ -66,6 +43,7 @@ class BookUpdateView(UpdateView):
     template_name = 'tradeboard/edit_book.html'
     fields = ['title', 'ISBN', 'author',
               'description', 'image', 'edition', 'price']
+    success_url = reverse_lazy('tradeboard-home')
 
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
@@ -91,9 +69,6 @@ class SellingListView(ListView):
     model = Post
     template_name = 'tradeboard/selling_list.html'
 
-    # https://stackoverflow.com/questions/48143089/django-display-data-for-current-user-only
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     adaccount_list = Account.objects.filter(user=user)\
-    #                      .values_list('adaccounts', flat=True)
-    #     return Performance.objects.filter(adaccount__in=adaccount_list)
+    def get_queryset(self):
+        user = self.request.user
+        return Post.objects.filter(seller=user)
