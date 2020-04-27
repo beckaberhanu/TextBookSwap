@@ -9,6 +9,7 @@ from users import views as user_views
 from tradeboard.views import BookCreateView, BookDetailView, BookUpdateView, BookDeleteView, SellingListView
 
 urlpatterns = [
+    path('',auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('profile/selling/', SellingListView.as_view(), name="selling_books"),
     path('book/<int:pk>/delete/', BookDeleteView.as_view(), name='delete_book'),
     path('book/<int:pk>/edit/', BookUpdateView.as_view(), name='edit_book'),
@@ -25,7 +26,8 @@ urlpatterns = [
         auth_views.PasswordResetDoneView.as_view(template_name='users/password_reset_done.html'), name='password_reset_done'),
     path('password-reset-confirm/<uidb64>/<token>', 
         auth_views.PasswordResetConfirmView.as_view(template_name='users/password_reset_confirm.html'), name='password_reset_confirm'),
-    path('',auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+    path('password-reset-complete/', 
+        auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), name='password_reset_complete'),
     path('home/', tradeboard_view.home, name='tradeboard-home')
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
