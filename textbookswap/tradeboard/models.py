@@ -77,5 +77,5 @@ def submission_delete(sender, instance, **kwargs):
     if not (instance.image.path == settings.MEDIA_ROOT + "/default_book.png"):
         instance.image.delete(False)
     else:
-        print("Did match")
+        pass
     # more on how this works here https://stackoverflow.com/questions/16041232/django-delete-filefield

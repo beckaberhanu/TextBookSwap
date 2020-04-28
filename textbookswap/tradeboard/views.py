@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .forms import BookSearchForm
 from .models import Post
+from users.models import WishList
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -9,19 +10,52 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # Create your views here.
 
+from django.http import HttpResponse
+import json
+
 
 @login_required
 def home(request):
-    posts = Post.objects.all()
+    user = request.user
+    posts = Post.objects.exclude(seller=request.user)
     search_form = BookSearchForm()
     if request.method == "POST":
-        search_form = BookSearchForm(request.POST)
-        if request.POST.get('clear'):
-            posts = Post.objects.all()
-            search_form = BookSearchForm()
-        elif search_form.is_valid():
-            posts = search_form.filter()
-    return render(request, 'tradeboard/home.html', {'posts': posts, 'search_form': search_form})
+        if request.is_ajax():
+            pk = request.POST.get("pk")
+            post = Post.objects.get(pk=pk)
+            bookmarked = False
+            if hasattr(user, 'wishlist'):
+                if post in user.wishlist.posts.all():
+                    user.wishlist.posts.remove(post)
+                    bookmarked = False
+                else:
+                    user.wishlist.posts.add(post)
+                    bookmarked = True
+            else:
+                wish = WishList(user=user)
+                wish.save()
+                wish.posts.add(post)
+                bookmarked = True
+            return HttpResponse(json.dumps({'bookmarked': bookmarked, 'pk': request.POST.get("pk")}), content_type="application/json")
+        else:
+            search_form = BookSearchForm(request.POST)
+            if request.POST.get('clear'):
+                posts = Post.objects.all()
+                search_form = BookSearchForm()
+            elif search_form.is_valid():
+                posts = search_form.filter()
+
+    bookmarked = []
+    if hasattr(user, 'wishlist'):
+        bookmarked = user.wishlist.posts.all()
+        # for i in posts:
+        #     if i in user.wishlist.posts.all():
+        #         bookmarked.append(i.pk)
+        #         # bookmarked[str(i.pk)] = 'True'
+        #     # else:
+        #     #     bookmarked[str(i.pk)] = 'False'
+
+    return render(request, 'tradeboard/home.html', {'posts': posts, 'bookmarked': bookmarked, 'search_form': search_form})
 
 
 class BookCreateView(CreateView):

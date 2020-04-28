@@ -36,7 +36,8 @@ class Profile(models.Model):
 
 class WishList(models.Model):
     # 1-1 field pointing to correspoding user
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="wishlist")
     posts = models.ManyToManyField(Post)
 
     def __str__(self):
@@ -107,5 +108,5 @@ def submission_delete(sender, instance, **kwargs):
     if not (instance.image.path == settings.MEDIA_ROOT + "/default_profile.png"):
         instance.image.delete(False)
     else:
-        print("Did match")
+        pass
     # more on how this works here https://stackoverflow.com/questions/16041232/django-delete-filefield

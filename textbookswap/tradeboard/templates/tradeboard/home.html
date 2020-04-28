@@ -4,20 +4,16 @@
 {% block content %}
 
     <link rel="stylesheet" type="text/css" href="{% static 'tradeboard/tb_main.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     
-    
-
     <div class = "panels">
         <div class = "left-panel">
             <div class = "profile-section">
-                {% comment %} <h1>Macalester Textbook Swap</h1> {% endcomment %}
                 <img class= "profile-pic" src = "{{user.profile.image.url}}"/>
-                {% comment %} <h1 style = "color:red">Welcome to the homepage</h1> {% endcomment %}
                 <div class = "profile-info">
                     <h2 class = "fl-users-name">{{user.first_name}} {{user.last_name}}</h2>
                 </div>
                 <hr/>
-                {% comment %} <a href="{% url 'book_new' %}"> Sell Book</a> {% endcomment %}
             </div>
         </div>
         <div class = "mid-panel">
@@ -44,13 +40,29 @@
                                 </div>
                             </div>
                             <div class = "mini-right-tile">
-                                <img class = "bookmark" src = "{% static 'bookmark_inactive.svg' %}"/>
+                                {% if post in bookmarked %}
+                                    <svg class = "bookmark bookmarked" id = "bkm-{{post.pk}}" xmlns="http://www.w3.org/2000/svg" width="19.998" height="25.383" viewBox="0 0 19.998 25.383">
+                                        <g id="Group_112" data-name="Group 112" transform="translate(-8.384 -6.714)">
+                                            <path id="Path_6" data-name="Path 6" d="M787.349,678.917c0-6.737.122-7.04,8.643-7.04s8.2.127,8.3,7.04,0,13.412,0,13.412l-8.726-7.6-8.22,7.6Z" transform="translate(-777.465 -663.662)"/>
+                                        </g>
+                                    </svg>
+                                {% else %}
+                                    <svg class = "bookmark" id = "bkm-{{post.pk}}" xmlns="http://www.w3.org/2000/svg" width="19.998" height="25.383" viewBox="0 0 19.998 25.383">
+                                        <g id="Group_112" data-name="Group 112" transform="translate(-8.384 -6.714)">
+                                            <path id="Path_6" data-name="Path 6" d="M787.349,678.917c0-6.737.122-7.04,8.643-7.04s8.2.127,8.3,7.04,0,13.412,0,13.412l-8.726-7.6-8.22,7.6Z" transform="translate(-777.465 -663.662)"/>
+                                        </g>
+                                    </svg>
+                                {% endif %}
                                 <hr class = "divider-1"/>
-                                <img class = "expand" id= "exp-{{post.pk}}"src = "{% static 'expand.svg' %}"/>
+                                <svg class = "expand" id ="exp-{{post.pk}}" xmlns="http://www.w3.org/2000/svg" width="19.998" height="25.383" viewBox="0 0 19.998 25.383">
+                                    <g transform="translate(-2 0)">
+                                        <path id="Path_101" data-name="Path 101" d="M2812,519.526l11.181-12.945,10.923,12.945h-2.953l-6.323-7.643-1.647-1.992-8.335,9.635Z" transform="translate(-2810.907 -505.811)"/>
+                                    </g>
+                                </svg>
                             </div>
                         </div>
 
-                        <div class = "post-maximized">
+                        <div class = "post-maximized" id="post-max-{{post.pk}}">
                             <div class = "left-tile">
                                 <div class = "info">
                                     <div class = "arrange-as-row dets">
@@ -98,6 +110,7 @@
                 {% endfor %}
             </div>
         </div>
+
         <div class = "right-panel">
             <div class = "nav">
                 {% if user.is_authenticated %}
@@ -162,19 +175,47 @@
                     <input class= "search-btn" type = "submit" value = "Apply Filter" name="filter">
                     <button class= "clear-btn" type = "submit" value = "clear" name="clear">Clear<img height=15px width=15px src = "{% static 'bookmark_inactive.svg' %}"/></button>
                 </div>
+                <img height = 320px width= 320px src = "{% static 'search.svg' %}"/>
             </form>
         </div>
     </div>
 
     <script>
-        expands=document.querySelectorAll("img.expand");
+        expands=document.querySelectorAll("svg.expand");
         for(var i=0; i<expands.length;i++){
             expands[i].onclick=function(){
-                //console.log("post-min-"+ this.id.substring(4,6));
-                //console.log(this);
+                max = document.getElementById("post-max-"+ this.id.substring(4)); 
+                max.classList.toggle("show");
                 this.classList.toggle("expanded");
-                min = document.getElementById("post-min-"+ this.id.substring(4,6));
-                min.nextElementSibling.classList.toggle("show");
+            }
+        }
+        bookmarks=document.querySelectorAll("svg.bookmark");
+        for(var i=0; i<bookmarks.length;i++){
+            bookmarks[i].onclick=function(){
+                // this.classList.toggle("bookmarked");
+                console.log("clicked");
+                $.ajax({
+                    url: {% url 'tradeboard-home' %},
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    name: "bkm-btn-clicked",
+                    method: "POST",
+                    data: {
+                        "pk": this.id.substring(4)
+                    },
+                    success: function(resp){
+                        console.log(resp);
+                        bkm = document.getElementById(('bkm-'+resp['pk']))
+                        if (resp.bookmarked) {
+                            bkm.classList.toggle("bookmarked", true);
+                        }
+                        else{
+                            bkm.classList.toggle("bookmarked", false);
+                        }
+                    }, error: function(error){
+                        console.log("error");
+                        console.log(error);
+                    }
+                })
             }
         }
     </script>

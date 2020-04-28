@@ -19,14 +19,21 @@
 button {
   cursor: pointer;
 }
+button:focus {
+  outline: none;
+}
 select:not([multiple]) {
   -webkit-appearance: none;
   -moz-appearance: none;
   background-position: right 50%;
   background-repeat: no-repeat;
   background-image: url('data:image/svg+xml;utf8,<?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" version="1"><path d="M4 8L0 4h8z"/></svg>');
-  /* padding: 0; */
-  /* padding-right: 1.5em; */
+}
+select:focus {
+  outline: none;
+}
+input:focus {
+  outline: none;
 }
 p {
   margin: 0;
@@ -143,6 +150,10 @@ body {
   font-weight: 700;
   color: #818181;
   padding: 4px 15px 2px 15px;
+}
+.tab-btn:hover {
+  transform: scale(1.05, 1.05);
+  cursor: pointer;
 }
 .active-tab {
   color: #273572;
@@ -269,15 +280,28 @@ a:visited {
   width: 17px;
 }
 .bookmark {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3px;
   height: 17px;
   width: 17px;
   margin-top: 10px;
 }
+.bookmark.bookmarked {
+  fill: #fff;
+}
 .expand {
+  fill: #fff;
+  stroke: #fff;
   height: 17px;
   width: 17px;
   transform: scaleY(-1);
   margin-bottom: 10px;
+}
+.expand:hover {
+  transform: scale(1.2, -1.2);
+  cursor: pointer;
+  /* transform: translateY(-1px); */
 }
 .expand.expanded {
   transform: scaleY(1);
