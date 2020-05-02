@@ -116,7 +116,6 @@
                     </button>
                     <button class= "search-btn" type = "button" name="filter" onclick="submitForm()"> Apply Filter </button>
                 </div>
-                <img height = "320px" width= "320px" src = "{% static 'search.svg' %}"/>
             </form>
         </div>
     </div>
@@ -140,6 +139,64 @@
                     loadSellList()
                 }
             }
+        }
+        function loadTradeboard(){
+            $.ajax({
+                url: "{% url 'tradeboard-home' %}",
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                method: "POST",
+                data: {
+                    "action":"loadTradeboard"
+                },
+                success: function (resp) {
+                    console.log("reponse recieved")
+                    $('.mid-panel-scroll').html(resp);
+                    activate()
+                },
+                error: function(data) {
+                    console.log("reponse not recieved - submit form error")
+                }
+            });
+        }
+
+        function loadBookmarks(){
+            console.log("load bookmarks called")
+            $.ajax({
+                url: "{% url 'tradeboard-home' %}",
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                method: "POST",
+                data: {
+                    "action":"loadBookmarks"
+                },
+                success: function (resp) {
+                    console.log("reponse recieved")
+                    $('.mid-panel-scroll').html(resp);
+                    activate()
+                },
+                error: function(data) {
+                    console.log("reponse not recieved - submit form error")
+                }
+            });
+        }
+
+        function loadSellList(){
+            console.log("load bookmarks called")
+            $.ajax({
+                url: "{% url 'tradeboard-home' %}",
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                method: "POST",
+                data: {
+                    "action":"loadSellList"
+                },
+                success: function (resp) {
+                    console.log("reponse recieved")
+                    $('.mid-panel-scroll').html(resp);
+                    activate()
+                },
+                error: function(data) {
+                    console.log("reponse not recieved - submit form error")
+                }
+            });
         }
 
         function activateExpand() {
@@ -192,6 +249,15 @@
             activateExpand()
         }
         function submitForm(){
+            tabBtns = document.querySelectorAll(".tab-btn")
+            for(var i=0; i<tabBtns.length;i++){
+                if (tabBtns[i].name == "tradeboard"){
+                    tabBtns[i].classList.toggle('active-tab', true)
+                }
+                else {
+                    tabBtns[i].classList.remove("active-tab")
+                }
+            }
             var frm = $('.search-filters');
             console.log(frm.serialize())
             $.ajax({
@@ -211,8 +277,19 @@
         }
 
         function clearForm(){
+            tabBtns = document.querySelectorAll(".tab-btn")
+            for(var i=0; i<tabBtns.length;i++){
+                if (tabBtns[i].name == "tradeboard"){
+                    tabBtns[i].classList.toggle('active-tab', true)
+                }
+                else {
+                    tabBtns[i].classList.remove("active-tab")
+                }
+            }
+
             var frm = $('.search-filters');
             frm[0].reset()
+
             $.ajax({
                 url: "{% url 'tradeboard-home' %}",
                 headers: {'X-CSRFToken': '{{ csrf_token }}'},

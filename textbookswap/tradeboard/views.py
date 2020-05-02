@@ -44,14 +44,33 @@ def handleAJAXrequest(request):
         return bookmark(request)
     elif request.POST.get("action") == "initialize":
         return initialize(request)
-    elif request.POST.get("action") == "switch-tabs":
-        pass
     elif request.POST.get("action") == "clear":
         return clear(request)
+    elif request.POST.get("action") == "loadTradeboard":
+        return initialize(request)
+    elif request.POST.get("action") == "loadBookmarks":
+        return loadBookmark(request)
+    elif request.POST.get("action") == "loadSellList":
+        return loadSellList(request)
     else:
         return filterPosts(request)
-    # else:
-    #     return filterPosts(request)
+
+
+def loadBookmark(request):
+    print("loadBookmark called ")
+    if hasattr(request.user, 'bookmark'):
+        posts = request.user.bookmark.posts.all()
+    html = render_to_string('tradeboard/postpopulate.html',
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': posts})
+    return HttpResponse(html)
+
+
+def loadSellList(request):
+    print("loadSellList called ")
+    posts = Post.objects.filter(seller=request.user)
+    html = render_to_string('tradeboard/postpopulate.html',
+                            {'posts': posts.order_by('-date_posted')})
+    return HttpResponse(html)
 
 
 def clear(request):

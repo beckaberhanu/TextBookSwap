@@ -127,7 +127,8 @@ body.blurred {
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
   margin-top: 0px;
   margin-left: 10px;
-  margin-right: 10px;
+  width: 520px;
+  margin-right: 0px;
   z-index: 2;
 }
 .tab-btn {
@@ -161,25 +162,29 @@ body.blurred {
   flex: 1;
 }
 .mid-panel-scroll::-webkit-scrollbar {
+  margin-left: -70px;
   width: 7px;
   background-color: #f5f5f5;
 }
 .mid-panel-scroll::-webkit-scrollbar-track {
+  margin-left: -70px;
   background-color: #dfdfdf;
   border-radius: 10px;
 }
 .mid-panel-scroll::-webkit-scrollbar-thumb {
+  margin-left: -70px;
   background-color: #5371f2;
   border-radius: 10px;
   border: 1px solid white;
 }
 .mid-panel-scroll::-webkit-scrollbar-thumb:hover {
+  margin-left: -70px;
   background: #009;
 }
 .post {
   padding: 8px 0 !important;
   scroll-snap-align: start;
-  margin: 0 20px;
+  margin: 0 10px;
 }
 .post-minimized {
   display: flex;
@@ -448,7 +453,10 @@ a:visited {
   word-wrap: break-word;
   font-size: 0.6rem;
   width: 190px;
-  height: 100px;
+  height: 95px;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: #818181;
 }
 .book-pic {
@@ -685,4 +693,20 @@ a:visited {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+}
+.no-results-available {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  align-items: center;
+}
+.sorry {
+  width: 200px;
+  margin-right: 20px;
+  font-family: "DIN Condensed";
+  font-size: 1.6rem;
+  color: #009;
 }

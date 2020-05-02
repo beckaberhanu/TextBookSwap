@@ -1,83 +1,92 @@
 {% load static %}
-{% for post in posts %}
-    <div class = "post" id= "post-{{post.pk}}">
-        <div class = "post-minimized" id="post-min-{{post.pk}}">
-            <div class = "mini-left-tile">
-                <div class = "top-row">
-                    <h2 class = "book-title"><a class = "book-title-link" href="{% url 'detail_book' post.pk %}">{{post.title}}</a></h2>
-                    <small class = "date"> {{post.date_posted|date:"m/d/Y"}}</small>
+{% if posts%}
+    {% for post in posts %}
+        <div class = "post" id= "post-{{post.pk}}">
+            <div class = "post-minimized" id="post-min-{{post.pk}}">
+                <div class = "mini-left-tile">
+                    <div class = "top-row">
+                        <h2 class = "book-title"><a class = "book-title-link" href="{% url 'detail_book' post.pk %}">{{post.title}}</a></h2>
+                        <small class = "date"> {{post.date_posted|date:"m/d/Y"}}</small>
+                    </div>
+                    <hr class = "divider"/>
+                    <div class = "preview">
+                        <p class = "pre">Price: <em>${{post.price}}</em> | Author: <em>{{post.author}}</em> | Edition: <em>{{post.edition}}</em></p>
+                    </div>
                 </div>
-                <hr class = "divider"/>
-                <div class = "preview">
-                    <p class = "pre">Price: <em>${{post.price}}</em> | Author: <em>{{post.author}}</em> | Edition: <em>{{post.edition}}</em></p>
-                </div>
-            </div>
-            <div class = "mini-right-tile">
-                {% if post in bookmarked %}
-                    <svg class = "bookmark bookmarked" id = "bkm-{{post.pk}}" xmlns="http://www.w3.org/2000/svg" width="19.998" height="25.383" viewBox="0 0 19.998 25.383">
-                        <g id="Group_112" data-name="Group 112" transform="translate(-8.384 -6.714)">
-                            <path id="Path_6" data-name="Path 6" d="M787.349,678.917c0-6.737.122-7.04,8.643-7.04s8.2.127,8.3,7.04,0,13.412,0,13.412l-8.726-7.6-8.22,7.6Z" transform="translate(-777.465 -663.662)"/>
+                <div class = "mini-right-tile">
+                    {% if post in bookmarked %}
+                        <svg class = "bookmark bookmarked" id = "bkm-{{post.pk}}" xmlns="http://www.w3.org/2000/svg" width="19.998" height="25.383" viewBox="0 0 19.998 25.383">
+                            <g id="Group_112" data-name="Group 112" transform="translate(-8.384 -6.714)">
+                                <path id="Path_6" data-name="Path 6" d="M787.349,678.917c0-6.737.122-7.04,8.643-7.04s8.2.127,8.3,7.04,0,13.412,0,13.412l-8.726-7.6-8.22,7.6Z" transform="translate(-777.465 -663.662)"/>
+                            </g>
+                        </svg>
+                    {% else %}
+                        <svg class = "bookmark" id = "bkm-{{post.pk}}" width="19.998" height="25.383" viewBox="0 0 19.998 25.383">
+                            <g id="Group_112" data-name="Group 112" transform="translate(-8.384 -6.714)">
+                                <path id="Path_6" data-name="Path 6" d="M787.349,678.917c0-6.737.122-7.04,8.643-7.04s8.2.127,8.3,7.04,0,13.412,0,13.412l-8.726-7.6-8.22,7.6Z" transform="translate(-777.465 -663.662)"/>
+                            </g>
+                        </svg>
+                    {% endif %}
+                    <hr class = "divider-1"/>
+                    <svg class = "expand" id ="exp-{{post.pk}}" width="19.998" height="25.383" viewBox="0 0 19.998 25.383">
+                        <g transform="translate(-2 5)">
+                            <path id="Path_101" data-name="Path 101" d="M2812,519.526l11.181-12.945,10.923,12.945h-2.953l-6.323-7.643-1.647-1.992-8.335,9.635Z" transform="translate(-2810.907 -505.811)"/>
                         </g>
                     </svg>
-                {% else %}
-                    <svg class = "bookmark" id = "bkm-{{post.pk}}" width="19.998" height="25.383" viewBox="0 0 19.998 25.383">
-                        <g id="Group_112" data-name="Group 112" transform="translate(-8.384 -6.714)">
-                            <path id="Path_6" data-name="Path 6" d="M787.349,678.917c0-6.737.122-7.04,8.643-7.04s8.2.127,8.3,7.04,0,13.412,0,13.412l-8.726-7.6-8.22,7.6Z" transform="translate(-777.465 -663.662)"/>
-                        </g>
-                    </svg>
-                {% endif %}
-                <hr class = "divider-1"/>
-                <svg class = "expand" id ="exp-{{post.pk}}" width="19.998" height="25.383" viewBox="0 0 19.998 25.383">
-                    <g transform="translate(-2 5)">
-                        <path id="Path_101" data-name="Path 101" d="M2812,519.526l11.181-12.945,10.923,12.945h-2.953l-6.323-7.643-1.647-1.992-8.335,9.635Z" transform="translate(-2810.907 -505.811)"/>
-                    </g>
-                </svg>
+                </div>
             </div>
-        </div>
 
-        <div class = "post-maximized" id="post-max-{{post.pk}}">
-            <div class = "left-tile">
-                <div class = "info">
-                    <div class = "arrange-as-row dets">
-                        <div class = "details">
-                            <p class = "d-title">Price</p>
-                            <p class = "d-info"> {{post.price}}$</p>
+            <div class = "post-maximized" id="post-max-{{post.pk}}">
+                <div class = "left-tile">
+                    <div class = "info">
+                        <div class = "arrange-as-row dets">
+                            <div class = "details">
+                                <p class = "d-title">Price</p>
+                                <p class = "d-info"> {{post.price}}$</p>
+                            </div>
+                            <div class = "details">
+                                <p class = "d-title">Edition</p>
+                                <p class = "d-info">{{post.edition}}</p>
+                            </div>
                         </div>
                         <div class = "details">
-                            <p class = "d-title">Edition</p>
-                            <p class = "d-info">{{post.edition}}</p>
+                            <p class = "d-title">Book type</p>
+                            <p class = "d-info"> {{post.post_type}} </p>
+                        </div>
+                        <div class = "details">
+                            <p class = "d-title">ISBN</p>
+                            <p class = "d-info"> {{post.ISBN}} </p>
+                        </div>
+                        <div class = "details">
+                            <p class = "d-title">Author</p>
+                            <p class = "d-info"> {{post.author}} </p>
                         </div>
                     </div>
-                    <div class = "details">
-                        <p class = "d-title">Book type</p>
-                        <p class = "d-info"> {{post.post_type}} </p>
+                    <div class = "seller-info">
+                        <img class = "contact-pic" src = "{{ post.seller.profile.image.url }}"/> <br>
+                        <div class = "identifier">
+                            <p class = "fl-name">{{post.seller.first_name}} {{post.seller.last_name}}</p><br>
+                            <hr class = "divider-2"/>
+                            <p class = "username">@{{post.seller.username}}</p>
+                        </div>
                     </div>
-                    <div class = "details">
-                        <p class = "d-title">ISBN</p>
-                        <p class = "d-info"> {{post.ISBN}} </p>
-                    </div>
-                    <div class = "details">
-                        <p class = "d-title">Author</p>
-                        <p class = "d-info"> {{post.author}} </p>
-                    </div>
+                    <button class = "contact-btn">
+                        <img height="12px" width="12px" src = "{% static 'message.svg' %}">
+                        Contact
+                    </button>
                 </div>
-                <div class = "seller-info">
-                    <img class = "contact-pic" src = "{{ post.seller.profile.image.url }}"/> <br>
-                    <div class = "identifier">
-                        <p class = "fl-name">{{post.seller.first_name}} {{post.seller.last_name}}</p><br>
-                        <hr class = "divider-2"/>
-                        <p class = "username">@{{post.seller.username}}</p>
-                    </div>
+                <div class = "right-tile">
+                    <p class = "description">{{post.description}}</p>
+                    <img class = "book-pic" src = "{{ post.image.url }}">
                 </div>
-                <button class = "contact-btn">
-                    <img height="12px" width="12px" src = "{% static 'message.svg' %}">
-                    Contact
-                </button>
             </div>
-            <div class = "right-tile">
-                <p class = "description">{{post.description}}</p>
-                <img class = "book-pic" src = "{{ post.image.url }}">
-            </div>
+        </div>    
+    {% endfor %}
+{% else %}
+    <div class = "no-results-available">
+        <img height = "160px" width= "200px" src = "{% static 'tradeboard/search.svg' %}"/>
+        <div>
+            <p class= "sorry">Sorry! We couldn't find any results to your query</p>
         </div>
-    </div>    
-{% endfor %}
+    </div>
+{% endif %}
