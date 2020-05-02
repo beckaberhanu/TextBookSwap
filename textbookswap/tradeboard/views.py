@@ -1,7 +1,9 @@
+from django.http import QueryDict
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from .forms import BookSearchForm
 from .models import Post
-from users.models import WishList
+from users.models import Bookmark
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -21,49 +23,101 @@ def home(request):
     search_form = BookSearchForm()
     if request.method == "POST":
         if request.is_ajax():
-            pk = request.POST.get("pk")
-            post = Post.objects.get(pk=pk)
-            bookmarked = False
-            if hasattr(user, 'wishlist'):
-                if post in user.wishlist.posts.all():
-                    user.wishlist.posts.remove(post)
-                    bookmarked = False
-                else:
-                    user.wishlist.posts.add(post)
-                    bookmarked = True
-            else:
-                wish = WishList(user=user)
-                wish.save()
-                wish.posts.add(post)
-                bookmarked = True
-            return HttpResponse(json.dumps({'bookmarked': bookmarked, 'pk': request.POST.get("pk")}), content_type="application/json")
+            return handleAJAXrequest(request)
         else:
             search_form = BookSearchForm(request.POST)
             if request.POST.get('clear'):
-                posts = Post.objects.all()
+                posts = Post.objects.exclude(seller=request.user)
                 search_form = BookSearchForm()
             elif search_form.is_valid():
                 posts = search_form.filter()
 
     bookmarked = []
-    if hasattr(user, 'wishlist'):
-        bookmarked = user.wishlist.posts.all()
-        # for i in posts:
-        #     if i in user.wishlist.posts.all():
-        #         bookmarked.append(i.pk)
-        #         # bookmarked[str(i.pk)] = 'True'
-        #     # else:
-        #     #     bookmarked[str(i.pk)] = 'False'
+    if hasattr(user, 'bookmark'):
+        bookmarked = user.bookmark.posts.all()
 
-    return render(request, 'tradeboard/home.html', {'posts': posts, 'bookmarked': bookmarked, 'search_form': search_form})
+    return render(request, 'tradeboard/home.html', {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'search_form': search_form})
+
+
+def handleAJAXrequest(request):
+    if request.POST.get("action") == "bookmark":
+        return bookmark(request)
+    elif request.POST.get("action") == "initialize":
+        return initialize(request)
+    elif request.POST.get("action") == "switch-tabs":
+        pass
+    elif request.POST.get("action") == "clear":
+        return clear(request)
+    else:
+        return filterPosts(request)
+    # else:
+    #     return filterPosts(request)
+
+
+def clear(request):
+    print('clear function called')
+    # change this later consider changing intialize too.
+    return initialize(request)
+
+
+def filterPosts(request):
+    search_form = BookSearchForm(request.POST)
+    if search_form.is_valid():
+        posts = search_form.filter()
+    bookmarked = []
+    if hasattr(request.user, 'bookmark'):
+        bookmarked = request.user.bookmark.posts.all()
+    posts = search_form.filter()
+    html = render_to_string('tradeboard/postpopulate.html',
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked})
+    return HttpResponse(html)
+
+
+def initialize(request):
+    bookmarked = []
+    if hasattr(request.user, 'bookmark'):
+        bookmarked = request.user.bookmark.posts.all()
+    posts = Post.objects.exclude(seller=request.user)
+    html = render_to_string('tradeboard/postpopulate.html',
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked})
+    return HttpResponse(html)
+
+
+def bookmark(request):
+    user = request.user
+    pk = request.POST.get("pk")
+    post = Post.objects.get(pk=pk)
+    bookmarked = False
+    if hasattr(user, 'bookmark'):
+        if post in user.bookmark.posts.all():
+            user.bookmark.posts.remove(post)
+            bookmarked = False
+        else:
+            user.bookmark.posts.add(post)
+            bookmarked = True
+    else:
+        bk = Bookmark(user=user)
+        bk.save()
+        bk.posts.add(post)
+        bookmarked = True
+    return HttpResponse(json.dumps({'bookmarked': bookmarked, 'pk': request.POST.get("pk")}), content_type="application/json")
+
+
+def switchtab(request):
+    print("nothing to do here")
+    pass
 
 
 class BookCreateView(CreateView):
     model = Post
     template_name = "tradeboard/new_book.html"
-    fields = ['seller', 'title', 'ISBN', 'author', 'description', 'image',
-              'edition', 'price']  # remember to take out seller later Nadav!
+    fields = ['title', 'ISBN', 'author', 'description', 'image',
+              'edition', 'price']  # removed the seller field <- becka
     success_url = reverse_lazy('tradeboard-home')
+
+    def form_valid(self, form):
+        form.instance.seller = self.request.user
+        return super().form_valid(form)
 
 
 class BookDetailView(DetailView):

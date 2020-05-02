@@ -10,7 +10,8 @@ from django.db.models import Manager
 
 
 class Post(models.Model):
-    seller = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    seller = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=False)
     title = models.CharField(max_length=100)
 
     def validate_ISBN(value):

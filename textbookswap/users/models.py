@@ -34,10 +34,10 @@ class Profile(models.Model):
 # may need to reconsider the name. For the functionality it is serving right now it maybe batter to just call it bookmarks.
 
 
-class WishList(models.Model):
+class Bookmark(models.Model):
     # 1-1 field pointing to correspoding user
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="wishlist")
+        User, on_delete=models.CASCADE, related_name="bookmark")
     posts = models.ManyToManyField(Post)
 
     def __str__(self):

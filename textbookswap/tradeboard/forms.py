@@ -13,11 +13,11 @@ class BookSearchForm(forms.Form):
         print(not(f'{value}'.isnumeric()))
         if (value != None and (len(value) != 10 and len(value) != 13)):
             print(value)
-            raise ValidationError(f'number of digits in {value} is neither 10 nor 13',
+            raise ValidationError(f'Number of digits in "{value}"" is neither 10 nor 13',
                                   params={'value': value},
                                   )
         elif (not(f'{value}'.isnumeric())):
-            raise ValidationError(f'{value} has non-numeric elements',
+            raise ValidationError(f'"{value}" Has non-numeric elements',
                                   params={'value': value},
                                   )
 
@@ -37,7 +37,7 @@ class BookSearchForm(forms.Form):
         9: _('Sep'), 10: _('Oct'), 11: _('Nov'), 12: _('Dec')
     }
     posted_since = forms.DateField(
-        label='posted since, ', widget=forms.SelectDateWidget(attrs={'class': "filter-date-select"}, months=MONTHS), required=False)
+        label='posted since, ', widget=forms.SelectDateWidget(attrs={'class': "filter-date-select"}, months=MONTHS, empty_label=['----', '---', '--']), required=False)
 
     OTHER = "Other"
     TEXTBOOK = "Textbook"
@@ -54,10 +54,12 @@ class BookSearchForm(forms.Form):
         filtered = False
         if search_filters['author']:
             filtered = True
-            posts = posts.filter(author=search_filters['author'])
+            posts = posts.filter(
+                author__trigram_similar=search_filters['author'])
         if search_filters['title']:
             filtered = True
-            posts = posts.filter(title=search_filters['title'])
+            posts = posts.filter(
+                title__trigram_similar=search_filters['title'])
         if search_filters['ISBN']:
             if(filtered):
                 posts = posts | Post.objects.filter(
