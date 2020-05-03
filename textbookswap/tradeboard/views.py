@@ -36,7 +36,7 @@ def home(request):
     if hasattr(user, 'bookmark'):
         bookmarked = user.bookmark.posts.all()
 
-    return render(request, 'tradeboard/home.html', {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'search_form': search_form})
+    return render(request, 'tradeboard/home.html', {'search_form': search_form})
 
 
 def handleAJAXrequest(request):
@@ -61,35 +61,51 @@ def loadBookmark(request):
     if hasattr(request.user, 'bookmark'):
         posts = request.user.bookmark.posts.all()
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': posts})
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': posts, 'tab': 'Bookmark'})
     return HttpResponse(html)
 
 
 def loadSellList(request):
     print("loadSellList called ")
+    bookmarked = []
+    if hasattr(request.user, 'bookmark'):
+        bookmarked = request.user.bookmark.posts.all()
     posts = Post.objects.filter(seller=request.user)
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted')})
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'SellList'})
     return HttpResponse(html)
 
 
 def clear(request):
     print('clear function called')
-    # change this later consider changing intialize too.
-    return initialize(request)
+    posts = Post.objects.exclude(seller=request.user)
+    search_form = BookSearchForm()
+    bookmarked = []
+    if hasattr(request.user, 'bookmark'):
+        bookmarked = request.user.bookmark.posts.all()
+    html = render_to_string('tradeboard/postpopulate.html',
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked})
+    form = render_to_string(
+        'tradeboard/searchForm.html', {'search_form': search_form})
+    return HttpResponse(json.dumps({'searchResults': html, 'form': form}), content_type="application/json")
 
 
 def filterPosts(request):
     search_form = BookSearchForm(request.POST)
     if search_form.is_valid():
-        posts = search_form.filter()
-    bookmarked = []
-    if hasattr(request.user, 'bookmark'):
-        bookmarked = request.user.bookmark.posts.all()
-    posts = search_form.filter()
-    html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked})
-    return HttpResponse(html)
+        posts = search_form.filter().exclude(seller=request.user)
+        bookmarked = []
+        if hasattr(request.user, 'bookmark'):
+            bookmarked = request.user.bookmark.posts.all()
+        html = render_to_string('tradeboard/postpopulate.html',
+                                {'posts': posts, 'bookmarked': bookmarked})
+        form = render_to_string(
+            'tradeboard/searchForm.html', {'search_form': search_form})
+        return HttpResponse(json.dumps({'searchResults': html, 'form': form}), content_type="application/json")
+    else:
+        form = render_to_string(
+            'tradeboard/searchForm.html', {'search_form': search_form})
+        return HttpResponse(form, status=400)
 
 
 def initialize(request):
