@@ -205,10 +205,12 @@
                     method: "POST",
                     data: {
                         'action':action,
-                        'confirmed':confirmed
+                        'post':post
                     },
                     success: function (resp) {
-
+                        console.log(resp)
+                        loadSellList()
+                        removePopUp()
                     },
                     error: function(data) {
 
@@ -217,8 +219,9 @@
             }
             else{
                 pop = document.querySelectorAll(".popup")
-                pop[0].innerHTML="bBLABLABLALBA";
-                pop[0].classList.toggle("<h1>visible</h1>")
+                html = "<div class='pop-box'><p class='prompt'> Are you sure?</p><div class='arrange-as-row'><button class='yes' onclick='confirmPopUp("+'"'+action+'"'+","+post+","+true+")'>Confirm</button><button class='no' onclick='removePopUp()'>Cancel</button></div></div>"
+                pop[0].innerHTML=html;
+                pop[0].classList.toggle("visible")
                 panels = document.querySelectorAll(".panels")
                 panels[0].classList.toggle("blurred")
             }
@@ -244,6 +247,14 @@
 
                 }
             });
+        }
+
+        function removePopUp(){
+            pop = document.querySelectorAll(".popup")
+            pop[0].innerHTML=""
+            pop[0].classList.toggle("visible")
+            panels = document.querySelectorAll(".panels")
+            panels[0].classList.toggle("blurred")
         }
 
         function formPopUp(action,post){

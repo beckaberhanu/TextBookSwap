@@ -52,8 +52,43 @@ def handleAJAXrequest(request):
         return loadBookmark(request)
     elif request.POST.get("action") == "loadSellList":
         return loadSellList(request)
+    # popup ****************************************************
+    elif request.POST.get("action") == "edit":
+        return loadSellList(request)
+    elif request.POST.get("action") == "delete":
+        return deletePost(request)
+    elif request.POST.get("action") == "tag-sold":
+        return loadSellList(request)
+    elif request.POST.get("action") == "contact":
+        return loadSellList(request)
     else:
         return filterPosts(request)
+
+
+def editPost(request):
+    pass
+
+
+def deletePost(request):
+    id = request.POST.get('post')
+    post = Post.objects.get(id=id)
+    if request.user == post.seller:
+        post.delete()
+        return HttpResponse("Post deleted succesfully")
+
+
+def tagPostSold(request):
+    id = request.POST.get('post')
+    post = Post.objects.get(id=id)
+    if request.user == post.seller:
+        post.transaction_state = "Complete"
+        return HttpResponse("Transaction completed succesfully")
+    else:
+        return HttpResponse("You Don't have access to this post instance", status=400)
+
+
+def contact(request):
+    pass
 
 
 def loadBookmark(request):
@@ -70,7 +105,13 @@ def loadSellList(request):
     bookmarked = []
     if hasattr(request.user, 'bookmark'):
         bookmarked = request.user.bookmark.posts.all()
-    posts = Post.objects.filter(seller=request.user)
+    posts = Post.objects.filter(
+        seller=request.user, transaction_state='In progress')
+    posts = posts.order_by('-date_posted')
+    posts2 = Post.objects.filter(
+        seller=request.user, transaction_state="Complete")
+    posts2 = posts2.order_by('-date_posted')
+    posts = posts | posts2
     html = render_to_string('tradeboard/postpopulate.html',
                             {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'SellList'})
     return HttpResponse(html)
@@ -112,7 +153,8 @@ def initialize(request):
     bookmarked = []
     if hasattr(request.user, 'bookmark'):
         bookmarked = request.user.bookmark.posts.all()
-    posts = Post.objects.exclude(seller=request.user)
+    posts = Post.objects.filter(transaction_state='In progress')
+    posts = posts.exclude(seller=request.user)
     html = render_to_string('tradeboard/postpopulate.html',
                             {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked})
     return HttpResponse(html)
@@ -136,11 +178,6 @@ def bookmark(request):
         bk.posts.add(post)
         bookmarked = True
     return HttpResponse(json.dumps({'bookmarked': bookmarked, 'pk': request.POST.get("pk")}), content_type="application/json")
-
-
-def switchtab(request):
-    print("nothing to do here")
-    pass
 
 
 class BookCreateView(CreateView):
