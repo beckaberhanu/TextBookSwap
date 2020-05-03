@@ -11,6 +11,7 @@
         <p>Price: ${{book.price}}</p>
         <p>Date Posted: {{book.date_posted}}</p>
         <p>Seller: {{book.seller}}</p>
+        <p>Contact: {{book.seller.email}}</p>
     </div>
 
     <a href="{% url 'edit_book' book.pk %}">+ Edit Book</a>

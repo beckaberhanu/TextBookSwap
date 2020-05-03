@@ -1,5 +1,5 @@
 from django.http import QueryDict
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from .forms import BookSearchForm
 from .models import Post
@@ -52,6 +52,8 @@ def handleAJAXrequest(request):
         return loadBookmark(request)
     elif request.POST.get("action") == "loadSellList":
         return loadSellList(request)
+    elif request.POST.get("action") == "loadContact":
+        return loadContact(request)
     else:
         return filterPosts(request)
 
@@ -64,6 +66,12 @@ def loadBookmark(request):
                             {'posts': posts.order_by('-date_posted'), 'bookmarked': posts})
     return HttpResponse(html)
 
+def loadContact(request):
+    print("loadContact called ")
+    posts = Post.objects.filter(seller=request.user)
+    html = render_to_string('tradeboard/contact_detail.html',
+                            {'posts': posts.order_by('-date_posted')})
+    return HttpResponse(html)
 
 def loadSellList(request):
     print("loadSellList called ")
