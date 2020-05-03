@@ -36,7 +36,7 @@ def home(request):
     if hasattr(user, 'bookmark'):
         bookmarked = user.bookmark.posts.all()
 
-    return render(request, 'tradeboard/home.html', {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'search_form': search_form})
+    return render(request, 'tradeboard/home.html', {'search_form': search_form})
 
 
 def handleAJAXrequest(request):
@@ -52,8 +52,43 @@ def handleAJAXrequest(request):
         return loadBookmark(request)
     elif request.POST.get("action") == "loadSellList":
         return loadSellList(request)
+    # popup ****************************************************
+    elif request.POST.get("action") == "edit":
+        return loadSellList(request)
+    elif request.POST.get("action") == "delete":
+        return deletePost(request)
+    elif request.POST.get("action") == "tag-sold":
+        return loadSellList(request)
+    elif request.POST.get("action") == "contact":
+        return loadSellList(request)
     else:
         return filterPosts(request)
+
+
+def editPost(request):
+    pass
+
+
+def deletePost(request):
+    id = request.POST.get('post')
+    post = Post.objects.get(id=id)
+    if request.user == post.seller:
+        post.delete()
+        return HttpResponse("Post deleted succesfully")
+
+
+def tagPostSold(request):
+    id = request.POST.get('post')
+    post = Post.objects.get(id=id)
+    if request.user == post.seller:
+        post.transaction_state = "Complete"
+        return HttpResponse("Transaction completed succesfully")
+    else:
+        return HttpResponse("You Don't have access to this post instance", status=400)
+
+
+def contact(request):
+    pass
 
 
 def loadBookmark(request):
@@ -61,42 +96,65 @@ def loadBookmark(request):
     if hasattr(request.user, 'bookmark'):
         posts = request.user.bookmark.posts.all()
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': posts})
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': posts, 'tab': 'Bookmark'})
     return HttpResponse(html)
 
 
 def loadSellList(request):
     print("loadSellList called ")
-    posts = Post.objects.filter(seller=request.user)
+    bookmarked = []
+    if hasattr(request.user, 'bookmark'):
+        bookmarked = request.user.bookmark.posts.all()
+    posts = Post.objects.filter(
+        seller=request.user, transaction_state='In progress')
+    posts = posts.order_by('-date_posted')
+    posts2 = Post.objects.filter(
+        seller=request.user, transaction_state="Complete")
+    posts2 = posts2.order_by('-date_posted')
+    posts = posts | posts2
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted')})
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'SellList'})
     return HttpResponse(html)
 
 
 def clear(request):
     print('clear function called')
-    # change this later consider changing intialize too.
-    return initialize(request)
+    posts = Post.objects.exclude(seller=request.user)
+    search_form = BookSearchForm()
+    bookmarked = []
+    if hasattr(request.user, 'bookmark'):
+        bookmarked = request.user.bookmark.posts.all()
+    html = render_to_string('tradeboard/postpopulate.html',
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked})
+    form = render_to_string(
+        'tradeboard/searchForm.html', {'search_form': search_form})
+    return HttpResponse(json.dumps({'searchResults': html, 'form': form}), content_type="application/json")
 
 
 def filterPosts(request):
     search_form = BookSearchForm(request.POST)
     if search_form.is_valid():
-        posts = search_form.filter()
-    bookmarked = []
-    if hasattr(request.user, 'bookmark'):
-        bookmarked = request.user.bookmark.posts.all()
-    posts = search_form.filter()
-    html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked})
-    return HttpResponse(html)
+        posts = search_form.filter().exclude(seller=request.user)
+        bookmarked = []
+        if hasattr(request.user, 'bookmark'):
+            bookmarked = request.user.bookmark.posts.all()
+        html = render_to_string('tradeboard/postpopulate.html',
+                                {'posts': posts, 'bookmarked': bookmarked})
+        form = render_to_string(
+            'tradeboard/searchForm.html', {'search_form': search_form})
+        return HttpResponse(json.dumps({'searchResults': html, 'form': form}), content_type="application/json")
+    else:
+        form = render_to_string(
+            'tradeboard/searchForm.html', {'search_form': search_form})
+        return HttpResponse(form, status=400)
 
 
 def initialize(request):
     bookmarked = []
     if hasattr(request.user, 'bookmark'):
         bookmarked = request.user.bookmark.posts.all()
-    posts = Post.objects.exclude(seller=request.user)
+    posts = Post.objects.filter(transaction_state='In progress')
+    posts = posts.exclude(seller=request.user)
     html = render_to_string('tradeboard/postpopulate.html',
                             {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked})
     return HttpResponse(html)
@@ -120,11 +178,6 @@ def bookmark(request):
         bk.posts.add(post)
         bookmarked = True
     return HttpResponse(json.dumps({'bookmarked': bookmarked, 'pk': request.POST.get("pk")}), content_type="application/json")
-
-
-def switchtab(request):
-    print("nothing to do here")
-    pass
 
 
 class BookCreateView(CreateView):

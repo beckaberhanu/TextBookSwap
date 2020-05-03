@@ -16,6 +16,9 @@
           padding: 20px;
         } 
         </style>
+    <div class = "popup">
+
+    </div>
 
     <div class = "panels">
         <div class = "left-panel">
@@ -141,6 +144,9 @@
                     <button class= "search-btn" type = "button" name="filter" onclick="submitForm()"> Apply Filter </button>
                 </div>
             </form>
+            <div class="form-div">
+                {% include "tradeboard/searchForm.html" %}
+            </div>
         </div>
     </div>
     
@@ -164,21 +170,24 @@
                 }
             }
         }
+
         function loadTradeboard(){
+            var frm = $('.search-filters');
+            console.log(frm.serialize())
             $.ajax({
                 url: "{% url 'tradeboard-home' %}",
                 headers: {'X-CSRFToken': '{{ csrf_token }}'},
                 method: "POST",
-                data: {
-                    "action":"loadTradeboard"
-                },
+                data: frm.serialize(),
                 success: function (resp) {
                     console.log("reponse recieved")
-                    $('.mid-panel-scroll').html(resp);
+                    $('.mid-panel-scroll').html(resp.searchResults);
+                    $('.form-div').html(resp.form);
                     activate()
                 },
-                error: function(data) {
-                    console.log("reponse not recieved - submit form error")
+                error: function(resp) {
+                    console.log("submit form error")
+                    $('.form-div').html(resp.responseText);
                 }
             });
         }
@@ -218,7 +227,8 @@
                     activate()
                 },
                 error: function(data) {
-                    console.log("reponse not recieved - submit form error")
+                    console.log("form error detected")
+
                 }
             });
         }
@@ -232,6 +242,16 @@
                     max = document.getElementById("post-max-"+ this.id.substring(4)); 
                     max.classList.toggle("show");
                     this.classList.toggle("expanded");
+                }
+            }
+            texpands = document.querySelectorAll(".book-title")
+            for(var i=0; i<texpands.length;i++){
+                texpands[i].onclick=function(){
+                    console.log(this.id.concat(" clicked"))
+                    max = document.getElementById("post-max-"+ this.id.substring(6)); 
+                    max.classList.toggle("show");
+                    exp = document.getElementById("exp-"+ this.id.substring(6));
+                    exp.classList.toggle("expanded");
                 }
             }
         }
@@ -272,6 +292,90 @@
             activateBookmark()
             activateExpand()
         }
+
+        function confirmPopUp(action,post,confirmed=false){
+            console.log("sonfirmPopUp clicked")
+            console.log("action =", action)
+            console.log("post id =", post)
+            if(confirmed){
+                $.ajax({
+                    url: "{% url 'tradeboard-home' %}",
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    method: "POST",
+                    data: {
+                        'action':action,
+                        'post':post
+                    },
+                    success: function (resp) {
+                        console.log(resp)
+                        loadSellList()
+                        removePopUp()
+                    },
+                    error: function(data) {
+
+                    }
+                });
+            }
+            else{
+                pop = document.querySelectorAll(".popup")
+                html = "<div class='pop-box'><p class='prompt'> Are you sure?</p><div class='arrange-as-row'><button class='yes' onclick='confirmPopUp("+'"'+action+'"'+","+post+","+true+")'>Confirm</button><button class='no' onclick='removePopUp()'>Cancel</button></div></div>"
+                pop[0].innerHTML=html;
+                pop[0].classList.toggle("visible")
+                panels = document.querySelectorAll(".panels")
+                panels[0].classList.toggle("blurred")
+            }
+            
+        }
+
+        function viewMorePopUp(action,post,confirmed=false){
+            console.log("xiewMorePopUp clicked")
+            console.log("action =", action)
+            console.log("post id =", post)
+            $.ajax({
+                url: "{% url 'tradeboard-home' %}",
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                method: "POST",
+                data: {
+                    'action':action,
+                    'confirmed':confirmed
+                },
+                success: function (resp) {
+
+                },
+                error: function(data) {
+
+                }
+            });
+        }
+
+        function removePopUp(){
+            pop = document.querySelectorAll(".popup")
+            pop[0].innerHTML=""
+            pop[0].classList.toggle("visible")
+            panels = document.querySelectorAll(".panels")
+            panels[0].classList.toggle("blurred")
+        }
+
+        function formPopUp(action,post){
+            console.log("formPopUp clicked")
+            console.log("action =", action)
+            console.log("post id =", post)
+            $.ajax({
+                url: "{% url 'tradeboard-home' %}",
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                method: "POST",
+                data: {
+                    'action':action
+                },
+                success: function (resp) {
+
+                },
+                error: function(data) {
+
+                }
+            });
+        }
+
         function submitForm(){
             tabBtns = document.querySelectorAll(".tab-btn")
             for(var i=0; i<tabBtns.length;i++){
@@ -291,11 +395,13 @@
                 data: frm.serialize(),
                 success: function (resp) {
                     console.log("reponse recieved")
-                    $('.mid-panel-scroll').html(resp);
+                    $('.mid-panel-scroll').html(resp.searchResults);
+                    $('.form-div').html(resp.form);
                     activate()
                 },
-                error: function(data) {
-                    console.log("reponse not recieved - submit form error")
+                error: function(resp) {
+                    console.log("submit form error")
+                    $('.form-div').html(resp.responseText);
                 }
             });
         }
@@ -311,9 +417,6 @@
                 }
             }
 
-            var frm = $('.search-filters');
-            frm[0].reset()
-
             $.ajax({
                 url: "{% url 'tradeboard-home' %}",
                 headers: {'X-CSRFToken': '{{ csrf_token }}'},
@@ -323,7 +426,8 @@
                 },
                 success: function (resp) {
                     console.log("reponse recieved")
-                    $('.mid-panel-scroll').html(resp);
+                    $('.mid-panel-scroll').html(resp.searchResults);
+                    $('.form-div').html(resp.form);
                     activate()
                 },
                 error: function(data) {
@@ -331,6 +435,7 @@
                 }
             });
         }
+
         function initialize() {
             console.log("initialize"),
             $.ajax({
