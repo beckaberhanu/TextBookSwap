@@ -6,6 +6,16 @@
     <link rel="stylesheet" type="text/css" href="{% static 'tradeboard/tb_main.css' %}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
+    <style>
+        .instruction {
+            height: 250px;
+            width: 200px;
+          background-color: white;
+          color: #0066ff;
+          margin: 20px;
+          padding: 20px;
+        } 
+        </style>
 
     <div class = "panels">
         <div class = "left-panel">
@@ -16,15 +26,20 @@
                 </div>
                 <hr/>
             </div>
+            <div class = "instruction">
+                <h3> Welcome to our website!</h3>
+                <p> You can search for books you want to buy, but we don't provide any transaction services. </p>
+                <p> Therefore, in order to buy a book, you need to contact the seller directly by email.</p>    
+            </div>
         </div>
         <div class = "mid-panel">
             {% comment %} <div class = "quick-search">
                 <input class = "search-in" type="search" name="quick search" placeholder = "Quick Search">
             </div> {% endcomment %}
             <div class = "tab-bar">
-                <button class = "tab-btn active-tab" type="button" name="tradeboard">Trade Board</button>
-                <button class = "tab-btn" type="button" name="bookmark">My Bookmarks</button>
-                <button class = "tab-btn" type="button" name="sell-list">My Selling List</button>
+                <button class = "tab-btn active-tab" type="button" name="tradeboard" style="width:120px; height:30px;margin:5px;padding:5px">Trade Board</button>
+                <button class = "tab-btn active-tab" type="button" name="bookmark" style="width:150px; height:30px;margin:5px;padding:5px">My Bookmarks</button>
+                <button class = "tab-btn active-tab" type="button" name="sell-list" style="width:150px; height:30px;margin:5px;padding:5px">My Selling List</button>
             </div>
             <div class = "mid-panel-scroll">
                 
@@ -34,9 +49,15 @@
         <div class = "right-panel">
             <div class = "nav">
                 {% if user.is_authenticated %}
-                    <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
-                    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
-                    <a href="{% url 'book_new' %}"> Sell Book</a> 
+                    <a  href="{% url 'profile' %}">
+                        <button class = "tab-btn active-tab" type="button" name="profile" style="width:70px; height:30px;margin:5px;padding:5px">Profile</button>
+                    </a>
+                    <a  href="{% url 'logout' %}">
+                        <button class = "tab-btn active-tab" type="button" name="logout" style="width:70px; height:30px;margin:5px;padding:5px">Logout</button>
+                    </a>
+                    <a  href="{% url 'book_new' %}"> 
+                        <button class = "tab-btn active-tab" type="button" name="sell" style="width:100px; height:30px;margin:5px;padding:5px">Sell A Book</button>
+                    </a> 
                 {% else %}
                     <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
                     <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
@@ -44,8 +65,11 @@
             </div>
 
             <form class= "search-filters" method="POST" name="filter-books"> 
+                <h1 style="color: #0066ff;">
+                    Search:
+                </h1>    
                 <div class="hint">
-                    <p class = "hint-text">You can narrow down your search result by applying the following filters</p>
+                    <p class = "hint-text" style="color: #0066ff;">You can narrow down your search result by applying the following filters</p>
                     <div class="vertical-accent-bar"></div>
                 </div>
                 {% csrf_token %}
