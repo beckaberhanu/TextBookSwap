@@ -2,6 +2,12 @@
 
 {% block content %}
     <div class="content-section">
-        <h2> {{user.email}}</h2>
+        <h2 style="color: #2e6c80;">The seller's email is: {{book.seller.email}}</h2>
+                <p>Here is a default message for you to sent to the seller:</p>
+        <p>Hi seller! My name is {{user.firstname}}. I'm interested in buying your book {{book.title}}. Please let me know if this book is still available.</p>
+        <p>Thank you!</p>
+        <p>Click the <span style="background-color: #2b2301; color: #fff; display: inline-block; padding: 3px 10px; font-weight: bold; border-radius: 5px;">save</span> button to save this message.</p>
+        <p>&nbsp;</p>
+        <p><strong>&nbsp;</strong></p>
     </div>
 {% endblock content %}
