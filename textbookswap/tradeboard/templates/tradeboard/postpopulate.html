@@ -71,7 +71,7 @@
                         </div>
                     </div>
                     {% if tab != 'SellList' %}
-                        <div class = "seller-info">
+                    <div class = "seller-info">
                         <img class = "contact-pic" src = "{{ post.seller.profile.image.url }}"/> <br>
                         <div class = "identifier">
                             <p class = "fl-name">{{post.seller.first_name}} {{post.seller.last_name}}</p><br>
@@ -83,7 +83,6 @@
                         <img height="12px" width="12px" src = "{% static 'message.svg' %}">
                         <a class="ml-2" href="{% url 'contact_detail' %}">Contact</a>
                     </button>
-                    </div>
                         <!-- <button class = "contact-btn" onclick="viewMorePopUp('contact',{{ post.pk }})">
                             <img height="12px" width="12px" src = "{% static 'message.svg' %}">
                             Contact
