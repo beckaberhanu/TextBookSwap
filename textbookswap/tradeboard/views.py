@@ -60,7 +60,7 @@ def handleAJAXrequest(request):
     elif request.POST.get("action") == "delete":
         return deletePost(request)
     elif request.POST.get("action") == "tag-sold":
-        return loadSellList(request)
+        return tagPostSold(request)
     elif request.POST.get("action") == "contact":
         return loadSellList(request)
     else:
@@ -84,6 +84,8 @@ def tagPostSold(request):
     post = Post.objects.get(id=id)
     if request.user == post.seller:
         post.transaction_state = "Complete"
+        post.save()
+        print("post ", post.title, " sold")
         return HttpResponse("Transaction completed succesfully")
     else:
         return HttpResponse("You Don't have access to this post instance", status=400)
@@ -116,10 +118,6 @@ def loadSellList(request):
     posts = Post.objects.filter(
         seller=request.user, transaction_state='In progress')
     posts = posts.order_by('-date_posted')
-    posts2 = Post.objects.filter(
-        seller=request.user, transaction_state="Complete")
-    posts2 = posts2.order_by('-date_posted')
-    posts = posts | posts2
     html = render_to_string('tradeboard/postpopulate.html',
                             {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'SellList'})
     return HttpResponse(html)
