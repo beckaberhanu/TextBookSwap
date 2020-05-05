@@ -284,10 +284,15 @@
 
         function removePopUp(){
             pop = document.querySelectorAll(".popup")
-            pop[0].innerHTML=""
-            pop[0].classList.toggle("visible")
-            panels = document.querySelectorAll(".panels")
-            panels[0].classList.toggle("blurred")
+            pop[0].classList.toggle("remove",true)
+            setTimeout(() => { 
+                pop = document.querySelectorAll(".popup")
+                pop[0].innerHTML=""
+                pop[0].classList.toggle("visible", false)
+                pop[0].classList.toggle("remove", false)
+                panels = document.querySelectorAll(".panels")
+                panels[0].classList.toggle("blurred", false)
+             }, 150);
         }
 
         function formPopUp(action,post){
