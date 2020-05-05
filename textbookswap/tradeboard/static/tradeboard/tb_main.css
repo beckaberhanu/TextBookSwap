@@ -651,7 +651,7 @@ a:visited {
 }
 .new-post {
   width: 600px;
-  height: 340px;
+  height: 440px;
   padding: 35px 25px 0px 35px;
   display: flex;
   flex-direction: column;
@@ -661,6 +661,12 @@ a:visited {
   border-radius: 20px;
   margin-bottom: 20px;
 }
+#pre-img {
+  height: 124px;
+  width: 144px;
+  object-fit: cover;
+  overflow: hidden;
+}
 .new-post-div {
   display: flex;
   flex-direction: column;
@@ -668,7 +674,7 @@ a:visited {
   left: 50%;
   bottom: 50%;
   margin-left: -300px;
-  margin-bottom: -180px;
+  margin-bottom: -250px;
   animation: popUp cubic-bezier(0.19, 1, 0.22, 1) 0.6s;
 }
 .input-description.text-input-field {
@@ -726,6 +732,7 @@ a:visited {
   font-size: 0.8rem;
   font-weight: 600;
   vertical-align: bottom;
+  overflow: hidden;
 }
 #post-author-field {
   flex: 3;

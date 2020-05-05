@@ -80,7 +80,9 @@ def getNewPostForm(request):
 def handleForm(request):
     print("wait for it")
     print(request.POST)
+    print("request printed")
     if 'description' in request.POST:
+        print('check file\n', request.FILES)
         return createNewPost(request)
     else:
         return filterPosts(request)
@@ -88,7 +90,7 @@ def handleForm(request):
 
 def createNewPost(request):
     user = request.user
-    post_form = BookSellForm(request.POST)
+    post_form = BookSellForm(request.POST, request.FILES)
     if post_form.is_valid():
         post = post_form.save(commit=False)
         post.seller = user

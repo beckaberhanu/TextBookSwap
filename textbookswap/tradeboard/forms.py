@@ -105,7 +105,6 @@ class BookSellForm(forms.ModelForm):
                             widget=forms.TextInput(attrs={'class': "post-text-input text-input-field", 'placeholder': ':# # ########### ######## ###### ## ########### ######## ######'}))
 
     def validate_ISBN(value):
-        print("validate Isbn called|", not(f'{value}'.isnumeric()))
         if (value != None and (len(value) != 10 and len(value) != 13)):
             print(value)
             raise ValidationError(f'Number of digits in "{value}"" is neither 10 nor 13',
@@ -125,7 +124,7 @@ class BookSellForm(forms.ModelForm):
                                   widget=forms.Textarea(attrs={'class': "input-description text-input-field"}))
 
     image = forms.ImageField(label="Image", required=False, widget=forms.FileInput(
-        attrs={'class': 'image-input'}))
+        attrs={'class': 'image-input', 'onchange': 'upload_img(this);'}))
 
     edition = forms.IntegerField(
         label="Edition", min_value=1, max_value=100, required=True, validators=[MinValueValidator(1), MaxValueValidator(100)], widget=forms.NumberInput(attrs={'class': "post-int-input int-input-field", 'placeholder': ':##########'}))

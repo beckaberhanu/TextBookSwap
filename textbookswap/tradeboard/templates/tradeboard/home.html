@@ -3,9 +3,6 @@
 
 {% block content %}
 
-    <link rel="stylesheet" type="text/css" href="{% static 'tradeboard/tb_main.css' %}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
     <style>
         .instruction {
             height: 250px;
@@ -81,11 +78,6 @@
         tabBtns = document.querySelectorAll(".tab-btn")
         for(var i=0; i<tabBtns.length;i++){
             tabBtns[i].onclick=function(){
-                console.log(tabBtns);
-                for(var i=0; i<tabBtns.length;i++){
-                    tabBtns[i].classList.remove("active-tab")
-                }
-                this.classList.add("active-tab");
                 if (this.name == "tradeboard"){
                     loadTradeboard()
                 }
@@ -95,6 +87,42 @@
                 else{
                     loadSellList()
                 }
+            }
+        }
+
+        function switchTab(tab){
+            tabBtns = document.querySelectorAll(".tab-btn")
+            for(var i=0; i<tabBtns.length;i++){
+                if(tabBtns[i].name == tab){
+                    tabBtns[i].classList.toggle("active-tab", true)
+                }
+                else {
+                    tabBtns[i].classList.toggle("active-tab", false)
+                }
+                
+            }
+            tabBar= document.querySelectorAll(".tab-bar")
+            if(tab == "sell-list"){
+                console.log("sell-list-tab-yes")
+                tabBar[0].classList.toggle("expanded", true)
+            }
+            else{
+                console.log("sell-list-tab-no")
+                tabBar[0].classList.toggle("expanded", false)
+            }
+        }
+
+        function upload_img(input) {
+            console.log("update-img-called")
+            console.log(input.files[0])
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#pre-img').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
             }
         }
 
@@ -110,9 +138,7 @@
                     console.log("reponse recieved")
                     $('.mid-panel-scroll').html(resp.searchResults);
                     $('.form-div').html(resp.form);
-                    tab = document.querySelectorAll(".tab-bar")
-                    tab[0].classList.toggle("expanded", false)
-                    
+                    switchTab("tradeboard");
                     activate()
                 },
                 error: function(resp) {
@@ -134,8 +160,7 @@
                 success: function (resp) {
                     console.log("reponse recieved")
                     $('.mid-panel-scroll').html(resp);
-                    tab = document.querySelectorAll(".tab-bar")
-                    tab[0].classList.toggle("expanded", false)
+                    switchTab("bookmark");
                     activate()
                 },
                 error: function(data) {
@@ -156,9 +181,7 @@
                 success: function (resp) {
                     console.log("reponse recieved")
                     $('.mid-panel-scroll').html(resp);
-                    tab = document.querySelectorAll(".tab-bar")
-
-                    tab[0].classList.toggle("expanded", true)
+                    switchTab("sell-list");
                     activate()
                 },
                 error: function(data) {
@@ -329,23 +352,19 @@
 
         function newPostForm(confirmed=false){
             if(confirmed){
-                var frm = $('.new-post');
-                frm = frm.serialize()
-                $.ajax({
+                options = {
                     url: "{% url 'tradeboard-home' %}",
+                    type: 'POST',
                     headers: {'X-CSRFToken': '{{ csrf_token }}'},
-                    method: "POST",
-                    data: frm,
-                    success: function (resp) {
+                    success: function(resp) {
                         console.log(resp)
                         loadSellList()
                         removePopUp()
-                    },
-                    error: function(resp) {
-                        console.log("submit form error")
-                        $('.new-post-div').html(resp.responseText);
                     }
-                });
+                };
+
+                $('#new-post-form').ajaxSubmit(options);
+                console.log("confirmed new post function called")
             }
             else{
                 $.ajax({
@@ -356,7 +375,6 @@
                         'action':'get-new-post-form'
                     },
                     success: function (resp) {
-                        console.log(resp)
                         pop = document.querySelectorAll(".popup")
                         pop[0].innerHTML=resp;
                         pop[0].classList.toggle("visible")
