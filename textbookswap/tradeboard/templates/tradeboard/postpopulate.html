@@ -79,14 +79,10 @@
                             <p class = "username">@{{post.seller.username}}</p>
                         </div>
                     </div>
-                    <button class = "contact-btn">
+                    <a class = "contact-btn" href="{% url 'contact_detail' %}">
                         <img height="12px" width="12px" src = "{% static 'message.svg' %}">
-                        <a class="ml-2" href="{% url 'contact_detail' %}">Contact</a>
-                    </button>
-                        <!-- <button class = "contact-btn" onclick="viewMorePopUp('contact',{{ post.pk }})">
-                            <img height="12px" width="12px" src = "{% static 'message.svg' %}">
-                            Contact
-                        </button> -->
+                        Contact
+                    </a>
                     {% endif %}
                 </div>
                 <div class = "right-tile">
@@ -129,7 +125,7 @@
     <div class = "no-results-available">
         <img height = "160px" width= "200px" src = "{% static 'tradeboard/search.svg' %}"/>
         <div>
-            <p class= "sorry">Sorry! We couldn't find any results that match your search query</p>
+            <p class= "sorry">Sorry! It seems the posts that you are looking for doesn't exist</p>
         </div>
     </div>
 {% endif %}

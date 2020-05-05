@@ -36,13 +36,19 @@
             </div>
         </div>
         <div class = "mid-panel">
-            {% comment %} <div class = "quick-search">
-                <input class = "search-in" type="search" name="quick search" placeholder = "Quick Search">
-            </div> {% endcomment %}
             <div class = "tab-bar">
-                <button class = "tab-btn active-tab" type="button" name="tradeboard">Trade Board</button>
-                <button class = "tab-btn" type="button" name="bookmark">My Bookmarks</button>
-                <button class = "tab-btn" type="button" name="sell-list">My Selling List</button>
+                <div class= "arrange-as-row">
+                    <button class = "tab-btn active-tab" type="button" name="tradeboard">Trade Board</button>
+                    <button class = "tab-btn" type="button" name="bookmark">My Bookmarks</button>
+                    <button class = "tab-btn" type="button" name="sell-list">My Selling List </button>
+                </div>
+                <div class= "extra">
+                    <hr class="tab-divider">
+                    <div class= "arrange-as-row">
+                        <p class = "question">Do you have a book that you'd like to sell?</p>
+                        <button class = "sell-btn" onclick="newPostForm()">Sell A Book</button>
+                    </div>
+                </div>
             </div>
             <div class = "mid-panel-scroll">
                 
@@ -53,14 +59,12 @@
             <div class = "nav">
                 {% if user.is_authenticated %}
                     <a  href="{% url 'profile' %}">
-                        <button class = "tab-btn active-tab" type="button" name="profile" style="width:70px; height:30px;margin:5px;padding:5px">Profile</button>
+                        <button class = "nav-btn" type="button" name="profile" >Profile</button>
                     </a>
                     <a  href="{% url 'logout' %}">
-                        <button class = "tab-btn active-tab" type="button" name="logout" style="width:70px; height:30px;margin:5px;padding:5px">Logout</button>
+                        <button class = "nav-btn" type="button" name="logout" >Logout</button>
                     </a>
-                    <a  href="{% url 'book_new' %}"> 
-                        <button class = "tab-btn active-tab" type="button" name="sell" style="width:100px; height:30px;margin:5px;padding:5px">Sell A Book</button>
-                    </a> 
+                    <button class = "nav-btn" type="button" name="sell" onclick="newPostForm()">Sell A Book</button>
                 {% else %}
                     <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
                     <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
@@ -106,6 +110,9 @@
                     console.log("reponse recieved")
                     $('.mid-panel-scroll').html(resp.searchResults);
                     $('.form-div').html(resp.form);
+                    tab = document.querySelectorAll(".tab-bar")
+                    tab[0].classList.toggle("expanded", false)
+                    
                     activate()
                 },
                 error: function(resp) {
@@ -127,6 +134,8 @@
                 success: function (resp) {
                     console.log("reponse recieved")
                     $('.mid-panel-scroll').html(resp);
+                    tab = document.querySelectorAll(".tab-bar")
+                    tab[0].classList.toggle("expanded", false)
                     activate()
                 },
                 error: function(data) {
@@ -147,6 +156,8 @@
                 success: function (resp) {
                     console.log("reponse recieved")
                     $('.mid-panel-scroll').html(resp);
+                    tab = document.querySelectorAll(".tab-bar")
+                    tab[0].classList.toggle("expanded", true)
                     activate()
                 },
                 error: function(data) {
@@ -310,12 +321,13 @@
                 }
             }
             var frm = $('.search-filters');
-            console.log(frm.serialize())
+            frm = frm.serialize()
+            console.log(frm)
             $.ajax({
                 url: "{% url 'tradeboard-home' %}",
                 headers: {'X-CSRFToken': '{{ csrf_token }}'},
                 method: "POST",
-                data: frm.serialize(),
+                data: frm,
                 success: function (resp) {
                     console.log("reponse recieved")
                     $('.mid-panel-scroll').html(resp.searchResults);
@@ -327,6 +339,49 @@
                     $('.form-div').html(resp.responseText);
                 }
             });
+        }
+
+        function newPostForm(confirmed=false){
+            if(confirmed){
+                var frm = $('.new-post');
+                frm = frm.serialize()
+                $.ajax({
+                    url: "{% url 'tradeboard-home' %}",
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    method: "POST",
+                    data: frm,
+                    success: function (resp) {
+                        console.log(resp)
+                        loadSellList()
+                        removePopUp()
+                    },
+                    error: function(resp) {
+                        console.log("submit form error")
+                        $('.new-post-div').html(resp.responseText);
+                    }
+                });
+            }
+            else{
+                $.ajax({
+                    url: "{% url 'tradeboard-home' %}",
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    method: "POST",
+                    data: {
+                        'action':'get-new-post-form'
+                    },
+                    success: function (resp) {
+                        console.log(resp)
+                        pop = document.querySelectorAll(".popup")
+                        pop[0].innerHTML=resp;
+                        pop[0].classList.toggle("visible")
+                        panels = document.querySelectorAll(".panels")
+                        panels[0].classList.toggle("blurred")
+                    },
+                    error: function(data) {
+
+                    }
+                });
+            }
         }
 
         function clearForm(){

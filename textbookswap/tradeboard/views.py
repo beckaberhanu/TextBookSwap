@@ -1,7 +1,7 @@
 from django.http import QueryDict
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from .forms import BookSearchForm
+from .forms import BookSearchForm, BookSellForm
 from .models import Post
 from users.models import Bookmark
 from django.views.generic import DetailView, ListView
@@ -55,20 +55,52 @@ def handleAJAXrequest(request):
     elif request.POST.get("action") == "loadContact":
         return loadContact(request)
     # popup ****************************************************
-    elif request.POST.get("action") == "edit":
-        return loadSellList(request)
+    # elif request.POST.get("action") == "edit":
+    #     return loadSellList(request)
     elif request.POST.get("action") == "delete":
         return deletePost(request)
     elif request.POST.get("action") == "tag-sold":
         return tagPostSold(request)
-    elif request.POST.get("action") == "contact":
-        return loadSellList(request)
+    # elif request.POST.get("action") == "contact":
+    #     return loadSellList(request)
+    elif request.POST.get("action") == "get-new-post-form":
+        return getNewPostForm(request)
+    else:
+        return handleForm(request)
+
+
+def getNewPostForm(request):
+    print('getNewPostForm function called')
+    post_form = BookSellForm()
+    html = render_to_string('tradeboard/new_post.html',
+                            {'post_form': post_form})
+    return HttpResponse(html)
+
+
+def handleForm(request):
+    print("wait for it")
+    print(request.POST)
+    if 'description' in request.POST:
+        return createNewPost(request)
     else:
         return filterPosts(request)
 
 
-def editPost(request):
-    pass
+def createNewPost(request):
+    user = request.user
+    post_form = BookSellForm(request.POST)
+    if post_form.is_valid():
+        post = post_form.save(commit=False)
+        post.seller = user
+        post.save()
+        return HttpResponse("post was successful")
+    else:
+        form = render_to_string(
+            'tradeboard/new_post.html', {'post_form': post_form})
+        return HttpResponse(form, status=400)
+
+# def editPost(request):
+#     pass
 
 
 def deletePost(request):
@@ -77,6 +109,9 @@ def deletePost(request):
     if request.user == post.seller:
         post.delete()
         return HttpResponse("Post deleted succesfully")
+    else:
+        raise PermissionDenied
+        return HttpResponse("You Don't have access to this post instance", status=400)
 
 
 def tagPostSold(request):
@@ -91,8 +126,8 @@ def tagPostSold(request):
         return HttpResponse("You Don't have access to this post instance", status=400)
 
 
-def contact(request):
-    pass
+# def contact(request):
+#     pass
 
 
 def loadBookmark(request):
@@ -103,12 +138,14 @@ def loadBookmark(request):
                             {'posts': posts.order_by('-date_posted'), 'bookmarked': posts, 'tab': 'Bookmark'})
     return HttpResponse(html)
 
+
 def loadContact(request):
     print("loadContact called ")
     posts = Post.objects.filter(seller=request.user)
     html = render_to_string('tradeboard/contact_detail.html',
                             {'posts': posts.order_by('-date_posted')})
     return HttpResponse(html)
+
 
 def loadSellList(request):
     print("loadSellList called ")
