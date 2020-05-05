@@ -37,7 +37,7 @@
         </div>
         <div class = "mid-panel">
             <div class = "tab-bar">
-                <div class= "arrange-as-row">
+                <div class= "arrange-as-row tab-row">
                     <button class = "tab-btn active-tab" type="button" name="tradeboard">Trade Board</button>
                     <button class = "tab-btn" type="button" name="bookmark">My Bookmarks</button>
                     <button class = "tab-btn" type="button" name="sell-list">My Selling List </button>
@@ -157,6 +157,7 @@
                     console.log("reponse recieved")
                     $('.mid-panel-scroll').html(resp);
                     tab = document.querySelectorAll(".tab-bar")
+
                     tab[0].classList.toggle("expanded", true)
                     activate()
                 },
@@ -293,26 +294,6 @@
                 panels = document.querySelectorAll(".panels")
                 panels[0].classList.toggle("blurred", false)
              }, 150);
-        }
-
-        function formPopUp(action,post){
-            console.log("formPopUp clicked")
-            console.log("action =", action)
-            console.log("post id =", post)
-            $.ajax({
-                url: "{% url 'tradeboard-home' %}",
-                headers: {'X-CSRFToken': '{{ csrf_token }}'},
-                method: "POST",
-                data: {
-                    'action':action
-                },
-                success: function (resp) {
-
-                },
-                error: function(data) {
-
-                }
-            });
         }
 
         function submitForm(){

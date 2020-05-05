@@ -5,14 +5,14 @@
         <div class = "arrange-as-column">
             <div class = "arrange-as-row">
                 <div class = "input-div title-field">
-                    <label class = "field-label" for="{{ form.title.id_for_label }}">Title</label>
+                    <label class = "field-label" for="{{ post_form.title.id_for_label }}">Title</label>
                     {{ post_form.title }}
                     <div class="error">
                         {{ post_form.title.errors }}
                     </div>
                 </div>
                 <div class="input-div edition-field" id="post-edition-field">
-                    <label class = "field-label" for="{{ form.edition.id_for_label }}">Edition</label>
+                    <label class = "field-label" for="{{ post_form.edition.id_for_label }}">Edition</label>
                     {{ post_form.edition }}
                     <div class="error">
                         {{ post_form.edition.errors }}
@@ -21,21 +21,21 @@
             </div>
             <div class = "arrange-as-row">
                 <div class="input-div author-field" id="post-author-field">
-                    <label class = "field-label"  for="{{ form.author.id_for_label }}">Author</label>
+                    <label class = "field-label"  for="{{ post_form.author.id_for_label }}">Author</label>
                     {{ post_form.author}}
                     <div class="error">
                         {{ post_form.author.errors }}
                     </div>
                 </div>
                 <div class="input-div ISBN-field">
-                    <label class = "field-label" for="{{ form.ISBN.id_for_label }}">ISBN</label>
+                    <label class = "field-label" for="{{ post_form.ISBN.id_for_label }}">ISBN</label>
                     {{ post_form.ISBN }}
                     <div class="error">
                         {{ post_form.ISBN.errors }}
                     </div>
                 </div>
                 <div class = "input-div book-type-field">
-                    <label class = "field-label" for="{{ form.post_type.id_for_label }}">Book Type</label>
+                    <label class = "field-label" for="{{ post_form.post_type.id_for_label }}">Book Type</label>
                     {{ post_form.post_type }}
                     <div class="error">
                         {{ post_form.post_type.errors }}
@@ -46,7 +46,7 @@
                 <div class = "arrange-as-column" id="pric-img-col">
                     <div class = "arrange-as-row">
                         <div class="input-div price-field" id="post-price-field">
-                            <label class = "field-label" for="{{ form.price.id_for_label }}">Price</label>
+                            <label class = "field-label" for="{{ post_form.price.id_for_label }}">Price</label>
                             {{ post_form.price }}
                             <div class="error">
                                 {{ post_form.price.errors }}
@@ -54,15 +54,24 @@
                         </div>
                     </div>
                     <div class="input-div image-field">
-                        <label class = "field-label"  for="{{ form.author.id_for_label }}">Image</label>
+                        <label class = "field-label"  for="{{ post_form.image.id_for_label }}">Image</label>
                         {{ post_form.image}}
+                        <label class = "image-upload-rep" for="{{ post_form.image.id_for_label }}">
+                            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 477.867 477.867" height="100px" width="100px" fill="#5371f2">
+                                <g>
+                                    <path d="M324.267,221.867H256V153.6c0-9.426-7.641-17.067-17.067-17.067s-17.067,7.641-17.067,17.067v68.267H153.6
+                                        c-9.426,0-17.067,7.641-17.067,17.067S144.174,256,153.6,256h68.267v68.267c0,9.426,7.641,17.067,17.067,17.067
+                                        S256,333.692,256,324.267V256h68.267c9.426,0,17.067-7.641,17.067-17.067S333.692,221.867,324.267,221.867z"/>
+                                </g>
+                            </svg>
+                        </label>
                         <div class="error">
                             {{ post_form.image.errors }}
                         </div>
                     </div>
                 </div>
                 <div class = "input-div description-field">
-                    <label class = "field-label" for="{{ form.description.id_for_label }}">Description</label>
+                    <label class = "field-label" for="{{ post_form.description.id_for_label }}">Description</label>
                     {{ post_form.description }}
                     <div class="error">
                         {{ post_form.description.errors }}
