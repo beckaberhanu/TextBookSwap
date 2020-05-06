@@ -79,10 +79,10 @@
                             <p class = "username">@{{post.seller.username}}</p>
                         </div>
                     </div>
-                    <a class = "contact-btn" href="{% url 'contact_detail' %}">
+                    <a class = "contact-btn" href="{% url 'contact_detail' post.pk %}">
                         <img height="12px" width="12px" src = "{% static 'message.svg' %}">
-                        <a class="ml-2" href="{% url 'contact_detail' post.pk %}">Contact</a>
-                    </button>
+                        Contact
+                    </a>
                     {% endif %}
                 </div>
                 <div class = "right-tile">
