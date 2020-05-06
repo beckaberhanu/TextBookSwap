@@ -137,9 +137,13 @@ def loadBookmark(request):
     print("loadBookmark called ")
     if hasattr(request.user, 'bookmark'):
         posts = request.user.bookmark.posts.all()
-    html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': posts, 'tab': 'Bookmark'})
-    return HttpResponse(html)
+        html = render_to_string('tradeboard/postpopulate.html',
+                                {'posts': posts.order_by('-date_posted'), 'bookmarked': posts, 'tab': 'Bookmark'})
+        return HttpResponse(html)
+    else:
+        html = render_to_string('tradeboard/postpopulate.html',
+                                {'tab': 'Bookmark'})
+        return HttpResponse(html)
 
 
 def loadContact(request):
@@ -243,6 +247,7 @@ class BookDetailView(DetailView):
     template_name = 'tradeboard/detail_book.html'
     context_object_name = "book"
 
+
 class BookUpdateView(UpdateView):
     model = Post
     template_name = 'tradeboard/edit_book.html'
@@ -277,6 +282,7 @@ class SellingListView(ListView):
     def get_queryset(self):
         user = self.request.user
         return Post.objects.filter(seller=user)
+
 
 class ContactDetailView(DetailView):
     model = Post
