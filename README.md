@@ -30,17 +30,39 @@
     - \$ psql
   - Create a database called ‘mydb’
     - \# CREATE DATABASE mydb WITH OWNER [insert username here];
+- Install the PostgreSQL trigram extension
+  - psql
+  - Choose the database you want to install the extension for, in this case "mydb"
+    - \# \c mydb
+  - istall the extension
+    - \# CRREATE EXTENSION pg_trgm;
 - Install psycopg2
   - \$ pip install psycopg2-binary
   - https://www.psycopg.org/docs/install.html
 - Connect the Django project to the PostgreSQL database
   - Export your database username as a local variable
-    - \$ I gotexport mydb_USER=[insert username here]
+    - \$ export mydb_USER=[insert username here]
   - Export your database password as a local variable
     - \$ export mydb_PASSWORD=[insert password here]
 - Create the necessary migration files
   - \$ python3 manage.py makemigrations
 - Perform the migrations
   - \$ python3 manage.py migrate
+- Create super user
+  - \$ python3 manage.py createsuperuser
+  - follow the prompt
+- [__OPTIONAL__] create instances
+  - run the django shell
+    - \$ python3 manage.py shell
+  - create randomized user and post instances
+    - ```python
+      from createInstances import reinitialize as re
+      re()
+      ```
+  - create real book instances
+    - ```python
+        from createInstances import createRealInstances as cri
+        cri()
+      ```
 - Start the server
   - \$ python3 manage.py runserver
