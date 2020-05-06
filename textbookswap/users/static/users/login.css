@@ -1,0 +1,102 @@
+.arrange-as-column {
+  display: flex;
+  flex-direction: column;
+}
+.btn-link-col {
+  color: white;
+}
+.btn-link-col:link {
+  text-decoration: none;
+  color: white;
+}
+.btn-link-col:visited {
+  color: white;
+}
+.flex-justify-center {
+  justify-content: center;
+}
+.align-center {
+  align-items: center;
+}
+.vertical-accent-bar {
+  margin-left: 0;
+}
+.login-panel {
+  background-color: #f2f8ff;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0px 5px 14px rgba(0, 0, 0, 0.35);
+}
+input[type="password"] {
+  width: 100%;
+  align-self: stretch;
+  background-color: #ffffff;
+  color: #4191e2;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9rem;
+  border: 2px solid #5371f2;
+  padding: 12px 0px 4px 10px;
+  border-radius: 0px 5px 5px 5px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+}
+input[type="password"]::placeholder {
+  color: #a8deff;
+}
+input[type="text"] {
+  width: 100%;
+  align-self: stretch;
+  background-color: #ffffff;
+  color: #4191e2;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9rem;
+  border: 2px solid #5371f2;
+  padding: 12px 0px 4px 10px;
+  border-radius: 0px 5px 5px 5px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+}
+input[type="text"]::placeholder {
+  color: #a8deff;
+}
+.login-btn {
+  margin-left: 15px;
+  padding: 6px 0px;
+  margin-top: 3px;
+  width: 95px;
+  max-height: 34px;
+  border-radius: 3px;
+  border: 0;
+  background: linear-gradient(90deg, #1fa2fa 0%, #5372f2 100%);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #ffffff !important;
+  text-align: center;
+  line-height: 1.2em;
+}
+.forgot {
+  font-family: "Futura";
+  color: #97b3e0;
+  text-align: end;
+  font-size: 0.7em;
+  font-weight: 400;
+  width: 150px;
+  text-align: left;
+  margin-left: 8px;
+}
+.welcome-banner {
+  background-color: #5371f2;
+  color: #ffffff;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 700;
+  font-size: 1.4em;
+  width: 140px;
+  vertical-align: text-bottom;
+  border: 2px solid #ffffff;
+  border-radius: 10px 10px 10px 0px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  margin-bottom: 30px;
+  margin-top: 10px;
+  padding: 7px 0px 7px 0px;
+  text-align: center;
+}

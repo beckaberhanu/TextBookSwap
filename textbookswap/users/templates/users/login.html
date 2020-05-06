@@ -1,7 +1,7 @@
 {% extends 'tradeboard/base.html' %}
 {% load static %}
 
-{% block content %}
+{% comment %} {% block content %}
     <link rel="stylesheet" type="text/css" href="{% static 'users/us_main.css' %}" >
     <div class="content-section">
         <form method="POST">
@@ -23,4 +23,47 @@
             </small>
         </div>
     </div>
+{% endblock %} {% endcomment %}
+
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'users/login.css' %}">
+    <div class= "spacer"></div>
+    <div class = "arrange-as-column flex-justify-center">
+        <div class="login-panel">
+            <p class = "welcome-banner">Welcome</p>
+            <form method="POST"> 
+                {% csrf_token %}
+                <div class = "arrange-as-centered-column">
+                    <div class = "input-div username-field">
+                        <label class = "field-label" for="{{ form.username.id_for_label }}">Username</label>
+                        {{ form.username }}
+                        <div class="error">
+                            {{ form.username.errors }}
+                        </div>
+                    </div>
+                    <div class = "input-div password-field">
+                        <label class = "field-label" for="{{ form.password.id_for_label }}">Password</label>
+                        {{ form.password }}
+                        <div class="error">
+                            {{ form.password.errors }}
+                        </div>
+                    </div>
+                    <div class="arrange-as-row align-center">
+                        <div class="vertical-accent-bar"></div>
+                        <a class= "forgot" href="{% url 'password_reset' %}">Forgot Password?</a>
+                        <button class="login-btn" type="submit">Login</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="arrange-as-row align-center login-panel" style="margin-top:20px;">
+            <div class="vertical-accent-bar"></div>
+            <p class="forgot" >Dont have an account yet? No worries, you can Signup for one here</p>
+            <button class="login-btn">
+                <a class="btn-link-col" href="{% url 'register' %}">SignUp</a>
+            </button>
+        </div>
+    </div>
+    <div class= "spacer"></div>
 {% endblock %}
