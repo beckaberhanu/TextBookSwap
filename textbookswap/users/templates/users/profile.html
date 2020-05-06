@@ -9,6 +9,11 @@
           <p class="text-secondary">{{ user.email }}</p>
         </div>
       </div>
+      <div class="nav">
+        <a  href="{% url 'password_reset' %}">
+          <button class = "nav-btn" type="button" name="passwordreset" >Password Reset</button>
+        </a>
+      </div>
       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <fieldset class="form-group">
