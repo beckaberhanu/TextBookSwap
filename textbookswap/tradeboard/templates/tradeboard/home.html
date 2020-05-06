@@ -320,15 +320,7 @@
         }
 
         function submitForm(){
-            tabBtns = document.querySelectorAll(".tab-btn")
-            for(var i=0; i<tabBtns.length;i++){
-                if (tabBtns[i].name == "tradeboard"){
-                    tabBtns[i].classList.toggle('active-tab', true)
-                }
-                else {
-                    tabBtns[i].classList.remove("active-tab")
-                }
-            }
+            switchTab("tradeboard");
             var frm = $('.search-filters');
             frm = frm.serialize()
             console.log(frm)
@@ -389,16 +381,6 @@
         }
 
         function clearForm(){
-            tabBtns = document.querySelectorAll(".tab-btn")
-            for(var i=0; i<tabBtns.length;i++){
-                if (tabBtns[i].name == "tradeboard"){
-                    tabBtns[i].classList.toggle('active-tab', true)
-                }
-                else {
-                    tabBtns[i].classList.remove("active-tab")
-                }
-            }
-
             $.ajax({
                 url: "{% url 'tradeboard-home' %}",
                 headers: {'X-CSRFToken': '{{ csrf_token }}'},
@@ -408,8 +390,8 @@
                 },
                 success: function (resp) {
                     console.log("reponse recieved")
-                    $('.mid-panel-scroll').html(resp.searchResults);
-                    $('.form-div').html(resp.form);
+                    $('.form-div').html(resp);
+                    loadTradeboard()
                     activate()
                 },
                 error: function(data) {

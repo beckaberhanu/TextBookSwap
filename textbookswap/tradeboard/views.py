@@ -169,16 +169,10 @@ def loadSellList(request):
 
 def clear(request):
     print('clear function called')
-    posts = Post.objects.exclude(seller=request.user)
     search_form = BookSearchForm()
-    bookmarked = []
-    if hasattr(request.user, 'bookmark'):
-        bookmarked = request.user.bookmark.posts.all()
-    html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked})
     form = render_to_string(
         'tradeboard/searchForm.html', {'search_form': search_form})
-    return HttpResponse(json.dumps({'searchResults': html, 'form': form}), content_type="application/json")
+    return HttpResponse(form)
 
 
 def filterPosts(request):
@@ -189,7 +183,7 @@ def filterPosts(request):
         if hasattr(request.user, 'bookmark'):
             bookmarked = request.user.bookmark.posts.all()
         html = render_to_string('tradeboard/postpopulate.html',
-                                {'posts': posts, 'bookmarked': bookmarked})
+                                {'posts': posts, 'bookmarked': bookmarked, 'tab': 'Tradeboard'})
         form = render_to_string(
             'tradeboard/searchForm.html', {'search_form': search_form})
         return HttpResponse(json.dumps({'searchResults': html, 'form': form}), content_type="application/json")
@@ -206,7 +200,7 @@ def initialize(request):
     posts = Post.objects.filter(transaction_state='In progress')
     posts = posts.exclude(seller=request.user)
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked})
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'Tradeboard'})
     return HttpResponse(html)
 
 
