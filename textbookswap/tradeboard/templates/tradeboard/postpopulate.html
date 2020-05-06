@@ -81,7 +81,7 @@
                     </div>
                     <button class = "contact-btn">
                         <img height="12px" width="12px" src = "{% static 'message.svg' %}">
-                        <a class="ml-2" href="{% url 'contact_detail' %}">Contact</a>
+                        <a class="ml-2" href="{% url 'contact_detail' post.pk %}">Contact</a>
                     </button>
                         <!-- <button class = "contact-btn" onclick="viewMorePopUp('contact',{{ post.pk }})">
                             <img height="12px" width="12px" src = "{% static 'message.svg' %}">

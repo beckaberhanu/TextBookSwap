@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from tradeboard import views as tradeboard_view
 from users import views as user_views
-from tradeboard.views import BookCreateView, BookDetailView, BookUpdateView, BookDeleteView, SellingListView
+from tradeboard.views import BookCreateView, BookDetailView, BookUpdateView, BookDeleteView, SellingListView, ContactDetailView
 from django.views.generic import TemplateView
 
 urlpatterns = [
@@ -15,7 +15,7 @@ urlpatterns = [
     path('book/<int:pk>/delete/', BookDeleteView.as_view(), name='delete_book'),
     path('book/<int:pk>/edit/', BookUpdateView.as_view(), name='edit_book'),
     path('book/<int:pk>/', BookDetailView.as_view(), name='detail_book'),
-    path('contact-info/', TemplateView.as_view(template_name="tradeboard/contact_detail.html"), name='contact_detail'),
+    path('contact-info/<int:pk>/', ContactDetailView.as_view(), name='contact_detail'),
     path('book/new/', BookCreateView.as_view(), name='book_new'),
     path('admin/', admin.site.urls),
     path('register/', user_views.register, name='register'),

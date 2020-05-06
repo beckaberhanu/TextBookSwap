@@ -6,6 +6,7 @@ from .models import Post
 from users.models import Bookmark
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.base import TemplateView
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
@@ -203,7 +204,6 @@ class BookDetailView(DetailView):
     template_name = 'tradeboard/detail_book.html'
     context_object_name = "book"
 
-
 class BookUpdateView(UpdateView):
     model = Post
     template_name = 'tradeboard/edit_book.html'
@@ -238,3 +238,8 @@ class SellingListView(ListView):
     def get_queryset(self):
         user = self.request.user
         return Post.objects.filter(seller=user)
+
+class ContactDetailView(DetailView):
+    model = Post
+    template_name = 'tradeboard/contact_detail.html'
+    context_object_name = "book"
