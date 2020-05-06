@@ -55,14 +55,8 @@
   - run the django shell
     - \$ python3 manage.py shell
   - create randomized user and post instances
-    - ```python
-      from createInstances import reinitialize as re
-      re()
-      ```
+    - \ `python from createInstances import reinitialize as re re() \`
   - create real book instances
-    - ```python
-        from createInstances import createRealInstances as cri
-        cri()
-      ```
+    - \ `python from createInstances import createRealInstances as cri cri() \`
 - Start the server
   - \$ python3 manage.py runserver
