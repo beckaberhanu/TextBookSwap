@@ -153,6 +153,12 @@ body {
   margin-right: 13px;
   margin-left: 13px;
 }
+.tab-divider-1 {
+  border: 0;
+  height: 2px;
+  border-top: 3px solid #5371f2;
+  margin: 2px 20px 2px 0;
+}
 .tab-bar.expanded {
   height: 106px;
   animation: tab-br-exp cubic-bezier(0.19, 1, 0.22, 1) 0.8s;
@@ -600,10 +606,16 @@ a:visited {
 }
 .hint-text {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-  color: #d1d1d1;
+  color: #b1b1d1;
   text-align: end;
   font-size: 10;
   width: 150px;
+}
+.sorry-hint {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  color: #b1b1d1;
+  font-size: 10;
+  width: 180px;
 }
 .vertical-accent-bar {
   margin-left: 10px;
