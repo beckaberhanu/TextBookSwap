@@ -353,6 +353,11 @@
                         console.log(resp)
                         loadSellList()
                         removePopUp()
+                    },
+                    error: function(resp) {
+                        console.log(resp)
+                        pop = document.querySelectorAll(".popup")
+                        pop[0].innerHTML=resp.responseText;
                     }
                 };
 
