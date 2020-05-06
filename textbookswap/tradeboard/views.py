@@ -92,7 +92,9 @@ def handleForm(request):
 def createNewPost(request):
     user = request.user
     post_form = BookSellForm(request.POST, request.FILES)
-    if post_form.is_valid():
+    validity = post_form.is_valid()
+    print("is the form valid?", validity)
+    if validity:
         post = post_form.save(commit=False)
         post.seller = user
         post.save()

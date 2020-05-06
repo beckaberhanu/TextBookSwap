@@ -33,6 +33,9 @@
             <p class = "welcome-banner">Welcome</p>
             <form method="POST"> 
                 {% csrf_token %}
+                <div class="login-error">
+                    {{ form.non_field_errors }}
+                </div>
                 <div class = "arrange-as-centered-column">
                     <div class = "input-div username-field">
                         <label class = "field-label" for="{{ form.username.id_for_label }}">Username</label>

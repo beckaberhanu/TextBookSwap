@@ -5,7 +5,10 @@
             <div class = "post-minimized" id="post-min-{{post.pk}}">
                 <div class = "mini-left-tile">
                     <div class = "top-row">
-                        <h2 class = "book-title" id= "title-{{post.pk}}">{{post.title}}</h2>
+                        <h2 class = "book-title" id= "title-{{post.pk}}">
+                        {{post.title}}
+                        <p class="tiptext">{{post.title}}</p>
+                        </h2>
                         <small class = "date"> {{post.date_posted|date:"m/d/Y"}}</small>
                     </div>
                     <hr class = "divider"/>
