@@ -2,83 +2,83 @@
     <h1 class="title-search">
         Search Tradeboard
     </h1> 
-        <div class="hint">
-            <p class = "hint-text" style="color: #0066ff;">You can narrow down your search result by applying the following filters</p>
-            <div class="vertical-accent-bar"></div>
+    <div class="hint">
+        <p class = "hint-text" style="color: #0066ff;">You can narrow down your search result by applying the following filters</p>
+        <div class="vertical-accent-bar"></div>
+    </div>
+    {% csrf_token %}
+    {{ search_form.non_field_errors }}
+    <div class = "input-div title-field">
+        <label class = "field-label" for="{{ form.title.id_for_label }}">Title</label>
+        {{ search_form.title }}
+        <div class="error">
+            {{ search_form.title.errors }}
         </div>
-        {% csrf_token %}
-        {{ search_form.non_field_errors }}
-        <div class = "search title-field">
-            <label class = "filter-label f-title" for="{{ form.title.id_for_label }}">Title</label>
-            {{ search_form.title }}
+    </div>
+    <div class = "arrange-as-row">
+        <div class="input-div author-field">
+            <label class = "field-label"  for="{{ form.author.id_for_label }}">Author</label>
+            {{ search_form.author}}
             <div class="error">
-                {{ search_form.title.errors }}
+                {{ search_form.author.errors }}
             </div>
         </div>
-        <div class = "arrange-as-row">
-            <div class="search author-field">
-                <label class = "filter-label"  for="{{ form.author.id_for_label }}">Author</label>
-                {{ search_form.author}}
-                <div class="error">
-                    {{ search_form.author.errors }}
-                </div>
-            </div>
-            <div class="search ISBN-field">
-                <label class = "filter-label" for="{{ form.ISBN.id_for_label }}">ISBN</label>
-                {{ search_form.ISBN }}
-                <div class="error">
-                    {{ search_form.ISBN.errors }}
-                </div>
+        <div class="input-div ISBN-field">
+            <label class = "field-label" for="{{ form.ISBN.id_for_label }}">ISBN</label>
+            {{ search_form.ISBN }}
+            <div class="error">
+                {{ search_form.ISBN.errors }}
             </div>
         </div>
-        <div class = "arrange-as-row">
-            <div class="search edition-field">
-                <label class = "filter-label" for="{{ form.edition.id_for_label }}">Edition</label>
-                {{ search_form.edition }}
-                <div class="error">
-                    {{ search_form.edition.errors }}
-                </div>
-            </div>
-            <div class="search price-field">
-                <label class = "filter-label" for="{{ form.price.id_for_label }}">Max Price</label>
-                {{ search_form.price }}
-                <div class="error">
-                    {{ search_form.price.errors }}
-                </div>
+    </div>
+    <div class = "arrange-as-row">
+        <div class="input-div edition-field">
+            <label class = "field-label" for="{{ form.edition.id_for_label }}">Edition</label>
+            {{ search_form.edition }}
+            <div class="error">
+                {{ search_form.edition.errors }}
             </div>
         </div>
-        <div class = "arrange-as-row">
-            <div class = "search posted-since-field">
-                <label class = "filter-label" for="{{ form.posted_since.id_for_label }}">Posted Since</label>
-                <div class = "cont-date-select" >{{ search_form.posted_since }} </div>
-                <div class="error">
-                    {{ search_form.posted_since.errors }}
-                </div>
-            </div>
-            <div class = "search book-type-field">
-                <label class = "filter-label" for="{{ form.post_type.id_for_label }}">Book Type</label>
-                {{ search_form.post_type }}
-                <div class="error">
-                    {{ search_form.post_type.errors }}
-                </div>
+        <div class="input-div price-field">
+            <label class = "field-label" for="{{ form.price.id_for_label }}">Max Price</label>
+            {{ search_form.price }}
+            <div class="error">
+                {{ search_form.price.errors }}
             </div>
         </div>
-        <div class = "search sort-by-field">
-                <label class = "filter-label" for="{{ form.sort_by.id_for_label }}">Sort By</label>
-                {{ search_form.sort_by }}
-                <div class="error">
-                    {{ search_form.sort_by.errors }}
-                </div>
+    </div>
+    <div class = "arrange-as-row">
+        <div class = "input-div posted-since-field">
+            <label class = "field-label" for="{{ form.posted_since.id_for_label }}">Posted Since</label>
+            <div class = "cont-date-select" >{{ search_form.posted_since }} </div>
+            <div class="error">
+                {{ search_form.posted_since.errors }}
             </div>
-        <div class= "arrange-as-row flex-justify-start">
-            <button class= "clear-btn" type = "button" value = "clear" name="clear" onclick="clearForm()">
-                <svg transform="translate(-3 3)" width="11" height="11" viewBox="0 0 19.998 25.383">
-                    <g transform="translate(-1 0)" fill="white" stroke="none">
-                        <path d="M16.043,11.667L22.609,5.1c0.963-0.963,0.963-2.539,0-3.502l-0.875-0.875c-0.963-0.964-2.539-0.964-3.502,0L11.666,7.29  L5.099,0.723c-0.962-0.963-2.538-0.963-3.501,0L0.722,1.598c-0.962,0.963-0.962,2.539,0,3.502l6.566,6.566l-6.566,6.567  c-0.962,0.963-0.962,2.539,0,3.501l0.876,0.875c0.963,0.963,2.539,0.963,3.501,0l6.567-6.565l6.566,6.565  c0.963,0.963,2.539,0.963,3.502,0l0.875-0.875c0.963-0.963,0.963-2.539,0-3.501L16.043,11.667z"/>
-                    </g>
-                </svg>
-                Clear 
-            </button>
-            <button class= "search-btn" type = "button" name="filter" onclick="submitForm()"> Apply Filter </button>
         </div>
-    </form>
+        <div class = "input-div book-type-field">
+            <label class = "field-label" for="{{ form.post_type.id_for_label }}">Book Type</label>
+            {{ search_form.post_type }}
+            <div class="error">
+                {{ search_form.post_type.errors }}
+            </div>
+        </div>
+    </div>
+    <div class = "input-div sort-by-field">
+            <label class = "field-label" for="{{ form.sort_by.id_for_label }}">Sort By</label>
+            {{ search_form.sort_by }}
+            <div class="error">
+                {{ search_form.sort_by.errors }}
+            </div>
+        </div>
+    <div class= "arrange-as-row flex-justify-start">
+        <button class= "clear-btn" type = "button" value = "clear" name="clear" onclick="clearForm()">
+            <svg transform="translate(-3 3)" width="11" height="11" viewBox="0 0 19.998 25.383" margin-right="2px">
+                <g transform="translate(-1 0)" fill="white" stroke="none">
+                    <path d="M16.043,11.667L22.609,5.1c0.963-0.963,0.963-2.539,0-3.502l-0.875-0.875c-0.963-0.964-2.539-0.964-3.502,0L11.666,7.29  L5.099,0.723c-0.962-0.963-2.538-0.963-3.501,0L0.722,1.598c-0.962,0.963-0.962,2.539,0,3.502l6.566,6.566l-6.566,6.567  c-0.962,0.963-0.962,2.539,0,3.501l0.876,0.875c0.963,0.963,2.539,0.963,3.501,0l6.567-6.565l6.566,6.565  c0.963,0.963,2.539,0.963,3.502,0l0.875-0.875c0.963-0.963,0.963-2.539,0-3.501L16.043,11.667z"/>
+                </g>
+            </svg>
+            Clear 
+        </button>
+        <button class= "search-btn" type = "button" name="filter" onclick="submitForm()"> Apply Filter </button>
+    </div>
+</form>

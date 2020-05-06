@@ -28,7 +28,7 @@ class Post(models.Model):
     ISBN = models.CharField(max_length=13, validators=[validate_ISBN])
 
     author = models.CharField(max_length=50)
-    description = models.TextField(max_length=1000)
+    description = models.TextField(max_length=350)
     image = models.ImageField(
         default='default_book.png', upload_to='book_pics')
     date_posted = models.DateTimeField(default=timezone.now)  # UTC time

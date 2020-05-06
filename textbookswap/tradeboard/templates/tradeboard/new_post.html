@@ -1,0 +1,82 @@
+{% load static %}
+<div class="new-post-div">
+    <form class= "new-post" method="POST" id= "new-post-form" name="new-post-form" enctype="multipart/form-data"> 
+        {% csrf_token %}
+        {{ post_form.non_field_errors }}
+        <div class = "arrange-as-column">
+            <div class = "arrange-as-row">
+                <div class = "input-div post-title-field">
+                    <label class = "field-label" for="{{ post_form.title.id_for_label }}">Title</label>
+                    {{ post_form.title }}
+                    <div class="error">
+                        {{ post_form.title.errors }}
+                    </div>
+                </div>
+                <div class="input-div edition-field" id="post-edition-field">
+                    <label class = "field-label" for="{{ post_form.edition.id_for_label }}">Edition</label>
+                    {{ post_form.edition }}
+                    <div class="error">
+                        {{ post_form.edition.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class = "arrange-as-row">
+                <div class="input-div author-field" id="post-author-field">
+                    <label class = "field-label"  for="{{ post_form.author.id_for_label }}">Author</label>
+                    {{ post_form.author}}
+                    <div class="error">
+                        {{ post_form.author.errors }}
+                    </div>
+                </div>
+                <div class="input-div ISBN-field">
+                    <label class = "field-label" for="{{ post_form.ISBN.id_for_label }}">ISBN</label>
+                    {{ post_form.ISBN }}
+                    <div class="error">
+                        {{ post_form.ISBN.errors }}
+                    </div>
+                </div>
+                <div class = "input-div book-type-field">
+                    <label class = "field-label" for="{{ post_form.post_type.id_for_label }}">Book Type</label>
+                    {{ post_form.post_type }}
+                    <div class="error">
+                        {{ post_form.post_type.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class = "arrange-as-row">
+                <div class = "arrange-as-column" id="pric-img-col">
+                    <div class = "arrange-as-row">
+                        <div class="input-div price-field" id="post-price-field">
+                            <label class = "field-label" for="{{ post_form.price.id_for_label }}">Price</label>
+                            {{ post_form.price }}
+                            <div class="error">
+                                {{ post_form.price.errors }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-div image-field">
+                        <label class = "field-label"  for="{{ post_form.image.id_for_label }}">Image</label>
+                        {{ post_form.image}}
+                        <label class = "image-upload-rep" for="{{ post_form.image.id_for_label }}">
+                            <img id="pre-img" src="{% static 'tradeboard/signs.svg' %}" alt="your image" />
+                        </label>
+                        <div class="error">
+                            {{ post_form.image.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class = "input-div description-field">
+                    <label class = "field-label" for="{{ post_form.description.id_for_label }}">Description</label>
+                    {{ post_form.description }}
+                    <div class="error">
+                        {{ post_form.description.errors }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class= "flex-row-justify-end">
+        <button class= "Yes" type = "button"  name="post" onclick="newPostForm(true)">Post</button>
+        <button class= "No" type = "button" name="cancel" onclick="removePopUp()"> Cancel </button>
+    </div>
+</div>
