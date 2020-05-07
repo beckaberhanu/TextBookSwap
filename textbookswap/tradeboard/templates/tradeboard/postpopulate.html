@@ -1,5 +1,5 @@
 {% load static %}
-{% if posts%}
+{% if posts %}
     {% for post in posts %}
         <div class = "post" id= "post-{{post.pk}}">
             <div class = "post-minimized" id="post-min-{{post.pk}}">
@@ -133,19 +133,9 @@
     <div class = "no-results-available">
         <img height = "160px" width= "200px" src = "{% static 'tradeboard/search.svg' %}"/>
         <div>
-            {% if tab == 'Bookmark'%}
-                <p class= "sorry">It seems that you haven't bookmarked anything yet.</p>
-                <hr class= "tab-divider-1">
-                <p class="sorry-hint">Posts that you have bookmarked will show up in this tab</p>
-            {% elif tab == 'Tradeboard'%}
-                <p class= "sorry">Sorry! It seems that there are no books being sold here at the moment.</p>
-                <hr class= "tab-divider-1">
-                <p class="sorry-hint">Come back a different time and maybe you'll have better luck</p>
-            {% else %}
-                <p class= "sorry">Hi there! It looks like you haven't put up anything for sale yet.</p>
-                <hr class= "tab-divider-1">
-                <p class="sorry-hint">Click on 'Sell A Book' above and fill out the form to to put up a book for sell</p>
-            {% endif %}
+            <p class= "sorry">{{if_empty.main}}</p>
+            <hr class= "tab-divider-1">
+            <p class="sorry-hint">{{if_empty.small}}</p>
         </div>
     </div>
 {% endif %}

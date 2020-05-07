@@ -4,6 +4,10 @@ from django.core.validators import MaxLengthValidator, MaxValueValidator, MinVal
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from .models import Post
+# ************************************************************************
+from django.contrib.postgres.search import TrigramSimilarity
+from django.db.models.functions import Least, Greatest
+# ************************************************************************
 
 
 class BookSearchForm(forms.Form):
@@ -58,12 +62,14 @@ class BookSearchForm(forms.Form):
     EDITION = "edition"
     TITLE = "title"
     AUTHOR = "author"
+    RELEVANCE = "-similarity"
     sort_types = (
         (DATE_POSTED, "Date Posted"),
         (PRICE, "Price"),
         (EDITION, "Edition"),
         (TITLE, "Title"),
-        (AUTHOR, "Author")
+        (AUTHOR, "Author"),
+        (RELEVANCE, "Relevance")
     )
     sort_by = forms.ChoiceField(
         label='book type, ', initial=DATE_POSTED, widget=forms.Select(attrs={'class': "filter-type-select type-select-field"}), required=False, choices=sort_types)
@@ -73,14 +79,26 @@ class BookSearchForm(forms.Form):
         search_filters = self.cleaned_data
         posts = Post.objects.all()
         filtered = False
-        if search_filters['author']:
+        if search_filters['author'] and search_filters['title']:
             filtered = True
-            posts = posts.filter(
-                author__trigram_similar=search_filters['author'])
-        if search_filters['title']:
-            filtered = True
-            posts = posts.filter(
-                title__trigram_similar=search_filters['title'])
+            # posts = posts = posts.annotate(similarity=TrigramSimilarity(
+            #     'author', search_filters['author'])+TrigramSimilarity(
+            #     'title', search_filters['title'])).filter(similarity__gt=0.6)
+            posts = posts = posts.annotate(similarity=Greatest(TrigramSimilarity(
+                'author', search_filters['author']), TrigramSimilarity(
+                'title', search_filters['title']))).filter(similarity__gt=0.3)
+        else:
+            if search_filters['author']:
+                filtered = True
+                posts = posts = posts.annotate(similarity=TrigramSimilarity(
+                    'author', search_filters['author'])).filter(similarity__gt=0.3)
+            if search_filters['title']:
+                filtered = True
+                posts = posts.annotate(similarity=TrigramSimilarity(
+                    'title', search_filters['title'])).filter(similarity__gt=0.3)
+            # posts = posts.filter(
+            #     title=search_filters['title'])
+
         if search_filters['ISBN']:
             if(filtered):
                 posts = posts | Post.objects.filter(
