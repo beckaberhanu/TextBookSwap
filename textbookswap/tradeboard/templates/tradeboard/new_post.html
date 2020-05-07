@@ -1,8 +1,10 @@
 {% load static %}
 <div class="new-post-div">
     {% if action == 'edit' %}
+    <label class = "popup-title">Edit Post</label>
     <form class= "post-form" method="POST" id= "edit-post-form" name="edit-post-form" enctype="multipart/form-data"> 
     {% elif action == 'new-post'%}
+    <label class = "popup-title">New Post</label>
     <form class= "post-form" method="POST" id= "new-post-form" name="new-post-form" enctype="multipart/form-data"> 
     {% endif %}
         {% csrf_token %}
@@ -61,12 +63,12 @@
                     <div class="input-div image-field">
                         <label class = "field-label"  for="{{ post_form.image.id_for_label }}">Image</label>
                         {{ post_form.image}}
+                        {% if action == 'edit' %}
+                        <label class = "image-upload-rep" for="{{ post_form.image.id_for_label }}" style="background-image:url('{{post.image.url}}'); background-size:cover; background-position:center;">
+                        {% elif action == 'new-post'%}
                         <label class = "image-upload-rep" for="{{ post_form.image.id_for_label }}">
-                            {% if action == 'edit' %}
-                                <img id="pre-img" src="{{ post.image.url }}"/>
-                            {% elif action == 'new-post'%}
-                                <img id="pre-img" src="{% static 'tradeboard/signs.svg' %}"/>
-                            {% endif %}
+                        {% endif %}
+                            <img id="pre-img" src="{% static 'tradeboard/signs.svg' %}"/>
                         </label>
                         <div class="error">
                             {{ post_form.image.errors }}

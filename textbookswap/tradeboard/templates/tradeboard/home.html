@@ -120,7 +120,9 @@
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    $('#pre-img').attr('src', e.target.result);
+                    //$('#pre-img').attr('src', e.target.result);
+                    console.log('background-img: url("'+e.target.result+'");')
+                    $('.image-upload-rep').attr('style', "background-image:url('"+e.target.result+"'); background-size: cover; background-position: center;");
                 }
 
                 reader.readAsDataURL(input.files[0]);
