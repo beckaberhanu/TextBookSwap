@@ -24,6 +24,9 @@
 }
 .vertical-accent-bar {
   margin-left: 0;
+  width: 2.3px;
+  border-radius: 2px;
+  background-color: #5075f3;
 }
 .login-panel {
   background-color: #f2f8ff;
@@ -41,7 +44,7 @@ input[type="password"] {
   border: 2px solid #5371f2;
   padding: 12px 0px 4px 10px;
   border-radius: 0px 5px 5px 5px;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.18);
 }
 input[type="password"]::placeholder {
   color: #a8deff;
@@ -56,10 +59,16 @@ input[type="text"] {
   border: 2px solid #5371f2;
   padding: 12px 0px 4px 10px;
   border-radius: 0px 5px 5px 5px;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.18);
 }
 input[type="text"]::placeholder {
   color: #a8deff;
+}
+
+input[type="password"]:focus {
+  color: #4191e2;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1.4rem;
 }
 .login-btn {
   margin-left: 15px;

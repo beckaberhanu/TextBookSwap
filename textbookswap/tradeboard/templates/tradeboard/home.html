@@ -386,6 +386,51 @@
             }
         }
 
+        function editPostForm(post, confirmed=false){
+            console.log(confirmed)
+            if(confirmed){
+                options = {
+                    url: "{% url 'tradeboard-home' %}",
+                    type: 'POST',
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    success: function(resp) {
+                        console.log(resp)
+                        loadSellList()
+                        removePopUp()
+                    },
+                    error: function(resp) {
+                        console.log(resp)
+                        pop = document.querySelectorAll(".popup")
+                        pop[0].innerHTML=resp.responseText;
+                    }
+                };
+
+                $('#edit-post-form').ajaxSubmit(options);
+                console.log("confirmed edit post function called")
+            }
+            else{
+                $.ajax({
+                    url: "{% url 'tradeboard-home' %}",
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    method: "POST",
+                    data: {
+                        'action':'get-edit-post-form',
+                        'post':post,
+                    },
+                    success: function (resp) {
+                        pop = document.querySelectorAll(".popup")
+                        pop[0].innerHTML=resp;
+                        pop[0].classList.toggle("visible")
+                        panels = document.querySelectorAll(".panels")
+                        panels[0].classList.toggle("blurred")
+                    },
+                    error: function(data) {
+
+                    }
+                });
+            }
+        }
+
         function clearForm(){
             $.ajax({
                 url: "{% url 'tradeboard-home' %}",

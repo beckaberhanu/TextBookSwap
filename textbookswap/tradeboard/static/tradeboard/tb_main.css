@@ -665,7 +665,7 @@ a:visited {
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
   /* margin-bottom: 30px; */
 }
-.new-post {
+.post-form {
   width: 600px;
   padding: 35px 25px 0px 35px;
   display: flex;
@@ -1091,4 +1091,10 @@ a:visited {
   visibility: visible;
   animation-delay: 4s;
   animation: fadeIN cubic-bezier(0.95, 0.05, 0.795, 0.035) 0.9s;
+}
+.invisible {
+  width: 0.1px;
+  height: 0.1px;
+  visibility: hidden;
+  opacity: 0;
 }

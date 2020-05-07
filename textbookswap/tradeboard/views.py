@@ -66,6 +66,8 @@ def handleAJAXrequest(request):
     #     return loadSellList(request)
     elif request.POST.get("action") == "get-new-post-form":
         return getNewPostForm(request)
+    elif request.POST.get("action") == "get-edit-post-form":
+        return getEditPostForm(request)
     else:
         return handleForm(request)
 
@@ -74,7 +76,18 @@ def getNewPostForm(request):
     print('getNewPostForm function called')
     post_form = BookSellForm()
     html = render_to_string('tradeboard/new_post.html',
-                            {'post_form': post_form})
+                            {'post_form': post_form, 'action': 'new-post'})
+    return HttpResponse(html)
+
+
+def getEditPostForm(request):
+    print('getEditPostForm function called')
+    post = Post.objects.get(pk=request.POST['post'])
+    toDict = post.__dict__
+    print(toDict)
+    post_form = BookSellForm(initial=toDict)
+    html = render_to_string('tradeboard/new_post.html',
+                            {'post_form': post_form, 'action': 'edit', 'post': post})
     return HttpResponse(html)
 
 
@@ -84,12 +97,16 @@ def handleForm(request):
     print("request printed")
     if 'description' in request.POST:
         print('check file\n', request.FILES)
-        return createNewPost(request)
+        if request.POST['action'] == 'edit':
+            return editPost(request)
+        elif request.POST['action'] == 'new-post':
+            return createNewPost(request)
     else:
         return filterPosts(request)
 
 
 def createNewPost(request):
+    print(request.POST)
     user = request.user
     post_form = BookSellForm(request.POST, request.FILES)
     validity = post_form.is_valid()
@@ -101,11 +118,27 @@ def createNewPost(request):
         return HttpResponse("post was successful")
     else:
         form = render_to_string(
-            'tradeboard/new_post.html', {'post_form': post_form})
+            'tradeboard/new_post.html', {'post_form': post_form, 'action': 'new-post'})
         return HttpResponse(form, status=400)
 
-# def editPost(request):
-#     pass
+
+def editPost(request):
+    id = request.POST['post']
+    user = request.user
+    print('the id is', id)
+    if user == Post.objects.get(id=id).seller:
+        post_form = BookSellForm(request.POST, request.FILES)
+        validity = post_form.is_valid()
+        print("Is the form valid?", validity)
+        if validity:
+            post = post_form.save(commit=False)
+            post.seller = user
+            post.save()
+            return HttpResponse("post was successful")
+        else:
+            form = render_to_string(
+                'tradeboard/new_post.html', {'post_form': post_form})
+            return HttpResponse(form, status=400)
 
 
 def deletePost(request):

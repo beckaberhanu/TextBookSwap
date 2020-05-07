@@ -1,6 +1,10 @@
 {% load static %}
 <div class="new-post-div">
-    <form class= "new-post" method="POST" id= "new-post-form" name="new-post-form" enctype="multipart/form-data"> 
+    {% if action == 'edit' %}
+    <form class= "post-form" method="POST" id= "edit-post-form" name="edit-post-form" enctype="multipart/form-data"> 
+    {% elif action == 'new-post'%}
+    <form class= "post-form" method="POST" id= "new-post-form" name="new-post-form" enctype="multipart/form-data"> 
+    {% endif %}
         {% csrf_token %}
         {{ post_form.non_field_errors }}
         <div class = "arrange-as-column">
@@ -58,7 +62,11 @@
                         <label class = "field-label"  for="{{ post_form.image.id_for_label }}">Image</label>
                         {{ post_form.image}}
                         <label class = "image-upload-rep" for="{{ post_form.image.id_for_label }}">
-                            <img id="pre-img" src="{% static 'tradeboard/signs.svg' %}" alt="your image" />
+                            {% if action == 'edit' %}
+                                <img id="pre-img" src="{{ post.image.url }}"/>
+                            {% elif action == 'new-post'%}
+                                <img id="pre-img" src="{% static 'tradeboard/signs.svg' %}"/>
+                            {% endif %}
                         </label>
                         <div class="error">
                             {{ post_form.image.errors }}
@@ -72,11 +80,22 @@
                         {{ post_form.description.errors }}
                     </div>
                 </div>
+                {% if action == 'edit' %}
+                <input class="invisible" type="text" name="action" value="edit"> {# oh boy is this a hack !#}
+                <input class="invisible" type="text" name="post" value= "{{ post.pk }}">
+                {% elif action == 'new-post'%}
+                <input class="invisible" type="text" name="action" value="new-post"> {# oh boy is this a hack !#}
+                {% endif %}
+                
             </div>
         </div>
     </form>
     <div class= "flex-row-justify-end">
-        <button class= "Yes" type = "button"  name="post" onclick="newPostForm(true)">Post</button>
+        {% if action == 'edit' %}
+        <button class= "Yes" type = "button" name="post" onclick="editPostForm({{ post.pk }},true)">Edit</button>
+        {% elif action == 'new-post'%}
+        <button class= "Yes" type = "button" name="post" onclick="newPostForm(true)">Post</button>
+        {% endif %}
         <button class= "No" type = "button" name="cancel" onclick="removePopUp()"> Cancel </button>
     </div>
 </div>
