@@ -156,3 +156,11 @@ a.login-btn{
   /* bring your own prefixes */
   transform: translate(-30%, -45%);
 }
+
+.profileCentered {
+  position: fixed;
+
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%);
+}

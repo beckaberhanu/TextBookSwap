@@ -1,12 +1,18 @@
 {% extends 'tradeboard/base.html' %}
+{% load static %}
 
 {% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'tradeboard/contact.css' %}">
+<div class="centered">
     <div class="content-section">
-        <h2 style="color: #2e6c80;">The seller's email is: {{book.seller.email}}</h2>
-                <p>Here is a default message for you to sent to the seller:</p>
-        <p>Hi {{book.seller.first_name}}! My name is {{user.first_name}}. I'm interested in buying your book {{book.title}}. Please let me know if this book is still available.</p>
-        <p>Thank you!</p>
+        <h1 style="color: #5371f2;text-align:center;">The seller's email is: {{book.seller.email}}</h1>
+                <h2 style="color: #5371f2;text-align:center;" >Here is a default message for you to sent to the seller:</h2>
+        <h3 style="color: black;text-align:left;margin-left: 12%;">Hi {{book.seller.first_name}}!</h3> 
+        <h3 style="color:black;text-align:left;margin-left: 12%;">My name is {{user.first_name}}. I'm interested in buying your book {{book.title}}. Please let me know if this book is still available.</h3>
+        <h3 style="color: black;text-align:left;margin-left: 12%;">Thank you!</h3>
+        <h3 style="color: black;text-align:left;margin-left: 12%;"> {{user.first_name}}</h3>
         <p>&nbsp;</p>
         <p><strong>&nbsp;</strong></p>
     </div>
-{% endblock content %}
+</div>
+{% endblock%}
