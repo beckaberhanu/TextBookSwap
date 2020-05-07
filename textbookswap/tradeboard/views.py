@@ -97,7 +97,7 @@ def handleForm(request):
         print('check file\n', request.FILES)
         if request.POST['action'] == 'edit':
             return editPost(request)
-        elif request.POST['action'] == 'new-post':
+        elif request.POST.get('action') == 'new-post':
             return createNewPost(request)
     else:
         return filterPosts(request)
