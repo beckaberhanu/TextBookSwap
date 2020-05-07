@@ -786,18 +786,18 @@ a:visited {
 #id_posted_since_month {
   flex: 5;
   border-radius: 5px 0px 0px 5px;
-  padding: 12px 15px 4px 3px !important;
+  padding: 14px 15px 5px 3px !important;
 }
 #id_posted_since_day {
   flex: 4;
   border-radius: 0;
   border-width: 2px 0px;
-  padding: 12px 12px 4px 3px !important;
+  padding: 14px 12px 5px 3px !important;
 }
 #id_posted_since_year {
   flex: 8;
   border-radius: 0px 5px 5px 0px;
-  padding: 12px 15px 4px 3px !important;
+  padding: 14px 15px 5px 3px !important;
 }
 .type-select-field {
   width: 100%;
@@ -806,7 +806,7 @@ a:visited {
   font-family: "Courier Prime", monospace;
   font-size: 0.8rem;
   border: 2px solid #5371f2;
-  padding: 12px 15px 4px 10px !important;
+  padding: 14px 15px 5px 10px !important;
   border-radius: 5px 5px 5px 5px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
   margin: 0;

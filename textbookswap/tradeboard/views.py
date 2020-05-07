@@ -83,9 +83,7 @@ def getNewPostForm(request):
 def getEditPostForm(request):
     print('getEditPostForm function called')
     post = Post.objects.get(pk=request.POST['post'])
-    toDict = post.__dict__
-    print(toDict)
-    post_form = BookSellForm(initial=toDict)
+    post_form = BookSellForm(instance=post)
     html = render_to_string('tradeboard/new_post.html',
                             {'post_form': post_form, 'action': 'edit', 'post': post})
     return HttpResponse(html)
@@ -125,15 +123,14 @@ def createNewPost(request):
 def editPost(request):
     id = request.POST['post']
     user = request.user
+    post = Post.objects.get(id=id)
     print('the id is', id)
-    if user == Post.objects.get(id=id).seller:
-        post_form = BookSellForm(request.POST, request.FILES)
-        validity = post_form.is_valid()
-        print("Is the form valid?", validity)
-        if validity:
-            post = post_form.save(commit=False)
-            post.seller = user
-            post.save()
+    if user == post.seller:
+        post_form = BookSellForm(request.POST, request.FILES, instance=post)
+        valid = post_form.is_valid()
+        print("Is the form valid?", valid)
+        if valid:
+            post_form.save()
             return HttpResponse("post was successful")
         else:
             form = render_to_string(
