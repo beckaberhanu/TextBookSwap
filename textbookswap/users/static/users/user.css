@@ -168,7 +168,7 @@ a.login-btn{
 .profilecentered {
   position: fixed;
   top: 10%;
-  left: 30%;
+  left: 38%;
   /* bring your own prefixes */
 }
 
@@ -323,7 +323,7 @@ a.login-btn{
   margin-top: 3px;
   position: fixed;
   top: 25%;
-  left: 30%;
+  left: 38%;
   width: 350px;
   font-family: "Courier New", Courier, monospace;
   font-weight: 700;
@@ -368,4 +368,54 @@ input[type="email"] {
   padding: 12px 0px 4px 10px;
   border-radius: 0px 5px 5px 5px;
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.18);
+}
+
+.reset-panel {
+  background-color: #f2f8ff;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0px 5px 14px rgba(0, 0, 0, 0.35);
+}
+
+.profileCentered {
+  position: fixed;
+  top: 10%;
+  left: 38%;
+  /* bring your own prefixes */
+}
+
+.reset-banner {
+  margin-top: 200px;
+  margin-left: 550px;
+  background-color: #5371f2;
+  color: #ffffff;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 700;
+  font-size: 1.4em;
+  width: 140px;
+  height: 60px;
+  vertical-align: text-bottom;
+  border: 2px solid #ffffff;
+  border-radius: 10px 10px 10px 0px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  margin-top: 10px;
+  padding: 7px 0px 7px 0px;
+  text-align: center;
+}
+
+.request-btn{
+  margin-left: 47px;
+  width: auto;
+  height: 10px;
+  border-radius: 3px;
+  border: 0;
+  background: linear-gradient(90deg, #1fa2fa 0%, #5372f2 100%);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1em;
+  font-weight: 700;
+  color: #ffffff !important;
+  text-align: center;
+  line-height: 1.2em;
+  margin-top: 260px;  
 }

@@ -44,6 +44,11 @@
     - \$ export mydb_USER=[insert username here]
   - Export your database password as a local variable
     - \$ export mydb_PASSWORD=[insert password here]
+- Delegate an email as the orgnization email
+  - Export an email as a local variable
+    - \$ export EMAIL_HOST_USER=[insert email here]
+  - Export the app password as a local variable
+    - \$ export EMAIL_HOST_PASSWORD=[insert app password here]
 - Create the necessary migration files
   - \$ python3 manage.py makemigrations
 - Perform the migrations
