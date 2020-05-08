@@ -71,7 +71,7 @@ def getNewPostForm(request):
     print('getNewPostForm function called')
     post_form = BookSellForm()
     html = render_to_string('tradeboard/new_post.html',
-                            {'post_form': post_form, 'action': 'new-post'})
+                            {'post_form': post_form, 'action': 'new-post'}, request)
     return HttpResponse(html)
 
 
@@ -80,7 +80,7 @@ def getEditPostForm(request):
     post = Post.objects.get(pk=request.POST['post'])
     post_form = BookSellForm(instance=post)
     html = render_to_string('tradeboard/new_post.html',
-                            {'post_form': post_form, 'action': 'edit', 'post': post})
+                            {'post_form': post_form, 'action': 'edit', 'post': post}, request)
     return HttpResponse(html)
 
 
@@ -111,7 +111,7 @@ def createNewPost(request):
         return HttpResponse("post was successful")
     else:
         form = render_to_string(
-            'tradeboard/new_post.html', {'post_form': post_form, 'action': 'new-post'})
+            'tradeboard/new_post.html', {'post_form': post_form, 'action': 'new-post'}, request)
         return HttpResponse(form, status=400)
 
 
@@ -129,7 +129,7 @@ def editPost(request):
             return HttpResponse("post was successful")
         else:
             form = render_to_string(
-                'tradeboard/new_post.html', {'post_form': post_form})
+                'tradeboard/new_post.html', {'post_form': post_form}, request)
             return HttpResponse(form, status=400)
 
 
@@ -170,7 +170,7 @@ def loadBookmark(request):
             'small': 'Posts that you have bookmarked will show up in this tab'
         }
         html = render_to_string('tradeboard/postpopulate.html',
-                                {'posts': posts.order_by('-date_posted'), 'bookmarked': posts, 'tab': 'Bookmark', 'if_empty': if_empty})
+                                {'posts': posts.order_by('-date_posted'), 'bookmarked': posts, 'tab': 'Bookmark', 'if_empty': if_empty}, request)
         return HttpResponse(html)
     else:
         if_empty = {
@@ -178,7 +178,7 @@ def loadBookmark(request):
             'small': 'Posts that you have bookmarked will show up in this tab'
         }
         html = render_to_string('tradeboard/postpopulate.html',
-                                {'tab': 'Bookmark', 'if_empty': if_empty})
+                                {'tab': 'Bookmark', 'if_empty': if_empty}, request)
         return HttpResponse(html)
 
 
@@ -186,7 +186,7 @@ def loadContact(request):
     print("loadContact called ")
     posts = Post.objects.filter(seller=request.user)
     html = render_to_string('tradeboard/contact_detail.html',
-                            {'posts': posts.order_by('-date_posted')})
+                            {'posts': posts.order_by('-date_posted')}, request)
     return HttpResponse(html)
 
 
@@ -203,7 +203,7 @@ def loadSellList(request):
         'small': 'Click on \'Sell A Book\' above and fill out the form to to put up a book for sell'
     }
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'SellList', 'if_empty': if_empty})
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'SellList', 'if_empty': if_empty}, request)
     return HttpResponse(html)
 
 
@@ -211,7 +211,7 @@ def clear(request):
     print('clear function called')
     search_form = BookSearchForm()
     form = render_to_string(
-        'tradeboard/searchForm.html', {'search_form': search_form})
+        'tradeboard/searchForm.html', {'search_form': search_form}, request)
     return HttpResponse(form)
 
 
@@ -227,13 +227,13 @@ def filterPosts(request):
             'small': 'Try slightly tweaking or removing some filters to see that works better'
         }
         html = render_to_string('tradeboard/postpopulate.html',
-                                {'posts': posts, 'bookmarked': bookmarked, 'tab': 'Tradeboard', 'if_empty': if_empty})
+                                {'posts': posts, 'bookmarked': bookmarked, 'tab': 'Tradeboard', 'if_empty': if_empty}, request)
         form = render_to_string(
-            'tradeboard/searchForm.html', {'search_form': search_form})
+            'tradeboard/searchForm.html', {'search_form': search_form}, request)
         return HttpResponse(json.dumps({'searchResults': html, 'form': form}), content_type="application/json")
     else:
         form = render_to_string(
-            'tradeboard/searchForm.html', {'search_form': search_form})
+            'tradeboard/searchForm.html', {'search_form': search_form}, request)
         return HttpResponse(form, status=400)
 
 
@@ -248,7 +248,7 @@ def initialize(request):
         'small': 'Come back a different time and maybe you\'ll have better luck'
     }
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'Tradeboard', 'if_empty': if_empty})
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'Tradeboard', 'if_empty': if_empty}, request)
     return HttpResponse(html)
 
 

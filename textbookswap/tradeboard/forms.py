@@ -14,20 +14,21 @@ class BookSearchForm(forms.Form):
     title = forms.CharField(label="Title", max_length=100, required=False, validators=[MaxLengthValidator(100)],
                             widget=forms.TextInput(attrs={'class': "filter-text-input text-input-field", 'placeholder': ':############# ######## ######'}))
 
-    def validate_ISBN(value):
-        print("validate Isbn called|", not(f'{value}'.isnumeric()))
+    def validate_digit(value):
         if (value != None and (len(value) != 10 and len(value) != 13)):
             print(value)
             raise ValidationError(f'Number of digits in "{value}"" is neither 10 nor 13',
                                   params={'value': value},
                                   )
-        elif (not(f'{value}'.isnumeric())):
+
+    def validate_numeric(value):
+        if (not(f'{value}'.isnumeric())):
             raise ValidationError(f'"{value}" Has non-numeric elements',
                                   params={'value': value},
                                   )
 
     ISBN = forms.CharField(label="ISBN", max_length=13,
-                           validators=[validate_ISBN], required=False, widget=forms.TextInput(attrs={'class': "filter-text-input text-input-field", 'placeholder': ':##########'}))
+                           validators=[validate_digit, validate_numeric], required=False, widget=forms.TextInput(attrs={'class': "filter-text-input text-input-field", 'placeholder': ':##########'}))
 
     author = forms.CharField(label="Author", max_length=50, required=False, validators=[MaxLengthValidator(50)],
                              widget=forms.TextInput(attrs={'class': "filter-text-input text-input-field", 'placeholder': ':##########'}))
@@ -81,23 +82,18 @@ class BookSearchForm(forms.Form):
         filtered = False
         if search_filters['author'] and search_filters['title']:
             filtered = True
-            # posts = posts = posts.annotate(similarity=TrigramSimilarity(
-            #     'author', search_filters['author'])+TrigramSimilarity(
-            #     'title', search_filters['title'])).filter(similarity__gt=0.6)
-            posts = posts = posts.annotate(similarity=Greatest(TrigramSimilarity(
+            posts = posts.annotate(similarity=Greatest(TrigramSimilarity(
                 'author', search_filters['author']), TrigramSimilarity(
                 'title', search_filters['title']))).filter(similarity__gt=0.3)
         else:
             if search_filters['author']:
                 filtered = True
-                posts = posts = posts.annotate(similarity=TrigramSimilarity(
+                posts = posts.annotate(similarity=TrigramSimilarity(
                     'author', search_filters['author'])).filter(similarity__gt=0.3)
             if search_filters['title']:
                 filtered = True
                 posts = posts.annotate(similarity=TrigramSimilarity(
                     'title', search_filters['title'])).filter(similarity__gt=0.3)
-            # posts = posts.filter(
-            #     title=search_filters['title'])
 
         if search_filters['ISBN']:
             if(filtered):
@@ -122,18 +118,21 @@ class BookSellForm(forms.ModelForm):
     title = forms.CharField(label="Title", max_length=100, required=True, validators=[MaxLengthValidator(100)],
                             widget=forms.TextInput(attrs={'class': "post-text-input text-input-field", 'placeholder': ':# # ########### ######## ###### ## ########### ######## ######'}))
 
-    def validate_ISBN(value):
+    def validate_digit(value):
         if (value != None and (len(value) != 10 and len(value) != 13)):
             print(value)
             raise ValidationError(f'Number of digits in "{value}"" is neither 10 nor 13',
                                   params={'value': value},
                                   )
-        elif (not(f'{value}'.isnumeric())):
+
+    def validate_numeric(value):
+        if (not(f'{value}'.isnumeric())):
             raise ValidationError(f'"{value}" Has non-numeric elements',
                                   params={'value': value},
                                   )
+
     ISBN = forms.CharField(label="ISBN", max_length=13,
-                           validators=[validate_ISBN], required=True, widget=forms.TextInput(attrs={'class': "post-text-input text-input-field", 'placeholder': ':##########'}))
+                           validators=[validate_digit, validate_numeric], required=True, widget=forms.TextInput(attrs={'class': "post-text-input text-input-field", 'placeholder': ':##########'}))
 
     author = forms.CharField(label="Author", max_length=50, required=True, validators=[MaxLengthValidator(50)],
                              widget=forms.TextInput(attrs={'class': "post-text-input text-input-field", 'placeholder': ':####### # ##### ### # #####'}))
@@ -145,9 +144,9 @@ class BookSellForm(forms.ModelForm):
         attrs={'class': 'image-input', 'onchange': 'upload_img(this);'}))
 
     edition = forms.IntegerField(
-        label="Edition", min_value=1, max_value=100, required=True, validators=[MinValueValidator(1), MaxValueValidator(100)], widget=forms.NumberInput(attrs={'class': "post-int-input int-input-field", 'placeholder': ':##########'}))
+        label="Edition", min_value=1, max_value=100, required=True, validators=[MinValueValidator(1), MaxValueValidator(100), validate_numeric], widget=forms.NumberInput(attrs={'class': "post-int-input int-input-field", 'placeholder': ':##########'}))
     price = forms.IntegerField(
-        label="Maximum price", min_value=1, max_value=400, required=True, validators=[MaxValueValidator(400)], widget=forms.NumberInput(attrs={'class': "post-int-input int-input-field", 'placeholder': ':##########'}))
+        label="Maximum price", min_value=1, max_value=400, required=True, validators=[MaxValueValidator(400), validate_numeric], widget=forms.NumberInput(attrs={'class': "post-int-input int-input-field", 'placeholder': ':##########'}))
 
     OTHER = "Other"
     TEXTBOOK = "Textbook"
