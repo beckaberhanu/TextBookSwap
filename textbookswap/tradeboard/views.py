@@ -55,15 +55,10 @@ def handleAJAXrequest(request):
         return loadSellList(request)
     elif request.POST.get("action") == "loadContact":
         return loadContact(request)
-    # popup ****************************************************
-    # elif request.POST.get("action") == "edit":
-    #     return loadSellList(request)
     elif request.POST.get("action") == "delete":
         return deletePost(request)
     elif request.POST.get("action") == "tag-sold":
         return tagPostSold(request)
-    # elif request.POST.get("action") == "contact":
-    #     return loadSellList(request)
     elif request.POST.get("action") == "get-new-post-form":
         return getNewPostForm(request)
     elif request.POST.get("action") == "get-edit-post-form":
@@ -167,14 +162,23 @@ def tagPostSold(request):
 
 def loadBookmark(request):
     print("loadBookmark called ")
+
     if hasattr(request.user, 'bookmark'):
         posts = request.user.bookmark.posts.all()
+        if_empty = {
+            'main': "It seems that you don't have anything bookmarked at the moment.",
+            'small': 'Posts that you have bookmarked will show up in this tab'
+        }
         html = render_to_string('tradeboard/postpopulate.html',
-                                {'posts': posts.order_by('-date_posted'), 'bookmarked': posts, 'tab': 'Bookmark'})
+                                {'posts': posts.order_by('-date_posted'), 'bookmarked': posts, 'tab': 'Bookmark', 'if_empty': if_empty})
         return HttpResponse(html)
     else:
+        if_empty = {
+            'main': "It seems that you haven't bookmarked anything yet.",
+            'small': 'Posts that you have bookmarked will show up in this tab'
+        }
         html = render_to_string('tradeboard/postpopulate.html',
-                                {'tab': 'Bookmark'})
+                                {'tab': 'Bookmark', 'if_empty': if_empty})
         return HttpResponse(html)
 
 
@@ -194,8 +198,12 @@ def loadSellList(request):
     posts = Post.objects.filter(
         seller=request.user, transaction_state='In progress')
     posts = posts.order_by('-date_posted')
+    if_empty = {
+        'main': "Hi there! It looks like you haven't put up anything for sale yet.",
+        'small': 'Click on \'Sell A Book\' above and fill out the form to to put up a book for sell'
+    }
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'SellList'})
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'SellList', 'if_empty': if_empty})
     return HttpResponse(html)
 
 
@@ -214,8 +222,12 @@ def filterPosts(request):
         bookmarked = []
         if hasattr(request.user, 'bookmark'):
             bookmarked = request.user.bookmark.posts.all()
+        if_empty = {
+            'main': "Sorry! It seems we don't have anybooks that match your search",
+            'small': 'Try slightly tweaking or removing some filters to see that works better'
+        }
         html = render_to_string('tradeboard/postpopulate.html',
-                                {'posts': posts, 'bookmarked': bookmarked, 'tab': 'Tradeboard'})
+                                {'posts': posts, 'bookmarked': bookmarked, 'tab': 'Tradeboard', 'if_empty': if_empty})
         form = render_to_string(
             'tradeboard/searchForm.html', {'search_form': search_form})
         return HttpResponse(json.dumps({'searchResults': html, 'form': form}), content_type="application/json")
@@ -231,8 +243,12 @@ def initialize(request):
         bookmarked = request.user.bookmark.posts.all()
     posts = Post.objects.filter(transaction_state='In progress')
     posts = posts.exclude(seller=request.user)
+    if_empty = {
+        'main': "Sorry! It seems that there are no books being sold here at the moment.",
+        'small': 'Come back a different time and maybe you\'ll have better luck'
+    }
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'Tradeboard'})
+                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'Tradeboard', 'if_empty': if_empty})
     return HttpResponse(html)
 
 

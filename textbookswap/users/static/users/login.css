@@ -157,6 +157,7 @@ a.login-btn{
   transform: translate(-30%, -45%);
 }
 
+<<<<<<< HEAD
 .profilecentered {
   position: fixed;
   top: 10%;
@@ -252,4 +253,12 @@ a.login-btn{
   font-weight: 700;
   color: #818181;
   padding: 4px 15px 2px 15px;
+=======
+.profileCentered {
+  position: fixed;
+
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%);
+>>>>>>> d01fe0b43b24af15b6ea910e212992fbcd998b53
 }
