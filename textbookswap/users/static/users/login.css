@@ -253,3 +253,111 @@ a.login-btn{
   color: #818181;
   padding: 4px 15px 2px 15px;
 }
+
+.username-btn {
+  margin-left: 15px;
+  padding: 6px 0px;
+  margin-top: 3px;
+  width: 160px;
+  max-height: 34px;
+  border-radius: 3px;
+  border: 0;
+  background: linear-gradient(90deg, #1fa2fa 0%, #5372f2 100%);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #ffffff !important;
+  text-align: center;
+  line-height: 1.2em;
+  margin-top: 5px;  
+}
+
+.email-btn {
+  margin-left: 15px;
+  padding: 6px 0px;
+  margin-top: 3px;
+  width: 160px;
+  max-height: 34px;
+  border-radius: 3px;
+  border: 0;
+  background: linear-gradient(90deg, #1fa2fa 0%, #5372f2 100%);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #ffffff !important;
+  text-align: center;
+  line-height: 1.2em;
+  margin-top: 5px;  
+}
+
+.profileinfo-banner {
+  margin-left: 20px;
+  background-color: #5371f2;
+  color: #ffffff;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 700;
+  font-size: 1.4em;
+  width: 140px;
+  vertical-align: text-bottom;
+  border: 2px solid #ffffff;
+  border-radius: 10px 10px 10px 0px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  margin-top: 10px;
+  padding: 7px 0px 7px 0px;
+  text-align: center;
+}
+
+.profileupdate {
+  margin-left: 20px;
+  padding: 6px 0px;
+  margin-top: 3px;
+  position: fixed;
+  top: 25%;
+  left: 30%;
+  width: 350px;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 700;
+  font-size: 1em;
+}
+
+.update-btn {
+  margin-left: 20px;
+  padding: 6px 0px;
+  margin-top: 250px;
+  width: 95px;
+  max-height: 34px;
+  border-radius: 3px;
+  border: 0;
+  background: linear-gradient(90deg, #1fa2fa 0%, #5372f2 100%);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #ffffff !important;
+  text-align: center;
+  line-height: 1.2em;
+}
+
+.profileupdate-panel {
+  background-color: #f2f8ff;
+  border-radius: 20px;
+  box-shadow: 0px 5px 14px rgba(0, 0, 0, 0.35);
+  top: 20%;
+  width: 400px;
+  height: 380px;
+}
+
+input[type="email"] {
+  width: 100%;
+  align-self: stretch;
+  background-color: #ffffff;
+  color: #4191e2;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9rem;
+  border: 2px solid #5371f2;
+  padding: 12px 0px 4px 10px;
+  border-radius: 0px 5px 5px 5px;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.18);
+}
