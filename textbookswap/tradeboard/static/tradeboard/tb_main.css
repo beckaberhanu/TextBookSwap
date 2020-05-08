@@ -86,8 +86,6 @@ body {
     transform: scale(0.97, 0.97);
   }
 }
-.left-panel {
-}
 .profile-section {
   display: flex;
   flex-direction: column;
@@ -749,8 +747,6 @@ a:visited {
 .input-div.description-field {
   margin-left: 20px;
   flex: 3;
-}
-.image-field {
 }
 .image-input {
   width: 0.1px;
