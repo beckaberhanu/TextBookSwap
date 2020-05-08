@@ -157,6 +157,18 @@ a.login-btn{
   transform: translate(-30%, -45%);
 }
 
+<<<<<<< HEAD
+=======
+
+.registerCentered{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+>>>>>>> 46c28d53085ba7f48eed035636c73d184e6c752a
 .profilecentered {
   position: fixed;
   top: 10%;
@@ -253,6 +265,7 @@ a.login-btn{
   color: #818181;
   padding: 4px 15px 2px 15px;
 }
+<<<<<<< HEAD
 
 .username-btn {
   margin-left: 15px;
@@ -313,6 +326,9 @@ a.login-btn{
   margin-left: 20px;
   padding: 6px 0px;
   margin-top: 3px;
+=======
+.profileCentered {
+>>>>>>> 46c28d53085ba7f48eed035636c73d184e6c752a
   position: fixed;
   top: 25%;
   left: 30%;
@@ -322,6 +338,7 @@ a.login-btn{
   font-size: 1em;
 }
 
+<<<<<<< HEAD
 .update-btn {
   margin-left: 20px;
   padding: 6px 0px;
@@ -360,4 +377,18 @@ input[type="email"] {
   padding: 12px 0px 4px 10px;
   border-radius: 0px 5px 5px 5px;
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.18);
+=======
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%);
+}
+
+.passwordCentered{
+  position: fixed;
+
+  left: 45%;
+  top: 30%;
+  /* bring your own prefixes */
+  transform: translate(-30%,-45%);
+>>>>>>> 46c28d53085ba7f48eed035636c73d184e6c752a
 }
