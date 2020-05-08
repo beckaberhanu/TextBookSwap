@@ -3,6 +3,8 @@
 
 {% block content %}
     <link rel="stylesheet" type="text/css" href="{% static 'users/main.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'users/login.css' %}" >
+<div class="registerCentered">
     <div class="content-section">
         <form method="POST">
             {% csrf_token %}
@@ -14,10 +16,11 @@
                 <button classs="btn btn-outline-info" type="submit">Sign Up</button>
             </div>
         </form>
-        </div class="border-top pt-3">
+        <div class="border-top pt-3">
             <small class="text-muted">
                 Already Have An Accout? <a class="ml-2" href="{% url 'login' %}">Sign In</a>
             </small>
         </div>
     </div>
+</div>
 {% endblock %}

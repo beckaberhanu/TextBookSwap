@@ -157,10 +157,26 @@ a.login-btn{
   transform: translate(-30%, -45%);
 }
 
+.registerCentered{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
 .profileCentered {
   position: fixed;
 
   left: 50%;
   /* bring your own prefixes */
   transform: translate(-50%);
+}
+
+.passwordCentered{
+  position: fixed;
+
+  left: 45%;
+  top: 30%;
+  /* bring your own prefixes */
+  transform: translate(-30%,-45%);
 }
