@@ -3,16 +3,22 @@
 
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'tradeboard/contact.css' %}">
-<div class="centered">
-    <div class="content-section">
-        <h1 style="color: #5371f2;text-align:center;">The seller's email is: {{book.seller.email}}</h1>
-                <h2 style="color: #5371f2;text-align:center;" >Here is a default message for you to sent to the seller:</h2>
-        <h3 style="color: black;text-align:left;margin-left: 12%;">Hi {{book.seller.first_name}}!</h3> 
-        <h3 style="color:black;text-align:left;margin-left: 12%;">My name is {{user.first_name}}. I'm interested in buying your book {{book.title}}. Please let me know if this book is still available.</h3>
-        <h3 style="color: black;text-align:left;margin-left: 12%;">Thank you!</h3>
-        <h3 style="color: black;text-align:left;margin-left: 12%;"> {{user.first_name}}</h3>
-        <p>&nbsp;</p>
-        <p><strong>&nbsp;</strong></p>
+<div class="spacer"></div>
+<div class="content-section">
+    <div class="email-div-1">
+        <h1 class ="email-intro" >The seller's email is: </h1>
+        <hr class="divider">
+        <h1 class = "address">{{book.seller.email}}</h1>
+    </div>
+    <div class="email-div-2">
+        <h2 class = "email-prompt">Here is a default message for you to send to the seller:</h2>
+        <hr class="divider">
+        <h3 class = "email">Hi {{book.seller.first_name}}!</h3> 
+        <h3 class = "email">My name is {{user.first_name}}. I'm interested in buying your book "{{book.title}}". Please let me know if this book is still available.</h3>
+        <h3 class = "email">Thank you!</h3>
+        <h3 class = "email">{{user.first_name}} {{user.last_name}}</h3>
     </div>
 </div>
+<div class="spacer"></div>
+
 {% endblock%}
