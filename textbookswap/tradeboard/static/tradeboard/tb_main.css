@@ -926,6 +926,7 @@ a:visited {
 .seller-actions {
   display: flex;
   flex-direction: column;
+  margin-bottom: 9px;
 }
 .edit-btn {
   background: linear-gradient(45deg, #1fa2fa 0%, #5372f2 100%);
@@ -1163,4 +1164,5 @@ a:visited {
   display: flex;
   flex-direction: column;
   z-index: 2;
+  height: 182.5px;
 }
