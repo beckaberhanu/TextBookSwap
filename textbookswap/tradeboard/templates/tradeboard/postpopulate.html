@@ -44,50 +44,52 @@
             </div>
 
             <div class = "post-maximized" id="post-max-{{post.pk}}">
-                {% if post.transaction_state == "In progress"%}
-                <div class = "left-tile">
-                {% else %}
-                <div class = "left-tile completed">
-                {% endif %}
-                    <div class = "info">
-                        <div class = "arrange-as-row dets">
-                            <div class = "details">
-                                <p class = "d-title">Price</p>
-                                <p class = "d-info"> {{post.price}}$</p>
+                <div class= "column-div">
+                    {% if post.transaction_state == "In progress"%}
+                    <div class = "left-tile">
+                    {% else %}
+                    <div class = "left-tile completed">
+                    {% endif %}
+                        <div class = "info">
+                            <div class = "arrange-as-row dets">
+                                <div class = "details">
+                                    <p class = "d-title">Price</p>
+                                    <p class = "d-info"> {{post.price}}$</p>
+                                </div>
+                                <div class = "details">
+                                    <p class = "d-title">Edition</p>
+                                    <p class = "d-info">{{post.edition}}</p>
+                                </div>
                             </div>
                             <div class = "details">
-                                <p class = "d-title">Edition</p>
-                                <p class = "d-info">{{post.edition}}</p>
+                                <p class = "d-title">Book type</p>
+                                <p class = "d-info"> {{post.post_type}} </p>
                             </div>
-                        </div>
-                        <div class = "details">
-                            <p class = "d-title">Book type</p>
-                            <p class = "d-info"> {{post.post_type}} </p>
-                        </div>
-                        <div class = "details">
-                            <p class = "d-title">ISBN</p>
-                            <p class = "d-info"> {{post.ISBN}} </p>
-                        </div>
-                        <div class = "details">
-                            <p class = "d-title">Author</p>
-                            <p class = "d-info"> {{post.author}} </p>
+                            <div class = "details">
+                                <p class = "d-title">ISBN</p>
+                                <p class = "d-info"> {{post.ISBN}} </p>
+                            </div>
+                            <div class = "details">
+                                <p class = "d-title">Author</p>
+                                <p class = "d-info"> {{post.author}} </p>
+                            </div>
                         </div>
                     </div>
                     {% if tab != 'SellList' %}
-                    <div class = "seller-info">
-                        <img class = "contact-pic" src = "{{ post.seller.profile.image.url }}"/> <br>
-                        <div class = "identifier">
-                            <p class = "fl-name">{{post.seller.first_name}} {{post.seller.last_name}}</p>
-                            <p class="tiptext">{{post.seller.first_name}} {{post.seller.last_name}}</p>
-                            <br>
-                            <hr class = "divider-2"/>
-                            <p class = "username">@{{post.seller.username}}</p>
+                        <div class = "seller-info">
+                            <img class = "contact-pic" src = "{{ post.seller.profile.image.url }}"/> <br>
+                            <div class = "identifier">
+                                <p class = "fl-name">{{post.seller.first_name}} {{post.seller.last_name}}</p>
+                                <p class="tiptext">{{post.seller.first_name}} {{post.seller.last_name}}</p>
+                                <br>
+                                <hr class = "divider-2"/>
+                                <p class = "username">@{{post.seller.username}}</p>
+                            </div>
                         </div>
-                    </div>
-                    <a class = "contact-btn" href="{% url 'contact_detail' post.pk %}">
-                        <img height="12px" width="12px" src = "{% static 'message.svg' %}">
-                        Contact
-                    </a>
+                        <a class = "contact-btn" href="{% url 'contact_detail' post.pk %}">
+                            <img height="12px" width="12px" src = "{% static 'message.svg' %}">
+                            Contact
+                        </a>
                     {% endif %}
                 </div>
                 <div class = "right-tile">

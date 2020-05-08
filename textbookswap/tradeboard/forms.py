@@ -82,9 +82,10 @@ class BookSearchForm(forms.Form):
         filtered = False
         if search_filters['author'] and search_filters['title']:
             filtered = True
-            posts = posts.annotate(similarity=Greatest(TrigramSimilarity(
-                'author', search_filters['author']), TrigramSimilarity(
-                'title', search_filters['title']))).filter(similarity__gt=0.3)
+            func = (TrigramSimilarity(
+                'author', search_filters['author']) + TrigramSimilarity(
+                'title', search_filters['title']))
+            posts = posts.annotate(similarity=func).filter(similarity__gt=0.3)
         else:
             if search_filters['author']:
                 filtered = True
