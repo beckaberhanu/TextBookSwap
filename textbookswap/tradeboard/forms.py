@@ -4,6 +4,7 @@ from django.core.validators import MaxLengthValidator, MaxValueValidator, MinVal
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from .models import Post
+from django.contrib.postgres.search import TrigramSimilarity
 
 
 class BookSearchForm(forms.Form):
@@ -75,12 +76,15 @@ class BookSearchForm(forms.Form):
         filtered = False
         if search_filters['author']:
             filtered = True
-            posts = posts.filter(
-                author__trigram_similar=search_filters['author'])
+            # posts = posts.filter(
+                # author__trigram_similar=str(search_filters['author']))
+            posts = posts.annotate(similarity=TrigramSimilarity('author',search_filters['author'])).filter(similarity__gt=0.3)
         if search_filters['title']:
             filtered = True
-            posts = posts.filter(
-                title__trigram_similar=search_filters['title'])
+            # posts = posts.filter(
+                # title__trigram_similar=str(search_filters['title']))
+                # title=search_filters['title'])
+            posts = posts.annotate(similarity=TrigramSimilarity('title',search_filters['title'])).filter(similarity__gt=0.3)
         if search_filters['ISBN']:
             if(filtered):
                 posts = posts | Post.objects.filter(

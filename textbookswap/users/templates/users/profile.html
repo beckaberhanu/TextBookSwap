@@ -1,29 +1,23 @@
 {% extends "tradeboard/base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block content %}
-    <div class="content-section">
-      <div class="media">
-        <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
-        <div class="media-body">
-          <h2 class="account-heading">{{ user.username }}</h2>
-          <p class="text-secondary">{{ user.email }}</p>
-        </div>
-      </div>
-      <div class="nav">
-        <a  href="{% url 'password_reset' %}">
-          <button class = "nav-btn" type="button" name="passwordreset" >Password Reset</button>
-        </a>
-      </div>
-      <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Profile Info</legend>
-            {{ u_form|crispy }}
-            {{ p_form|crispy }}
-        </fieldset>
-        <div class="form-group">
-            <button classs="btn btn-outline-info" type="submit">Update</button>
-        </div>
-    </form>
+<link rel="stylesheet" type="text/css" href="{% static 'users/login.css' %}">
+<div class="profilecentered">
+  <div class = "profile-section">
+    <img class= "profile-pic" src = "{{user.profile.image.url}}"/>
+    <div class = "profile-info">
+        <h2 class = "fl-users-name">{{user.first_name}} {{user.last_name}}</h2>
+        <h2 class = "fl-users-email">{{user.email}}</h2>
+    </div>
+    <hr/>
+</div>
+    
+    <a  href="{% url 'password_reset' %}">
+        <button class = "passreset-btn" type="button" name="passwordreset">Password Reset</button>
+    </a>
+    <a  href="{% url 'profile-update' %}">
+        <button class = "passreset-btn" type="button" name="profileupdate">Update Profile</button>
+    </a>
     </div>
 {% endblock content %}
