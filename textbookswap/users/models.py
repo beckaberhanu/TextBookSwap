@@ -9,7 +9,8 @@ from PIL import Image
 
 class Profile(models.Model):
     # 1-1 field pointing to correspoding user
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='profile')
     image = models.ImageField(
         default="default_profile.png", upload_to="profile_pics")  # saves image to a folder called ../media/profile_pics or references an image located at ../media/default_profile.png if left empty.
 

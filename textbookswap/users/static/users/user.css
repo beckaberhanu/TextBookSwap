@@ -19,11 +19,14 @@
 .flex-justify-center {
   justify-content: center;
 }
-h2{
+h2 {
   text-align: center;
 }
 .align-center {
   align-items: center;
+}
+.align-streatch {
+  align-items: stretch;
 }
 .vertical-accent-bar {
   margin-left: 0;
@@ -73,7 +76,7 @@ input[type="password"]:focus {
   font-family: "Courier New", Courier, monospace;
   font-size: 1.4rem;
 }
-a.login-btn{
+a.login-btn {
   margin-left: 15px;
   padding: 6px 0px;
   margin-top: 3px;
@@ -89,7 +92,7 @@ a.login-btn{
   color: #ffffff !important;
   text-align: center;
   line-height: 1.2em;
-  margin-top: 5px;  
+  margin-top: 5px;
 }
 .login-btn {
   margin-left: 15px;
@@ -157,7 +160,7 @@ a.login-btn{
   transform: translate(-30%, -45%);
 }
 
-.registerCentered{
+.registerCentered {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -186,7 +189,7 @@ a.login-btn{
   background-size: cover;
 }
 
-.namedisplay-btn{
+.namedisplay-btn {
   top: 100%;
   margin-left: 0%;
   width: auto;
@@ -201,10 +204,10 @@ a.login-btn{
   color: #ffffff !important;
   text-align: center;
   line-height: 1.2em;
-  margin-top: 3px;  
+  margin-top: 3px;
 }
 
-.emaildisplay-btn{
+.emaildisplay-btn {
   margin-top: 30%;
   width: auto;
   height: auto;
@@ -218,7 +221,7 @@ a.login-btn{
   color: #ffffff !important;
   text-align: center;
   line-height: 1.2em;
-  margin-top: 3px;  
+  margin-top: 3px;
 }
 
 .profile-section {
@@ -278,7 +281,7 @@ a.login-btn{
   color: #ffffff !important;
   text-align: center;
   line-height: 1.2em;
-  margin-top: 5px;  
+  margin-top: 5px;
 }
 
 .email-btn {
@@ -297,7 +300,7 @@ a.login-btn{
   color: #ffffff !important;
   text-align: center;
   line-height: 1.2em;
-  margin-top: 5px;  
+  margin-top: 5px;
 }
 
 .profileinfo-banner {
@@ -403,7 +406,7 @@ input[type="email"] {
   text-align: center;
 }
 
-.request-btn{
+.request-btn {
   margin-left: 47px;
   width: auto;
   height: 10px;
@@ -417,7 +420,7 @@ input[type="email"] {
   color: #ffffff !important;
   text-align: center;
   line-height: 1.2em;
-  margin-top: 260px;  
+  margin-top: 260px;
 }
 
 .register {
@@ -450,4 +453,23 @@ input[type="email"] {
   margin-top: 10px;
   padding: 7px 0px 7px 0px;
   text-align: center;
+}
+.profile-banner {
+  background-color: #5371f2;
+  color: #ffffff;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 700;
+  font-size: 1.4em;
+  width: 190px;
+  vertical-align: text-bottom;
+  border: 2px solid #ffffff;
+  border-radius: 10px 10px 10px 0px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  margin-bottom: 20px;
+  padding: 7px 0px 7px 0px;
+  text-align: center;
+  align-self: center;
+}
+.image-field {
+  align-self: center;
 }

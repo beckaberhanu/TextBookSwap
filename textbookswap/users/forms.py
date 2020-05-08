@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
 
+
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
     first_name = forms.CharField()
@@ -13,6 +14,7 @@ class UserRegisterForm(UserCreationForm):
         fields = ['username', 'first_name', 'last_name',
                   'email', 'password1', 'password2']
 
+
 class UserUpdateForm(forms.ModelForm):
     email = forms.EmailField()
 
@@ -22,6 +24,9 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
+    image = forms.ImageField(label="Image", required=False, widget=forms.FileInput(
+        attrs={'class': 'image-input', 'onchange': 'upload_img(this);'}))
+
     class Meta:
         model = Profile
         fields = ['image']

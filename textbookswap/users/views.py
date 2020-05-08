@@ -39,8 +39,10 @@ def profile(request):
         'u_form': u_form,
         'p_form': p_form
     }
+    print("printing", p_form)
 
     return render(request, 'users/profile.html', context)
+
 
 def profile_update(request):
     if request.method == 'POST':
