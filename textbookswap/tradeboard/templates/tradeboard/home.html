@@ -3,7 +3,7 @@
 
 {% block content %}
 
-    <style>
+    {% comment %} <style>
         .instruction {
             height: 250px;
             width: 200px;
@@ -12,7 +12,7 @@
           margin: 20px;
           padding: 20px;
         } 
-    </style>
+    </style> {% endcomment %}
     <div class = "popup">
 
     </div>
@@ -28,8 +28,15 @@
             </div>
             <div class = "instruction">
                 <h3> Welcome to our website!</h3>
-                <p> You can search for books you want to buy, but we don't provide any transaction services. </p>
-                <p> Therefore, in order to buy a book, you need to contact the seller directly by email.</p>    
+                <div class="arrange-as-row">
+                    <div class="vertical-accent-bar"></div>
+                    <p style="margin:0;"> You can search for books you want to buy, but we don't provide any transaction services. 
+                    <br> Therefore, in order to buy a book, you need to contact the seller directly by email.</p>    
+                </div>
+                <div class="arrange-as-row" style="margin-top:15px;">
+                    <div class="vertical-accent-bar"></div>
+                    <p style="margin:0;"> At it's current stage, our website was built with the safari and chrome browser in mind, so please remember to use those for better user experience.</p>    
+                </div>
             </div>
         </div>
         <div class = "mid-panel">

@@ -110,7 +110,13 @@ class BookSearchForm(forms.Form):
         if search_filters['posted_since']:
             posts = posts.filter(
                 date_posted__gte=search_filters['posted_since'])
-        return(posts.order_by(search_filters['sort_by']))
+        if search_filters['sort_by'] == "-similarity":
+            if search_filters['author'] or search_filters['title']:
+                return(posts.order_by(search_filters['sort_by']))
+            else:
+                return(posts.order_by("-date_posted"))
+        else:
+            return(posts.order_by(search_filters['sort_by']))
 
 # *********************************************************************************************************************************************************************************
 
