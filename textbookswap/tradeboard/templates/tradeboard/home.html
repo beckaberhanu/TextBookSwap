@@ -2,29 +2,21 @@
 {% load static %}
 
 {% block content %}
-
-    {% comment %} <style>
-        .instruction {
-            height: 250px;
-            width: 200px;
-          background-color: white;
-          color: #0066ff;
-          margin: 20px;
-          padding: 20px;
-        } 
-    </style> {% endcomment %}
     <div class = "popup">
 
     </div>
     <div class = "spacer"></div>
-    <div class = "panels">
+    <div class = "panels" style = "flex:1;">
         <div class = "left-panel">
             <div class = "profile-section">
                 <img class= "profile-pic" src = "{{user.profile.image.url}}"/>
                 <div class = "profile-info">
-                    <h2 class = "fl-users-name"> {{user.first_name}} {{user.last_name}}</h2>
+                    <a href= "{% url 'profile' %}">
+                        <h2 class = "fl-users-name"> {{user.first_name}} {{user.last_name}}</h2>
+                    </a>
+                    <hr class="tab-divider" style="border-top: 2px solid #fff; align-self:stretch; margin: 4px 50px">
+                    <h2 class = "fl-users-name" style="margin-top: 0px;"> @{{user.username}}</h2>
                 </div>
-                <hr/>
             </div>
             <div class = "instruction">
                 <h3> Welcome to our website!</h3>

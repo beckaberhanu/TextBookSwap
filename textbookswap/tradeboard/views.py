@@ -1,18 +1,13 @@
-from django.http import QueryDict
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from .forms import BookSearchForm, BookSellForm
 from .models import Post
 from users.models import Bookmark
-from django.views.generic import DetailView, ListView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic.base import TemplateView
+from django.views.generic import DetailView
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-# Create your views here.
-
 from django.http import HttpResponse
 import json
 
@@ -156,10 +151,6 @@ def tagPostSold(request):
         return HttpResponse("You Don't have access to this post instance", status=400)
 
 
-# def contact(request):
-#     pass
-
-
 def loadBookmark(request):
     print("loadBookmark called ")
 
@@ -270,60 +261,6 @@ def bookmark(request):
         bk.posts.add(post)
         bookmarked = True
     return HttpResponse(json.dumps({'bookmarked': bookmarked, 'pk': request.POST.get("pk")}), content_type="application/json")
-
-
-class BookCreateView(CreateView):
-    model = Post
-    template_name = "tradeboard/new_book.html"
-    fields = ['title', 'ISBN', 'author', 'description', 'image',
-              'edition', 'price']  # removed the seller field <- becka
-    success_url = reverse_lazy('tradeboard-home')
-
-    def form_valid(self, form):
-        form.instance.seller = self.request.user
-        return super().form_valid(form)
-
-
-class BookDetailView(DetailView):
-    model = Post
-    template_name = 'tradeboard/detail_book.html'
-    context_object_name = "book"
-
-
-class BookUpdateView(UpdateView):
-    model = Post
-    template_name = 'tradeboard/edit_book.html'
-    fields = ['title', 'ISBN', 'author',
-              'description', 'image', 'edition', 'price']
-    success_url = reverse_lazy('tradeboard-home')
-
-    def dispatch(self, request, *args, **kwargs):
-        obj = self.get_object()
-        if obj.seller != self.request.user:
-            raise PermissionDenied
-        return super().dispatch(request, *args, **kwargs)
-
-
-class BookDeleteView(DeleteView):
-    model = Post
-    template_name = 'tradeboard/delete_book.html'
-    success_url = reverse_lazy('tradeboard-home')
-    context_object_name = "book"
-
-    def dispatch(self, request, *args, **kwargs):
-        obj = self.get_object()
-        if obj.seller != self.request.user:
-            raise PermissionDenied
-        return super().dispatch(request, *args, **kwargs)
-
-
-class SellingListView(ListView):
-    model = Post
-    template_name = 'tradeboard/selling_list.html'
-
-    def get_queryset(self):
-        user = self.request.user
-        return Post.objects.filter(seller=user)
 
 
 class ContactDetailView(DetailView):

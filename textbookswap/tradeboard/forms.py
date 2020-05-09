@@ -32,8 +32,10 @@ class BookSearchForm(forms.Form):
 
     author = forms.CharField(label="Author", max_length=50, required=False, validators=[MaxLengthValidator(50)],
                              widget=forms.TextInput(attrs={'class': "filter-text-input text-input-field", 'placeholder': ':##########'}))
+
     edition = forms.IntegerField(
         label="Edition", min_value=1, max_value=100, validators=[MinValueValidator(1), MaxValueValidator(100)], required=False, widget=forms.NumberInput(attrs={'class': "filter-int-input int-input-field", 'placeholder': ':##########'}))
+
     price = forms.IntegerField(
         label="Maximum price", min_value=1, max_value=400, validators=[MaxValueValidator(400)], required=False, widget=forms.NumberInput(attrs={'class': "filter-int-input int-input-field", 'placeholder': ':##########'}))
 

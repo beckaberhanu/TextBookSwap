@@ -2,22 +2,22 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" type="text/css" href="{% static 'users/user.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'users/css/user.css' %}">
 <div class="profilecentered">
-  <div class = "profile-section">
-    <img class= "profile-pic" src = "{{user.profile.image.url}}"/>
-    <div class = "profile-info">
-        <h2 class = "fl-users-name">{{user.first_name}} {{user.last_name}}</h2>
-        <h2 class = "fl-users-email">{{user.email}}</h2>
+    <div class = "profile-section">
+        <img class= "profile-pic" src = "{{user.profile.image.url}}"/>
+        <div class = "profile-info">
+            <h2 class = "fl-users-name">{{user.first_name}} {{user.last_name}}</h2>
+            <h2 class = "fl-users-email">{{user.email}}</h2>
+        </div>
     </div>
-    <hr/>
-</div>
-    
-    <a  href="{% url 'password_reset' %}">
-        <button class = "passreset-btn" type="button" name="passwordreset">Password Reset</button>
-    </a>
-    <a  href="{% url 'profile-update' %}">
-        <button class = "passreset-btn" type="button" name="profileupdate">Update Profile</button>
-    </a>
+    <div class="arrange-as-row flex-justify-center">    
+        <a  href="{% url 'password_reset' %}">
+            <button class = "passreset-btn" type="button" name="passwordreset">Password Reset</button>
+        </a>
+        <a  href="{% url 'profile-update' %}">
+            <button class = "passreset-btn" type="button" name="profileupdate">Update Profile</button>
+        </a>
+    </div>
     </div>
 {% endblock content %}

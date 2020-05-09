@@ -2,27 +2,8 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
-{% comment %} <link rel="stylesheet" type="text/css" href="{% static 'users/user.css' %}">
-<div class="profilecentered">
-<div class="profileupdate-panel">
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form-group">
-        <div class="profileinfo-banner">Profile Info</div>
-        <div class="profileupdate">
-        {{ u_form|crispy }}
-        {{ p_form|crispy }}
-        </div>
-    </div>
-
-    <div class="update-btn">
-    <button type="submit">Update</button>
-    </div>
 </div>
-</form>
-</div> {% endcomment %}
-</div>
-    <link rel="stylesheet" type="text/css" href="{% static 'users/user.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'users/css/user.css' %}">
     <div class= "spacer"></div>
     <div class = "arrange-as-column flex-justify-center">
         <div class="login-panel">
@@ -37,7 +18,7 @@
                         <label class = "field-label"  for="{{ p_form.image.id_for_label }}">Image</label>
                         {{ p_form.image}}
                         <label class = "image-upload-rep" for="{{ p_form.image.id_for_label }}" style="background-image:url('{{user.profile.image.url}}'); background-size:cover; background-position:center;">
-                            <img id="pre-img" src="{% static 'tradeboard/signs.svg' %}"/>
+                            <img id="pre-img" src="{% static 'tradeboard/svg/plus-sign.svg' %}"/>
                         </label>
                         <div class="error">
                             {{ p_form.image.errors }}
@@ -58,7 +39,7 @@
                         </div>
                     </div>
                     <div class="arrange-as-row align-center">
-                        <a class="clear-btn" type="submit">Cancel</a>
+                        <a class="clear-btn" type="submit" href="{% url 'tradeboard-home' %}">Cancel</a>
                         <button class="search-btn" type="submit">Update</button>
                     </div>
                 </div>

@@ -87,7 +87,7 @@
                             </div>
                         </div>
                         <a class = "contact-btn" href="{% url 'contact_detail' post.pk %}">
-                            <img height="12px" width="12px" src = "{% static 'message.svg' %}">
+                            <img height="12px" width="12px" src = "{% static 'tradeboard/svg/message.svg' %}">
                             Contact
                         </a>
                     {% endif %}
@@ -133,7 +133,7 @@
     {% endfor %}
 {% else %}
     <div class = "no-results-available">
-        <img height = "160px" width= "200px" src = "{% static 'tradeboard/search.svg' %}"/>
+        <img height = "160px" width= "200px" src = "{% static 'tradeboard/svg/search.svg' %}"/>
         <div>
             <p class= "sorry">{{if_empty.main}}</p>
             <hr class= "tab-divider-1">

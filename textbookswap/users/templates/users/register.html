@@ -1,8 +1,8 @@
 {% extends 'tradeboard/base.html' %}
 {% load static %}
 
-{% block content %}
-<link rel="stylesheet" type="text/css" href="{% static 'users/user.css' %}" >
+{% comment %} {% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'users/css/user.css' %}" >
 <div class="registerCentered">
     <div class="content-section">
         <div class="register">
@@ -28,4 +28,86 @@
     </div>
 </div>
 </div>
-{% endblock %}
+{% endblock %} {% endcomment %}
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'users/css/user.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'users/css/register.css' %}">
+    <div class= "spacer"></div>
+    <div class = "arrange-as-column flex-justify-center">
+        <div class="signup-panel">
+            <p class = "welcome-banner">Welcome</p>
+            <form method="POST"> 
+                {% csrf_token %}
+                <div class="-error">
+                {{ form.non_field_errors }}
+                </div>
+                <div class = "arrange-as-centered-column">
+                    <div class = "input-div username-field">
+                        <label class = "field-label" for="{{ form.username.id_for_label }}">Username</label>
+                        {{ form.username }}
+                        <div class="error">
+                            {{ form.username.errors }}
+                        </div>
+                        {{ form.username.helptext }}
+                    </div>
+                    <div class="arrange-as-row">
+                        <div class = "input-div username-field">
+                            <label class = "field-label" for="{{ form.first_name.id_for_label }}">First name</label>
+                            {{ form.first_name }}
+                            <div class="error">
+                                {{ form.first_name.errors }}
+                            </div>
+                        </div>
+                        <div class = "input-div username-field">
+                            <label class = "field-label" for="{{ form.last_name.id_for_label }}">Last name</label>
+                            {{ form.last_name }}
+                            <div class="error">
+                                {{ form.last_name.errors }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class = "input-div username-field">
+                        <label class = "field-label" for="{{ form.email.id_for_label }}">Email</label>
+                        {{ form.email }}
+                        <div class="error">
+                            {{ form.email.errors }}
+                        </div>
+                    </div>
+                    <div class = "input-div password-field">
+                        <label class = "field-label" for="{{ form.password1.id_for_label }}">Password</label>
+                        {{ form.password1 }}
+                        <div class="error">
+                            {{ form.password1.errors }}
+                        </div>
+                        <div class="password_hint">
+                            {{ form.password1.help_text }}
+                        </div>
+                    </div>
+                    <div class = "input-div password-field">
+                        <label class = "field-label" for="{{ form.password2.id_for_label }}">Password Confirmation</label>
+                        {{ form.password2 }}
+                        <div class="error">
+                            {{ form.password2.errors }}
+                        </div>
+                        <div class="password_hint">
+                            {{ form.password2.help_text }}
+                        </div>
+                    </div>
+                    <div class="arrange-as-row" style="justify-content: flex-end;">
+                        <button class="login-btn" type="submit">Sign Up</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="arrange-as-row align-center signup-panel" style="margin-top:20px;">
+            <div class="arrange-as-row" style="justify-content: flex-start;">
+                <div class="vertical-accent-bar"></div>
+                <p class="forgot" > Already Have An Accout? </p>
+            </div>
+            <button class="login-btn">
+                <a class="btn-link-col" href="{% url 'login' %}">Sign In</a>
+            </button>
+        </div>
+    </div>
+    <div class= "spacer"></div>
+{% endblock content %}
