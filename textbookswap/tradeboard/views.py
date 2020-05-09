@@ -14,19 +14,13 @@ import json
 
 @login_required
 def home(request):
+    """function based view for homepage"""
     user = request.user
     posts = Post.objects.exclude(seller=request.user)
     search_form = BookSearchForm()
     if request.method == "POST":
         if request.is_ajax():
             return handleAJAXrequest(request)
-        else:
-            search_form = BookSearchForm(request.POST)
-            if request.POST.get('clear'):
-                posts = Post.objects.exclude(seller=request.user)
-                search_form = BookSearchForm()
-            elif search_form.is_valid():
-                posts = search_form.filter()
 
     bookmarked = []
     if hasattr(user, 'bookmark'):
@@ -36,6 +30,7 @@ def home(request):
 
 
 def handleAJAXrequest(request):
+    """sends ajax requests to the proper function"""
     if request.POST.get("action") == "bookmark":
         return bookmark(request)
     elif request.POST.get("action") == "initialize":
@@ -48,8 +43,6 @@ def handleAJAXrequest(request):
         return loadBookmark(request)
     elif request.POST.get("action") == "loadSellList":
         return loadSellList(request)
-    elif request.POST.get("action") == "loadContact":
-        return loadContact(request)
     elif request.POST.get("action") == "delete":
         return deletePost(request)
     elif request.POST.get("action") == "tag-sold":
@@ -63,6 +56,7 @@ def handleAJAXrequest(request):
 
 
 def getNewPostForm(request):
+    """renders and returns an html form for creating new posts"""
     print('getNewPostForm function called')
     post_form = BookSellForm()
     html = render_to_string('tradeboard/new_post.html',
@@ -71,7 +65,7 @@ def getNewPostForm(request):
 
 
 def getEditPostForm(request):
-    print('getEditPostForm function called')
+    """renders and returns an editing form for editing existing posts"""
     post = Post.objects.get(pk=request.POST['post'])
     post_form = BookSellForm(instance=post)
     html = render_to_string('tradeboard/new_post.html',
@@ -80,11 +74,8 @@ def getEditPostForm(request):
 
 
 def handleForm(request):
-    print("wait for it")
-    print(request.POST)
-    print("request printed")
+    """sends information from incoming forms to the proper function to respond to them"""
     if 'description' in request.POST:
-        print('check file\n', request.FILES)
         if request.POST['action'] == 'edit':
             return editPost(request)
         elif request.POST.get('action') == 'new-post':
@@ -94,7 +85,7 @@ def handleForm(request):
 
 
 def createNewPost(request):
-    print(request.POST)
+    """accepts information from an incoming post creation form and either updates the database or returns an error"""
     user = request.user
     post_form = BookSellForm(request.POST, request.FILES)
     validity = post_form.is_valid()
@@ -111,14 +102,13 @@ def createNewPost(request):
 
 
 def editPost(request):
+    """accepts information from an incoming post editing form and either updates the database or returns an error"""
     id = request.POST['post']
     user = request.user
     post = Post.objects.get(id=id)
-    print('the id is', id)
     if user == post.seller:
         post_form = BookSellForm(request.POST, request.FILES, instance=post)
         valid = post_form.is_valid()
-        print("Is the form valid?", valid)
         if valid:
             post_form.save()
             return HttpResponse("post was successful")
@@ -129,6 +119,7 @@ def editPost(request):
 
 
 def deletePost(request):
+    """accepts a request with the id of a post and either deletes it or returns an error"""
     id = request.POST.get('post')
     post = Post.objects.get(id=id)
     if request.user == post.seller:
@@ -140,20 +131,20 @@ def deletePost(request):
 
 
 def tagPostSold(request):
+    """accepts a request with the id of a post and either tags it as 'complete' in the database or returns an error"""
     id = request.POST.get('post')
     post = Post.objects.get(id=id)
     if request.user == post.seller:
         post.transaction_state = "Complete"
         post.save()
-        print("post ", post.title, " sold")
         return HttpResponse("Transaction completed succesfully")
     else:
+        raise PermissionDenied
         return HttpResponse("You Don't have access to this post instance", status=400)
 
 
 def loadBookmark(request):
-    print("loadBookmark called ")
-
+    """renders and returns an html with all bookmarked posts"""
     if hasattr(request.user, 'bookmark'):
         posts = request.user.bookmark.posts.all()
         if_empty = {
@@ -173,16 +164,8 @@ def loadBookmark(request):
         return HttpResponse(html)
 
 
-def loadContact(request):
-    print("loadContact called ")
-    posts = Post.objects.filter(seller=request.user)
-    html = render_to_string('tradeboard/contact_detail.html',
-                            {'posts': posts.order_by('-date_posted')}, request)
-    return HttpResponse(html)
-
-
 def loadSellList(request):
-    print("loadSellList called ")
+    """renders and returns an html with all posts being sold by the current user"""
     bookmarked = []
     if hasattr(request.user, 'bookmark'):
         bookmarked = request.user.bookmark.posts.all()
@@ -199,7 +182,7 @@ def loadSellList(request):
 
 
 def clear(request):
-    print('clear function called')
+    """clears search filters and returns a new empty search form"""
     search_form = BookSearchForm()
     form = render_to_string(
         'tradeboard/searchForm.html', {'search_form': search_form}, request)
@@ -207,6 +190,7 @@ def clear(request):
 
 
 def filterPosts(request):
+    """accepts a search form through the request and returns posts that match the data from the search form"""
     search_form = BookSearchForm(request.POST)
     if search_form.is_valid():
         posts = search_form.filter().exclude(seller=request.user)
@@ -229,6 +213,7 @@ def filterPosts(request):
 
 
 def initialize(request):
+    """returns the tradeboard in it's default state"""
     bookmarked = []
     if hasattr(request.user, 'bookmark'):
         bookmarked = request.user.bookmark.posts.all()
@@ -244,6 +229,7 @@ def initialize(request):
 
 
 def bookmark(request):
+    """accepts the id of a post through the request and and bookmarks it"""
     user = request.user
     pk = request.POST.get("pk")
     post = Post.objects.get(pk=pk)
@@ -264,6 +250,7 @@ def bookmark(request):
 
 
 class ContactDetailView(DetailView):
+    """Class Based view for displaying contact information for a particular post"""
     model = Post
     template_name = 'tradeboard/contact_detail.html'
     context_object_name = "book"
