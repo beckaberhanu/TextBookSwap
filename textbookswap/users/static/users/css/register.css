@@ -1,0 +1,37 @@
+.signup-panel {
+  background-color: #f2f8ff;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0px 5px 14px rgba(0, 0, 0, 0.35);
+}
+.signup-panel .password_hint {
+  margin-bottom: 30px;
+}
+.password_hint li {
+  color: #97b3e0;
+}
+.password_hint ul {
+  padding-left: 0px;
+}
+.password_hint {
+  margin: 0;
+  margin-top: 5px;
+  padding: 0px 0px;
+  list-style-type: none;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  color: #97b3e0;
+}
+.signup-panel .welcome-banner {
+  margin-bottom: 20px;
+}
+.signup-panel .forgot {
+  width: auto;
+  color: #2f408d;
+  font-size: 1em;
+}
+.signup-panel .login-btn {
+  width: 120px;
+  max-height: none;
+  height: 40px;
+  border-radius: 7px;
+}
