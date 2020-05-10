@@ -250,7 +250,7 @@ def bookmark(request):
 
 
 class ContactDetailView(DetailView):
-    """Class Based view for displaying contact information for a particular post"""
+    """Class based view for displaying contact information for a particular post"""
     model = Post
     template_name = 'tradeboard/contact_detail.html'
     context_object_name = "book"
