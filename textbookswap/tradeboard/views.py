@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from .forms import BookSearchForm, BookSellForm
 from .models import Post, Bookmark
-# from users.models import Bookmark
 from django.views.generic import DetailView
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
@@ -145,10 +144,8 @@ def tagPostSold(request):
 
 def loadBookmark(request):
     """renders and returns an html with all bookmarked posts"""
-    print("\n\n\n load bookmark called \n\n\n")
     user = request.user
     bookmarks = user.bookmarked_post.all()
-    print(f"\n\n\n {bookmarks} \n\n\n")
     if bookmarks:
         bookmarks = bookmarks.order_by('-bookmark__date_bookmarked')
         posts = bookmarks
@@ -160,7 +157,6 @@ def loadBookmark(request):
                                 {'posts': posts, 'bookmarked': posts, 'tab': 'Bookmark', 'if_empty': if_empty}, request)
         return HttpResponse(html)
     else:
-        print("\n\n\n its emptyyyyyy \n\n\n")
         if_empty = {
             'main': "It seems that you haven't bookmarked anything yet.",
             'small': 'Posts that you have bookmarked will show up in this tab'
@@ -168,28 +164,6 @@ def loadBookmark(request):
         html = render_to_string('tradeboard/postpopulate.html',
                                 {'tab': 'Bookmark', 'if_empty': if_empty}, request)
         return HttpResponse(html)
-
-
-######################################################################################################################################################################################################
-    # if hasattr(request.user, 'bookmark'):
-    #     print(request.user.bookmark.all())
-    #     posts = request.user.bookmark.posts.all()
-    #     if_empty = {
-    #         'main': "It seems that you don't have anything bookmarked at the moment.",
-    #         'small': 'Posts that you have bookmarked will show up in this tab'
-    #     }
-    #     html = render_to_string('tradeboard/postpopulate.html',
-    #                             {'posts': posts.order_by('-date_bookmarked'), 'bookmarked': posts, 'tab': 'Bookmark', 'if_empty': if_empty}, request)
-    #     return HttpResponse(html)
-    # else:
-    #     if_empty = {
-    #         'main': "It seems that you haven't bookmarked anything yet.",
-    #         'small': 'Posts that you have bookmarked will show up in this tab'
-    #     }
-    #     html = render_to_string('tradeboard/postpopulate.html',
-    #                             {'tab': 'Bookmark', 'if_empty': if_empty}, request)
-    #     return HttpResponse(html)
-######################################################################################################################################################################################################
 
 
 def loadSellList(request):
@@ -241,7 +215,7 @@ def filterPosts(request):
 
 def initialize(request):
     """returns the tradeboard in it's default state"""
-    bookmarked = request.user.bookmarks.all().values('post')
+    bookmarked = request.user.bookmarked_post.all()
     posts = Post.objects.filter(transaction_state='In progress')
     posts = posts.exclude(seller=request.user)
     if_empty = {
@@ -264,35 +238,6 @@ def bookmark(request):
     else:
         post.bookmarks.add(user)
         bookmarked = True
-
-    # else:
-    #     post.bookmarks.add()
-    # bookmarked = user.bookmarks.filter(post=post)
-    # if bookmarked.count() != 0:
-    #     bookmark = bookmarked[0]
-    #     bookmark.delete()
-    #     bookmarked = False
-    # else:
-    #     newBk = Bookmark(user=user, post=post)
-    #     newBk.save()
-    #     bookmarked = True
-
-######################################################################################################################################################################################################
-    # if hasattr(user, 'bookmarks'):
-    #     if post in user.bookmark.all():
-    #         user.bookmark.posts.remove(post)
-    #         bookmarked = False
-    #     else:
-    #         # bk = BookmarkedPosts(post=post, bookmark=user.bookmark)
-    #         # bk.save()
-    #         user.bookmark.posts.add(post)
-    #         bookmarked = True
-    # else:
-    #     bk = Bookmark(user=user)
-    #     bk.save()
-    #     bk.posts.add(post)
-    #     bookmarked = True
-######################################################################################################################################################################################################
     return HttpResponse(json.dumps({'bookmarked': bookmarked, 'pk': pk}), content_type="application/json")
 
 

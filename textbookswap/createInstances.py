@@ -1,6 +1,5 @@
 from tradeboard.models import Post
 from django.utils.lorem_ipsum import WORDS as lorem_words
-from users.models import WishList
 from django.contrib.auth.models import User
 import random
 import string
@@ -59,23 +58,17 @@ def createPostInstances(number=10):
             seller=user, title=title, description=description, ISBN=ISBN, author=author, edition=edition, price=price, post_type=booktype)
 
 
-def createWishlistInstances(maxnumber=10):
+def createBookmarkInstances(maxnumber=10):
     for user in User.objects.all():
         allPosts = Post.objects.all().exclude(seller=user)
-        wishList = None
-        if(hasattr(user, 'wishlist')):
-            wishList = user.wishlist
-        else:
-            wishList = WishList.objects.create(user=user)
         for i in range(random.randrange(min(maxnumber, len(allPosts)))):
-            post = random.choice(allPosts)
-            wishList.posts.add(post)
+            user.bookmarked_post.add(random.choice(allPosts))
 
 
 def reinitialize():
     deleteAllPostInstances()
     deleteAllUserInstances()
-    deleteAllWishListInstances()
+    # deleteAllWishListInstances()
     createUserInstances()
     createPostInstances()
     # createWishlistInstances()

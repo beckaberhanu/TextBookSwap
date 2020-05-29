@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" type="text/css" href="{% static 'users/css/user.css' %}">
+{% comment %} <link rel="stylesheet" type="text/css" href="{% static 'users/css/user.css' %}">
 <div class="profilecentered">
     <div class = "profile-section">
         <img class= "profile-pic" src = "{{user.profile.image.url}}"/>
@@ -19,5 +19,27 @@
             <button class = "passreset-btn" type="button" name="profileupdate">Update Profile</button>
         </a>
     </div>
+    </div> {% endcomment %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'users/css/profile.css' %}">
+    <div class= "spacer"></div>
+    <div class = "arrange-as-column flex-justify-center">
+        <p class = "profile-banner">Your Profile</p>
+        <img class= "profile-pic" src = "{{user.profile.image.url}}"/>
+        <p class="pr-title">Name</p>
+        <p class="pr-info">{{user.first_name}} {{user.last_name}}</p>
+        <p class="pr-title">Username</p>
+        <p class="pr-info">{{user.username}}</p>
+        <p class="pr-title">Email</p>
+        <p class="pr-info">{{user.email}}</p>
+        <div class="arrange-as-row flex-justify-center">    
+            <a  href="{% url 'password_reset' %}">
+                <button class = "passreset-btn" type="button" name="passwordreset">Password Reset</button>
+            </a>
+            <a  href="{% url 'profile-update' %}">
+                <button class = "passupdate-btn" type="button" name="profileupdate">Update Profile</button>
+            </a>
+        </div>
     </div>
+    <div class= "spacer"></div>
 {% endblock content %}

@@ -1,0 +1,93 @@
+.profile-banner {
+  background-color: #5371f2;
+  color: #ffffff;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 700;
+  font-size: 1.4em;
+  width: 190px;
+  vertical-align: text-bottom;
+  border: 2px solid #ffffff;
+  border-radius: 10px 10px 10px 0px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  margin-bottom: 20px;
+  padding: 7px 0px 7px 0px;
+  text-align: center;
+  align-self: center;
+}
+.profile-pic {
+  margin-bottom: 20px;
+  width: 150px;
+  height: 150px;
+}
+.arrange-as-column {
+  align-self: center;
+  background-color: #f2f8ff;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0px 5px 14px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.pr-info {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #4191e2;
+  min-width: 130px;
+  text-align: center;
+  background-color: #ffffff;
+  border: 2px solid #5075f3;
+  border-radius: 5px;
+  padding: 13px 10px 7px;
+  margin: 5px 0px;
+}
+.passreset-btn {
+  cursor: pointer;
+  padding: 10px 12px;
+  margin: 0px 5px;
+  margin-top: 30px;
+  border-radius: 3px;
+  border: 0;
+  background: linear-gradient(90deg, #fa1fb1 0%, #5372f2 100%);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  font-family: "Courier Prime", monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.passupdate-btn {
+  cursor: pointer;
+  padding: 10px 12px;
+  margin: 0px 5px;
+  margin-top: 30px;
+  border-radius: 3px;
+  border: 0;
+  background: linear-gradient(90deg, #1fa2fa 0%, #5372f2 100%);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  font-family: "Courier Prime", monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.pr-title {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.8rem;
+  z-index: 2;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #5075f3;
+  border: 2px solid #ffffff;
+  border-radius: 5px;
+  padding: 3px 20px;
+  margin: 5px 0px;
+  margin-bottom: -17px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+}

@@ -15,13 +15,30 @@
                 <div class = "arrange-as-column align-stretch">
                     <p class = "profile-banner">Your Profile</p>
                     <div class="input-div image-field">
-                        <label class = "field-label"  for="{{ p_form.image.id_for_label }}">Image</label>
+                        <label class = "field-label"  for="{{ p_form.image.id_for_label }}">Profile Pic</label>
                         {{ p_form.image}}
                         <label class = "image-upload-rep" for="{{ p_form.image.id_for_label }}" style="background-image:url('{{user.profile.image.url}}'); background-size:cover; background-position:center;">
                             <img id="pre-img" src="{% static 'tradeboard/svg/plus-sign.svg' %}"/>
                         </label>
                         <div class="error">
                             {{ p_form.image.errors }}
+                        </div>
+                    </div>
+                    <div class="arrange-as-row set-width">
+                        <div class = "input-div username-field">
+                            <label class = "field-label" for="{{ u_form.first_name.id_for_label }}">First name</label>
+                            {{ u_form.first_name }}
+                            <div class="error">
+                                {{ u_form.first_name.errors }}
+                            </div>
+                        </div>
+                        <div class="spacer2"></div>
+                        <div class = "input-div username-field">
+                            <label class = "field-label" for="{{ u_form.last_name.id_for_label }}">Last name</label>
+                            {{ u_form.last_name }}
+                            <div class="error">
+                                {{ u_form.last_name.errors }}
+                            </div>
                         </div>
                     </div>
                     <div class = "input-div username-field">
