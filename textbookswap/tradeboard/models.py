@@ -10,9 +10,12 @@ from django.db.models import Manager
 
 
 class Post(models.Model):
+    # ****************************************************************************************
     seller = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True, blank=False)
+    # ****************************************************************************************
     title = models.CharField(max_length=100)
+    # ****************************************************************************************
 
     def validate_ISBN(value):
         print(not(f'{value}'.isnumeric()))
@@ -26,19 +29,25 @@ class Post(models.Model):
                                   )
 
     ISBN = models.CharField(max_length=13, validators=[validate_ISBN])
-
+    # ****************************************************************************************
     author = models.CharField(max_length=50)
+    # ****************************************************************************************
     description = models.TextField(max_length=350)
+    # ****************************************************************************************
     image = models.ImageField(
         default='default_book.png', upload_to='book_pics')
+    # ****************************************************************************************
     date_posted = models.DateTimeField(default=timezone.now)  # UTC time
-
+    # ****************************************************************************************
     edition = models.PositiveSmallIntegerField(blank=True, null=True)
 
+    # ****************************************************************************************
     price = models.PositiveSmallIntegerField(default=0)
-    swappable = models.BooleanField(default=False)
 
     # ****************************************************************************************
+    swappable = models.BooleanField(default=False)
+    # ****************************************************************************************
+
     IN_PROGRESS = "In progress"
     COMPLETE = "Complete"
     states = (
@@ -47,7 +56,9 @@ class Post(models.Model):
     )
     transaction_state = models.CharField(
         max_length=50, choices=states, default=IN_PROGRESS)
+
     # ****************************************************************************************
+
     OTHER = "Other"
     TEXTBOOK = "Textbook"
     post_types = (
@@ -56,8 +67,11 @@ class Post(models.Model):
     )
     post_type = models.CharField(
         max_length=50, choices=post_types, default=OTHER)
-    # ****************************************************************************************
 
+    # ****************************************************************************************
+    bookmarks = models.ManyToManyField(
+        User, related_name="bookmarked_post", through='Bookmark')
+    # ****************************************************************************************
     objects = Manager()
 
     def __str__(self):
@@ -67,6 +81,22 @@ class Post(models.Model):
         verbose_name = 'Post'
         # Name the model will appear under in the Django Admin page.
         verbose_name_plural = 'Posts'
+
+
+class Bookmark(models.Model):
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE)
+    date_bookmarked = models.DateTimeField(default=timezone.now)  # UTC time
+
+    def __str__(self):
+        return f"Post with id: {self.post.pk} bookmarked by {self.user.username} at time {self.date_bookmarked }"
+
+    class Meta:
+        verbose_name = 'Bookmarked Post'
+        # Name the model will appear under in the Django Admin page.
+        verbose_name_plural = 'Bookmarked Posts'
 
 
 @receiver(models.signals.post_delete, sender=Post)

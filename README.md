@@ -35,7 +35,7 @@
   - Choose the database you want to install the extension for, in this case "mydb"
     - \# \c mydb
   - istall the extension
-    - \# CRREATE EXTENSION pg_trgm;
+    - \# CREATE EXTENSION pg_trgm;
 - Install psycopg2
   - \$ pip install psycopg2-binary
   - https://www.psycopg.org/docs/install.html
@@ -65,3 +65,9 @@
     - \ `python from createInstances import createRealInstances as cri cri() \`
 - Start the server
   - \$ python3 manage.py runserver
+- [__OPTIONAL__] view wenpage on mobile device
+  - from (https://stackoverflow.com/questions/42451790/accessing-django-localhost-server-through-lan/42451833)
+    - run python manage.py runserver 0.0.0.0:8000
+    - figure out your ip address which is say 192.168.1.8
+    - Add '192.168.1.8' to ALLOWED_HOSTS list in your settings.py file.
+    - access 192.168.1.8:8000 on mobile.
