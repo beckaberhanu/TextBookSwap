@@ -46,9 +46,9 @@
     - \$ export mydb_PASSWORD=[insert password here]
 - Delegate an email as the orgnization email
   - Export an email as a local variable
-    - \$ export EMAIL_HOST_USER=[insert email here]
+    - \$ export TEXTBOOK_SWAP_EMAIL_USER=[insert email here]
   - Export the app password as a local variable
-    - \$ export EMAIL_HOST_PASSWORD=[insert app password here]
+    - \$ export TEXTBOOK_SWAP_EMAIL_PASS=[insert app password here]
 - Create the necessary migration files
   - \$ python3 manage.py makemigrations
 - Perform the migrations
@@ -65,9 +65,10 @@
     - \ `python from createInstances import createRealInstances as cri cri() \`
 - Start the server
   - \$ python3 manage.py runserver
-- [__OPTIONAL__] view wenpage on mobile device
+- [__OPTIONAL__] view webpage on mobile device
   - from (https://stackoverflow.com/questions/42451790/accessing-django-localhost-server-through-lan/42451833)
     - run python manage.py runserver 0.0.0.0:8000
-    - figure out your ip address which is say 192.168.1.8
-    - Add '192.168.1.8' to ALLOWED_HOSTS list in your settings.py file.
-    - access 192.168.1.8:8000 on mobile.
+    - figure out your ip address, which coud look something like say ~ "192.168.1.8"
+    - Add your ip address to the ALLOWED_HOSTS list in your settings.py file.
+    - connect your mobile device to the same network as your server
+    - access the web page on your device by using a url of the form \[Ip Adress\]:8000. For example 192.168.1.8:8000 on our case.

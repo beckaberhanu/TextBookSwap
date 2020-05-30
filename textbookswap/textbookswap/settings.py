@@ -140,4 +140,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('TEXTBOOK_SWAP_EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('TEXTBOOK_SWAP_EMAIL_PASS')
-DEFAULT_FROM_EMAIL = 'MacalesterBookSwap Team <noreply@macbookswap.com>'
+DEFAULT_FROM_EMAIL = os.environ.get('TEXTBOOK_SWAP_EMAIL_USER')
+# DEFAULT_FROM_EMAIL = 'MacalesterBookSwap Team <noreply@macbookswap.com>'
