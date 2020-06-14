@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from django.db.models import Manager
 
 # link for a good video on creating custom html forms: https://www.youtube.com/watch?v=9jDEnSm4nt8
@@ -12,7 +13,7 @@ from django.db.models import Manager
 class Post(models.Model):
     # ****************************************************************************************
     seller = models.ForeignKey(
-        User, on_delete=models.CASCADE, null=True, blank=False)
+        User, on_delete=models.CASCADE, null=True, blank=False, related_name="posts")
     # ****************************************************************************************
     title = models.CharField(max_length=100)
     # ****************************************************************************************
@@ -75,12 +76,68 @@ class Post(models.Model):
     objects = Manager()
 
     def __str__(self):
-        return(f"Post| Seller: {self.seller} | Title: {self.title} | ID: {self.pk}")
+        return(f"Seller: {self.seller} | Title: {self.title} | ID: {self.pk}")
 
     class Meta:
         verbose_name = 'Post'
         # Name the model will appear under in the Django Admin page.
         verbose_name_plural = 'Posts'
+
+
+class MessageThread(models.Model):
+    post = models.ForeignKey(
+        Post, on_delete=models.SET_NULL, null=True, related_name="messageThreads")
+    buyer = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='messageThreads')
+    archived_by_seller = models.BooleanField(default=False)
+    archived_by_buyer = models.BooleanField(default=False)
+    date_started = models.DateTimeField(default=timezone.now)
+    last_updated = models.DateTimeField(auto_now_add=True)
+
+    highlighted_message = models.OneToOneField(
+        'Message', on_delete=models.SET_NULL, null=True, blank=True, related_name="highlighted_by")
+    pinned_message = models.OneToOneField(
+        'Message', on_delete=models.SET_NULL, null=True, blank=True, related_name="pinned_by")
+
+    def __str__(self):
+        return(f"Seller: {self.post.seller.username} | Buyer: {self.buyer.username} | ID: {self.pk}")
+
+    class Meta:
+        get_latest_by = 'last_updated'
+        verbose_name = 'MessageThread'
+        # Name the model will appear under in the Django Admin page.
+        verbose_name_plural = 'MessageThreads'
+
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    messageThread = models.ForeignKey(
+        MessageThread, on_delete=models.CASCADE, related_name='messages')
+
+    text = models.CharField(max_length=250)
+    image = models.ImageField(blank=True, upload_to='message_pics')
+    offer = models.PositiveSmallIntegerField()
+    offer_accepted = models.BooleanField(null=True)
+
+    reference = models.ForeignKey(
+        'self', on_delete=models.SET_NULL, null=True, blank=True)
+
+    time_sent = models.DateTimeField(default=timezone.now)
+    seen = models.BooleanField()
+
+    def save(self, *args, **kwargs):
+        self.messageThread.last_updated = timezone.now
+        super(Message, self).save(*args, **kwargs)
+        self.messageThread.highlighted_message = self
+
+    def __str__(self):
+        return(f"Sender: {self.sender.username} | Senn: {self.seen} | ID: {self.pk}")
+
+    class Meta:
+        get_latest_by = 'time_sent'
+        verbose_name = 'Message'
+        # Name the model will appear under in the Django Admin page.
+        verbose_name_plural = 'Messages'
 
 
 class Bookmark(models.Model):
