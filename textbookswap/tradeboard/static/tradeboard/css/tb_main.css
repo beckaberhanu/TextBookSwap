@@ -34,7 +34,7 @@ select:not([multiple]) {
   -moz-appearance: none;
   background-position: right 50%;
   background-repeat: no-repeat;
-  background-image: url("down-arrow.svg");
+  background-image: url("../svg/down-arrow.svg");
 }
 select:focus {
   outline: none;
@@ -109,7 +109,7 @@ body {
 }
 .profile-info {
   width: 222px;
-  height: 192px;
+  height: 220px;
   border-radius: 5px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
   background-color: #5371f2;
@@ -601,6 +601,8 @@ a:visited {
   justify-content: space-evenly;
 }
 .nav-btn {
+  align-self: flex-start;
+  margin-left: 10px;
   background-color: white;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.35);
   border: none;
@@ -612,24 +614,15 @@ a:visited {
   padding: 4px 15px 2px 15px;
 }
 .title-search {
-  margin-top: 0;
+  margin: 10px 15px 8px;
   font-family: "DIN condensed";
   color: #273572;
   font-size: 2rem;
 }
 .search-filters {
-  /* background-color: #ffffff; */
-  /* box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35); */
-  /* border-radius: 5px; */
-  width: 295px;
-  padding: 15px;
+  margin: 15px;
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
-  flex: 1;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
-  border-radius: 5px;
-  margin-bottom: 20px;
 }
 .hint {
   align-self: flex-end;
@@ -677,6 +670,11 @@ a:visited {
 .arrange-as-row {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+}
+.arrange-as-column {
+  display: flex;
+  flex-direction: column;
   justify-content: space-between;
 }
 .flex-justify-start {
@@ -1196,4 +1194,23 @@ a:visited {
   color: #273572;
   align-self: center;
   padding: 0 10px;
+}
+
+.message-div {
+  width: 295px;
+  padding: 10px 15px 5px;
+  flex: 0 !important;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  flex: 1;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+.title-message {
+  margin: 0;
+  font-family: "DIN condensed";
+  color: #273572;
+  font-size: 2rem;
 }

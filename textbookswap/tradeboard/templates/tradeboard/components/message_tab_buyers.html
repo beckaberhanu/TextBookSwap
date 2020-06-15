@@ -1,0 +1,171 @@
+{% load static %}
+{% for post in context %}
+    <div class="post-message-thread-group flex-column flex-cross-stretch">
+        <div class="post-tile inactive" id="post-tile-{{post.id}}">
+            <div class="flex-row flex-cross-center">
+                <h2 class="post-tile-title">{{ post.title }}</h2>
+                <img class="post-tile-option-btn" src="{% static 'tradeboard/svg/options.svg' %}" height="20px" width="20px" onclick="">
+                <div class="post-tile-options inactive">
+                    * option 1 <br>
+                    * option 2 hfcgc <br>
+                    * option 3 <br>
+                    * option 4
+                </div>
+            </div>
+            <div class="flex-row flex-cross-end">
+                <p class="post-tile-hint">Author:{{ post.author }} | Edition:{{ post.edition }}</p>
+                <img class="expand-tile-btn" src="{% static 'tradeboard/svg/expand.svg' %}" height=20px width=20px onclick="expandPostTile('post-tile-{{post.id}}')">
+            </div>
+        </div>
+        {% for messageThread in post.messageThreads.all %}
+            <div class="message-thread-tile flex-row flex-cross-start" onclick="loadMessageThread({{messageThread.pk}})">
+                <img class="message-thread-tile-profile-pic"src="{{messageThread.buyer.profile.image.url}}">
+                <div class="message-thread-tile-text flex-col">
+                    <p class="message-thread-tile-buyer-name"> {{messageThread.buyer.first_name}} {{messageThread.buyer.last_name}}</p>
+                    <p class="message-thread-tile-hint">
+                        {% if messageThread.highlighted_message.offer %} <b>[Offer: ${{messageThread.highlighted_message.offer}} offered] </b>{% endif %}
+                        {% if messageThread.highlighted_message.text %} {{messageThread.highlighted_message.text}} {% endif %}
+                        {% if messageThread.highlighted_message.image %} <b>| [Image]:</b> {{messageThread.highlighted_message.image.url}} {% endif %}
+                    </p>
+                </div>
+                <small class="message-thread-tile-time"> {{messageThread.highlighted_message.time_sent|date:"m/d/Y"}} </small>
+            </div>
+
+        {% endfor %}
+    </div>
+    {% ifchanged post.transaction_state %}
+        <div class="message-post-group-divider">
+        </div>
+    {% endifchanged %}
+{% endfor %}
+<script>
+    function expandPostTile(id){
+        $("#"+id).toggleClass("inactive")
+    }
+</script>
+<style type="text/css" scoped>
+    .post-tile{
+        position: relative;
+        background-color: #ffffff;
+        border-radius: 7px;
+        box-shadow: 0px 3px 10px rgba(0,0,0,0.3);
+        margin: 10px 10px;
+        padding: 10px 0px;
+    }
+    .post-tile.inactive ~ div{
+        display: None;
+    }
+    .post-tile.inactive .{
+        display: None;
+    }
+    .post-tile-title{
+        font-family: "DIN condensed";
+        color: #273572;
+        font-size: 1.7rem;
+        margin: 10px 15px 8px;
+    }
+    .post-tile-option-btn{
+        margin: 0 18px 15px 0;
+    }
+    .post-tile-options.inactive{
+        display: None;
+    }
+    .post-tile-options{
+        position: absolute;
+        right:50px;
+        top:-10px;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        box-shadow: 0px 3px 10px rgba(0,0,0,0.3);
+        border-radius: 7px;
+    }
+    .post-tile-hint{
+        font-family: "Courier Prime", monospace;
+        font-size: 0.9em;
+        font-weight: 500;
+        color: #818181;
+        margin: 10px 15px 8px;
+    }
+    .post-tile.inactive .expand-tile-btn{
+        margin-right: 17px;
+        transform: rotate(90deg);
+    }
+    .post-tile .expand-tile-btn{
+        margin-right: 17px;
+        transform: rotate(270deg);
+    }
+
+
+
+    .post-message-thread-group .message-thread-tile{
+        background-color: #ffffff;
+        border-radius: 7px;
+        border: 2px solid #273572;
+        box-shadow: 0px 3px 10px rgba(0,0,0,0.3);
+        margin: 0px 20px 10px 20px;
+        padding: 5px 5px;
+    }
+    .post-message-thread-group .message-thread-tile:hover{
+        cursor: pointer;
+    }
+    .post-message-thread-group .message-thread-tile-profile-pic{
+        border-radius: 5px;
+        border: 2px solid #273572;
+        height: 35px;
+        width: 35px;
+        object-fit: cover;
+        overflow: hidden;
+    }
+    .post-message-thread-group .message-thread-tile-text{
+        margin: 0px 10px;
+        flex: 1;
+    }
+    .post-message-thread-group .message-thread-tile-buyer-name{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.8em;
+        font-weight: 700;
+        color: ##273572;
+    }
+    .post-message-thread-group .message-thread-tile-hint{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.6em;
+        font-weight: 500;
+        color: #808080;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* number of lines to show */
+        -webkit-box-orient: vertical;
+    }
+    .post-message-thread-group .message-thread-tile-time{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.5em;
+        font-weight: 500;
+        color: #808080;
+    }
+</style>
+<style type="text/css">
+    .flex-row{
+        display: flex;
+        justify-content: space-between;
+    }
+    .flex-column{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .flex-cross-start{
+        align-items: flex-start;
+    }
+    .flex-cross-center{
+        align-items: center;
+    }
+    .flex-cross-stretch{
+        align-items: stretch;
+    }
+    .flex-cross-end{
+        align-items: flex-end;
+    }
+</style>

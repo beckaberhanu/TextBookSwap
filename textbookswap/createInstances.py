@@ -1,4 +1,4 @@
-from tradeboard.models import Post
+from tradeboard.models import Post, Bookmark
 from django.utils.lorem_ipsum import WORDS as lorem_words
 from django.contrib.auth.models import User
 import random
@@ -68,10 +68,10 @@ def createBookmarkInstances(maxnumber=10):
 def reinitialize():
     deleteAllPostInstances()
     deleteAllUserInstances()
-    # deleteAllWishListInstances()
+    deleteAllBookmarkInstances()
     createUserInstances()
     createPostInstances()
-    # createWishlistInstances()
+    createBookmarkInstances()
 
 
 def deleteAllPostInstances():
@@ -82,8 +82,8 @@ def deleteAllUserInstances():
     User.objects.filter(is_staff=False).delete()
 
 
-def deleteAllWishListInstances():
-    WishList.objects.all().delete()
+def deleteAllBookmarkInstances():
+    Bookmark.objects.all().delete()
 
 
 def createRealInstances():

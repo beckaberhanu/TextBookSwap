@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from .forms import BookSearchForm, BookSellForm
-from .models import Post, Bookmark
+from .models import Post, Bookmark, MessageThread, Message
 from django.views.generic import DetailView
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.db.models import BooleanField, Case, Value, When
 import json
 
 
@@ -50,8 +51,43 @@ def handleAJAXrequest(request):
         return getNewPostForm(request)
     elif request.POST.get("action") == "get-edit-post-form":
         return getEditPostForm(request)
+    elif request.POST.get("action") == "load-buyers-tab":
+        return loadBuyersTab(request)
+    elif request.POST.get("action") == "load-sellers-tab":
+        return loadSellersTab(request)
+    elif request.POST.get("action") == "load-message-thread":
+        return loadMessageThread(request)
     else:
         return handleForm(request)
+
+
+def loadBuyersTab(request):
+    user = request.user
+    posts = user.posts.all()
+    html = render_to_string('tradeboard/components/message_tab_buyers.html',
+                            {'context': posts}, request)
+    return HttpResponse(html)
+
+
+def loadSellersTab(request):
+    user = request.user
+    messageThreads = user.messageThreads.all()
+    html = render_to_string('tradeboard/components/message_tab_sellers.html',
+                            {'context': messageThreads}, request)
+    return HttpResponse(html)
+
+
+def loadMessageThread(request):
+    user = request.user
+    messageThread = MessageThread.objects.get(pk=request.POST.get("id"))
+    if(messageThread.buyer == user or messageThread.post.seller == user):
+        print("\n\n\n\n\n\n valid \n\n\n\n\n\n")
+        html = render_to_string('tradeboard/components/message_chat_screen.html',
+                                {'context': messageThread}, request)
+        print(html)
+        return HttpResponse(html)
+    else:
+        HttpResponse(status=403)
 
 
 def getNewPostForm(request):
@@ -145,40 +181,30 @@ def tagPostSold(request):
 def loadBookmark(request):
     """renders and returns an html with all bookmarked posts"""
     user = request.user
-    bookmarks = user.bookmarked_post.all()
-    if bookmarks:
-        bookmarks = bookmarks.order_by('-bookmark__date_bookmarked')
-        posts = bookmarks
-        if_empty = {
-            'main': "It seems that you don't have anything bookmarked at the moment.",
-            'small': 'Posts that you have bookmarked will show up in this tab'
-        }
-        html = render_to_string('tradeboard/postpopulate.html',
-                                {'posts': posts, 'bookmarked': posts, 'tab': 'Bookmark', 'if_empty': if_empty}, request)
-        return HttpResponse(html)
-    else:
-        if_empty = {
-            'main': "It seems that you haven't bookmarked anything yet.",
-            'small': 'Posts that you have bookmarked will show up in this tab'
-        }
-        html = render_to_string('tradeboard/postpopulate.html',
-                                {'tab': 'Bookmark', 'if_empty': if_empty}, request)
-        return HttpResponse(html)
+    bookmarks = user.bookmarked_post.all().annotate(
+        bookmarked=Case(default=Value(True), output_field=BooleanField(),))
+    if_empty = {
+        'small': 'Posts that you have bookmarked will show up in this tab',
+        'main': "It seems that you don't have anything bookmarked at the moment."
+    }
+    print("bookmarks: ====> ", bookmarks)
+    bookmarks = bookmarks.order_by('-bookmark__date_bookmarked')
+    html = render_to_string('tradeboard/postpopulate.html',
+                            {'posts': bookmarks, 'tab': 'Bookmark', 'if_empty': if_empty}, request)
+    return HttpResponse(html)
 
 
 def loadSellList(request):
     """renders and returns an html with all posts being sold by the current user"""
-    bookmarked = request.user.bookmarked_post.all()
-    print(bookmarked)
     posts = Post.objects.filter(
-        seller=request.user, transaction_state='In progress')
+        seller=request.user, transaction_state='In progress').annotate(bookmarked=Case(When(bookmarks__in=[request.user], then=Value(True)), default=Value(False), output_field=BooleanField(),))
     posts = posts.order_by('-date_posted')
     if_empty = {
         'main': "Hi there! It looks like you haven't put up anything for sale yet.",
         'small': 'Click on \'Sell A Book\' above and fill out the form to to put up a book for sell'
     }
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'SellList', 'if_empty': if_empty}, request)
+                            {'posts': posts.order_by('-date_posted'), 'tab': 'SellList', 'if_empty': if_empty}, request)
     return HttpResponse(html)
 
 
@@ -215,15 +241,15 @@ def filterPosts(request):
 
 def initialize(request):
     """returns the tradeboard in it's default state"""
-    bookmarked = request.user.bookmarked_post.all()
-    posts = Post.objects.filter(transaction_state='In progress')
+    posts = Post.objects.filter(transaction_state='In progress').annotate(bookmarked=Case(When(
+        bookmarks__in=[request.user], then=Value(True)), default=Value(False), output_field=BooleanField(),))
     posts = posts.exclude(seller=request.user)
     if_empty = {
         'main': "Sorry! It seems that there are no books being sold here at the moment.",
         'small': 'Come back a different time and maybe you\'ll have better luck'
     }
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'bookmarked': bookmarked, 'tab': 'Tradeboard', 'if_empty': if_empty}, request)
+                            {'posts': posts.order_by('-date_posted'), 'tab': 'Tradeboard', 'if_empty': if_empty}, request)
     return HttpResponse(html)
 
 

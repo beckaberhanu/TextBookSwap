@@ -1,0 +1,13 @@
+.message-panel.inactive .flex-row ~ div {
+  background-color: #f00;
+  visibility: hidden;
+  height: 0;
+  display: none;
+  align-items: 4;
+  transform: rotateZ(90);
+  rotate: ;
+  font-family: Arial, Helvetica, sans-serif;
+  justify-content: start;
+  justify-self: ;
+  poin
+}

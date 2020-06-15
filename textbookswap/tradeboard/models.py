@@ -116,7 +116,7 @@ class Message(models.Model):
 
     text = models.CharField(max_length=250)
     image = models.ImageField(blank=True, upload_to='message_pics')
-    offer = models.PositiveSmallIntegerField()
+    offer = models.PositiveSmallIntegerField(blank=True, null=True)
     offer_accepted = models.BooleanField(null=True)
 
     reference = models.ForeignKey(

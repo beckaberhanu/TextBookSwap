@@ -1,0 +1,177 @@
+{% load static %}
+<div class="message-thread-header">
+    <img class="close-message-thread-btn" src="{% static 'tradeboard/svg/back-btn.svg' %}" onclick="removeMessageThread()">
+    {% if context.buyer == user %}
+    <img class="message-thread-header-profile-pic" src="{{context.post.seller.profile.image.url}}">
+    <p class="message-thread-header-reciever-name">{{context.post.seller.first_name}} {{context.post.seller.last_name}}</p>
+    {% else %} 
+    <img class="message-thread-header-profile-pic" src="{{context.buyer.profile.image.url}}">
+    <p class="message-thread-header-reciever-name">{{context.buyer.first_name}} {{context.buyer.last_name}}</p>
+    {% endif %}
+</div>
+<div class="message-thread-scroll">
+    {% if context.pinned_message %}
+        <div class="pinned-message">
+
+        </div>
+    {% endif %}
+    {% for message in context.messages.all %}
+        {% if message.sender == user %}
+        <div class="chat-block from-me">
+        {% elif not message.sender == user %} 
+        <div class="chat-block from-other-user">
+        {% endif %}
+            <img class="message-profile-pic" src="{{message.sender.profile.image.url}}">
+            <div class="message-instance">
+                {% if message.reference%}
+                    <p class="message-reference">{{message.reference.text}}</p>
+                {% endif %}
+
+                {% if message.offer%}
+                    <div class="offer-panel">
+                    </div>
+                {% endif %}
+
+                {% if message.image%}
+                    <img class="message-image" src="{{message.image.url}}">
+                {% endif %}
+
+                {% if message.text%}
+                    <p class="message-text">{{message.text}}</p>
+                {% endif %}
+
+                <p class="message-time">{{message.time_sent}}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<div class="input-section">
+    <form>
+
+    </form>
+</div>
+<script type="text/javascript">
+    function removeMessageThread(){
+        $('.messagethread-panel').toggleClass("inactive", true)
+        $('.messagethread-panel').html("");
+    }
+</script>
+<style type="text/css">
+    .message-thread-header{
+        border-width: 2px 0 2px 0;
+        border-style: solid;
+        border-color: #eee;
+        background-color: #fff;
+        height: 50px;
+        display:flex;
+        align-items: center;
+    }
+    .close-message-thread-btn{
+        margin-left: 10px;
+        height: 20px;
+        width: 20px;
+        color: #273572;
+    }
+    .close-message-thread-btn:hover{
+        cursor: pointer;
+    }
+    .message-thread-header-profile-pic{
+        border-radius: 10px;
+        border: 2px solid #273572;
+        object-fit: cover;
+        overflow: hidden;
+        width: 35px;
+        height: 35px;
+        margin: 0 10px;
+    }
+    .message-thread-header-reciever-name{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 1em;
+        font-weight: 700;
+    }
+    .message-thread-scroll{
+        flex:1;
+        overflow: scroll;
+        background-color: #f4f4f4;
+        overflow-x: hidden;
+        display:flex;
+        flex-direction: column-reverse;
+    }
+    .pinned-message{
+        position: fixed;
+    }
+    .chat-block{
+        display: flex;
+        max-width: 80%;
+        align-items: flex-end;
+        margin: 10px 0;
+    }
+    .chat-block.from-me{
+        flex-direction: row-reverse;
+        align-self: flex-end;
+    }
+    .chat-block.from-other-user{
+        align-self: flex-start;
+    }
+    .message-profile-pic{
+        border-radius: 10px;
+        border: 2px solid #273572;
+        object-fit: cover;
+        overflow: hidden;
+        width: 25px;
+        height: 25px;
+        margin: 0 10px;
+    }
+    .message-instance{
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        overflow: hidden;
+    }
+    .chat-block.from-me .message-instance{
+        background-color: #304396;
+        border-radius: 20px 20px 10px 20px;
+    }
+    .chat-block.from-other-user .message-instance{
+        background-color: #E6EBFF;
+        border-radius: 20px 20px 20px 10px;
+    }
+
+    .message-image{
+        /*margin: 10px;*/
+        border-radius: 5px;
+        max-width:100%;
+        height: auto;
+    }
+    .message-text{
+        margin: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.8em;
+        font-weight: 500;
+    }
+    .chat-block.from-other-user .message-text{
+        color: #273572;
+    }
+    .chat-block.from-me .message-text{
+        color: #ffffff;
+    }
+    .message-time{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.6em;
+        font-weight: 500;
+        margin: 10px;
+    }
+    .chat-block.from-me .message-time{
+        color: #dddddd;
+    }
+    .chat-block.from-other-user  .message-time{
+        color: #374582;
+    }
+    .input-section{
+        border-width: 2px 0 2px 0;
+        border-style: solid;
+        border-color: #eee;
+        background-color: #fff;
+        height: 50px;
+    }
+</style>

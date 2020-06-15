@@ -1,0 +1,121 @@
+{% load static %}
+{% for messageThread in context %}
+    <div class="message-tile flex-row flex-cross-stretch" onclick="loadMessageThread({{messageThread.pk}})">
+        <img class="message-tile-profile-pic"src="{{messageThread.post.seller.profile.image.url}}">
+        <div class="message-tile-text flex-column">
+            <p class="message-tile-seller-name"> {{messageThread.post.seller.first_name}} {{messageThread.post.seller.last_name}}</p>
+            <p class="message-tile-hint">
+                {% if messageThread.highlighted_message.offer %} <b>[Offer: ${{messageThread.highlighted_message.offer}} offered] </b>{% endif %}
+                {% if messageThread.highlighted_message.text %} {{messageThread.highlighted_message.text}} {% endif %}
+                {% if messageThread.highlighted_message.image %} <b>| [Image]:</b> {{messageThread.highlighted_message.image.url}} {% endif %}
+            </p>
+        </div>
+        <div class="flex-column flex-cross-end">
+            <small class="message-tile-time"> {{messageThread.highlighted_message.time_sent|date:"m/d/Y"}} </small>
+            <img class="message-tile-option-btn" id="messageThread-{{messageThread.id}}" src="{% static 'tradeboard/svg/options.svg' %}" onclick="showOptions({{messageThread.id}})" height=20px width=20px>
+            <div class="message-tile-options inactive">
+                * option 1
+                * option 2
+                * option 3
+                * option 4
+            </div>
+        </div>
+    </div>
+    {% ifchanged messageThread.post.transaction_state %}
+        <div class="message-post-group-divider">
+        </div>
+    {% endifchanged %}
+{% endfor %}
+<script type="text/javascript">
+    function showOptions(){
+        console.log("yayayayaa")
+    }
+</script>
+<style type="text/css" scoped>
+    .message-tile{
+        background-color: #ffffff;
+        border-radius: 7px;
+        border: 2px solid #273572;
+        box-shadow: 0px 3px 10px rgba(0,0,0,0.3);
+        margin: 10px 10px;
+        padding: 5px 5px;
+    }
+    .message-tile:hover{
+        cursor: pointer;
+    }
+    .message-tile-profile-pic{
+        border-radius: 5px;
+        border: 2px solid #273572;
+        height: 35px;
+        width: 35px;
+        object-fit: cover;
+        overflow: hidden;
+    }
+    .message-tile-text{
+        margin: 0px 10px;
+        flex: 1;
+    }
+    .message-tile-seller-name{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.8em;
+        font-weight: 700;
+        color: ##273572;
+    }
+    .message-tile-hint{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.6em;
+        font-weight: 500;
+        color: #808080;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* number of lines to show */
+        -webkit-box-orient: vertical;
+    }
+    .message-tile-time{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.5em;
+        font-weight: 500;
+        color: #808080;
+    }
+    .message-tile-option-btn{
+        margin: 0 5px 0 0;
+    }
+    .message-tile-options.inactive{
+        display: None;
+    }
+    .message-tile-options{
+        position: absolute;
+        right:30px;
+        top:-10px;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        box-shadow: 0px 3px 10px rgba(0,0,0,0.3);
+        border-radius: 7px;
+    }
+</style>
+<style type="text/css" scoped>
+    .flex-row{
+        display: flex;
+        justify-content: space-between;
+    }
+    .flex-column{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .flex-cross-start{
+        align-items: flex-start;
+    }
+    .flex-cross-center{
+        align-items: center;
+    }
+    .flex-cross-stretch{
+        align-items: stretch;
+    }
+    .flex-cross-end{
+        align-items: flex-end;
+    }
+</style>

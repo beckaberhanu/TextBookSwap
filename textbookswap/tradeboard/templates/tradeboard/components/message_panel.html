@@ -1,0 +1,151 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<div class="message-panel inactive">
+    <div class="message-panel-title flex-row" onclick="togglePanelView()">
+        <h1>Messages</h1>
+    </div>
+    <div class="messagethread-panel inactive">
+    </div>
+    <div class="message-panel-tabs flex-row">
+        <p class="message-panel-tab" id="buyers-tab" onclick="switchMessageTabs(this)">Buyers</p>
+        <p class="message-panel-tab inactive" id="sellers-tab" onclick="switchMessageTabs(this)">Sellers</p>
+    </div>
+    <div class="message-scroll-panel">
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    function switchMessageTabs(tab){
+        var action;
+
+        if(tab.classList.contains("inactive")){
+            $(".message-panel-tab").toggleClass("inactive", true)
+        }
+        tab.classList.toggle("inactive", false);
+
+        if(tab.id=="buyers-tab"){
+            action="load-buyers-tab"
+        }
+        else if (tab.id=="sellers-tab"){
+            action="load-sellers-tab"
+        }
+        console.log(action)
+        loadTab(action)
+    }
+
+    function loadTab(action) {
+        console.log("load tab called")
+        $.ajax({
+            url: "{% url 'tradeboard-home' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            method: "POST",
+            data: {
+                "action":action
+            },
+            success: function (resp) {
+                console.log(action, "response recieved")
+                console.log(resp)
+                $('.message-scroll-panel').html(resp);
+            },
+            error: function(error) {
+                console.log("error detected when loading Tab")
+                console.log(error)
+            }
+        });
+    }
+    function loadMessageThread(id){
+        console.log("load MessageThread called")
+        $.ajax({
+            url: "{% url 'tradeboard-home' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            method: "POST",
+            data: {
+                "action":"load-message-thread",
+                "id":id
+            },
+            success: function (resp) {
+                $('.messagethread-panel').toggleClass("inactive", false)
+                $('.messagethread-panel').html(resp);
+            },
+            error: function(error) {
+                console.log("error detected when loading MessageThread")
+                console.log(error)
+            }
+        });
+    }
+    loadTab("load-buyers-tab")
+</script>
+
+<style>
+    .message-panel {
+        position: relative;
+        width: 325px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 3px 10px rgba(0,0,0,0.3);
+    }
+    .message-panel.inactive .flex-row~div{
+        display: none;
+    }
+    .message-panel-title:hover{
+        cursor: pointer;
+    }
+    .message-panel-title h1{
+        font-family: "DIN condensed";
+        color: #273572;
+        font-size: 2rem;
+        margin: 10px 15px 8px;
+    }
+    #buyers-tab{
+        border-width: 1px 1px 0px 0px;
+    }
+    #sellers-tab{
+        border-width: 1px 0px 0px 1px;
+    }
+    .message-panel-tab{
+        border-style: solid;
+        border-color: #eee;
+        flex:1;
+        margin: 0px;
+        padding: 10px 0px 10px 15px;
+        background-color: #fff;
+        font-family: "DIN condensed";
+        color: #273572;
+        font-size: 1.3rem;
+    }
+    .message-panel-tab:hover{
+        cursor: pointer;
+    }
+    .message-panel-tab.inactive{
+        background-color: #eee;
+        border-width: 1px 1px 1px 0px !important;
+    }
+    .message-scroll-panel{
+        height: 675px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+
+
+
+    .messagethread-panel{
+        position: absolute;
+        left:0px;
+        top:56px;
+        height: 722;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        z-index: 2;
+    }
+    .messagethread-panel.inactive{
+        display: None;
+    }
+</style>
+<style>
+    .flex-row{
+        display: flex;
+        justify-content: space-between;
+    }
+</style>

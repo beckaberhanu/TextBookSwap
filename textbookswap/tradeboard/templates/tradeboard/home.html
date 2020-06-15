@@ -16,7 +16,16 @@
                     </a>
                     <hr class="tab-divider" style="border-top: 2px solid #fff; align-self:stretch; margin: 4px 50px">
                     <h2 class = "fl-users-name" style="margin-top: 0px;"> @{{user.username}}</h2>
+                    <div class="arrange-as-row" style="margin-top: 20px;">
+                        <a  href="{% url 'profile' %}" style="margin-right:20px;">
+                            <button class = "nav-btn" type="button" name="profile" >Profile</button>
+                        </a>
+                        <a  href="{% url 'logout' %}">
+                            <button class = "nav-btn" type="button" name="logout" >Logout</button>
+                        </a>
+                    </div>
                 </div>
+                
             </div>
             <div class = "instruction">
                 <h3> Welcome to our website!</h3>
@@ -29,6 +38,15 @@
                     <div class="vertical-accent-bar"></div>
                     <p style="margin:0;"> At it's current stage, our website was built with the safari and chrome browser in mind, so please remember to use those for better user experience.</p>    
                 </div>
+                <div class="arrange-as-row" style="margin-top:15px;">
+                    <div class="vertical-accent-bar"></div>
+                    <div class="arrange-as-column">
+                        <p style="margin:0;"> You can put up a book for sell by either going to your selling list tab or by clicking the button below</p>
+                        <button class = "nav-btn" type="button" name="sell" onclick="newPostForm()">Sell A Book</button>    
+                    </div>
+                </div>
+                
+
             </div>
         </div>
         <div class = "mid-panel">
@@ -52,30 +70,19 @@
         </div>
 
         <div class = "right-panel">
-            <div>
-                <div class = "nav">
-                    {% if user.is_authenticated %}
-                        <a  href="{% url 'profile' %}">
-                            <button class = "nav-btn" type="button" name="profile" >Profile</button>
-                        </a>
-                        <a  href="{% url 'logout' %}">
-                            <button class = "nav-btn" type="button" name="logout" >Logout</button>
-                        </a>
-                        <button class = "nav-btn" type="button" name="sell" onclick="newPostForm()">Sell A Book</button>
-                    {% else %}
-                        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="form-div">
-                {% include "tradeboard/searchForm.html" %}
-            </div>
+            {% include "tradeboard/searchForm.html" %}
+            {% include "tradeboard/components/message_panel.html" %}
         </div>
     </div>
     <div class = "spacer"></div>
     
     <script type="text/javascript">
+        function togglePanelView(){
+            $(".message-panel").toggleClass("inactive")
+            $(".search-filters-panel").toggleClass("inactive")
+            console.log("togglePanelView fucntion being called")
+            console.log($(".search-filters-panel").length)
+        }
         function tiptext(id){
             $("#"+id)[0].classList.toggle("visible")
         }
