@@ -240,7 +240,8 @@ def filterPosts(request):
     """accepts a search form through the request and returns posts that match the data from the search form"""
     search_form = BookSearchForm(request.POST)
     if search_form.is_valid():
-        posts = search_form.filter().exclude(seller=request.user)
+        posts = search_form.filter().exclude(seller=request.user).annotate(bookmarked=Case(When(
+            bookmarks__in=[request.user], then=Value(True)), default=Value(False), output_field=BooleanField(),))
         bookmarked = []
         if hasattr(request.user, 'bookmark'):
             bookmarked = request.user.bookmark.posts.all()
