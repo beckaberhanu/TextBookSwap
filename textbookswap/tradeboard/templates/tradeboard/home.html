@@ -70,11 +70,25 @@
         </div>
 
         <div class = "right-panel">
-            {% include "tradeboard/searchForm.html" %}
+            <div class="search-filters-panel">
+                {% include "tradeboard/searchForm.html" %}
+            </div>
             {% include "tradeboard/components/message_panel.html" %}
         </div>
     </div>
     <div class = "spacer"></div>
+    <style>
+        .search-filters-panel{
+            width: 325px;
+            background-color: #ffffff;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .search-filters-panel.inactive .title-search~form{
+            display: none;
+        }
+    </style>
     
     <script type="text/javascript">
         function togglePanelView(){
@@ -140,8 +154,9 @@
                 method: "POST",
                 data: frm.serialize(),
                 success: function (resp) {
+                    console.log('loadtrade board called')
                     $('.mid-panel-scroll').html(resp.searchResults);
-                    $('.form-div').html(resp.form);
+                    $('.search-filters-panel').html(resp.form);
                     switchTab("tradeboard");
                     activate()
                 },
@@ -308,17 +323,18 @@
                 success: function (resp) {
                     console.log("reponse recieved")
                     $('.mid-panel-scroll').html(resp.searchResults);
-                    $('.form-div').html(resp.form);
+                    $('.search-filters-panel').html(resp.form);
                     activate()
                 },
                 error: function(resp) {
                     console.log("submit form error")
-                    $('.form-div').html(resp.responseText);
+                    $('.search-filters-panel').html(resp.responseText);
                 }
             });
         }
 
         function newPostForm(confirmed=false){
+            console.log("ne post form called")
             if(confirmed){
                 options = {
                     url: "{% url 'tradeboard-home' %}",
@@ -415,8 +431,8 @@
                     'action':'clear'
                 },
                 success: function (resp) {
-                    console.log("reponse recieved")
-                    $('.form-div').html(resp);
+                    console.log("clearform() response recieved")
+                    $('.search-filters-panel').html(resp);
                     loadTradeboard()
                     activate()
                 },

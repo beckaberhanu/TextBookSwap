@@ -15,6 +15,7 @@
 
         </div>
     {% endif %}
+    <div style="display:flex; flex-direction:column;">
     {% for message in context.messages.all %}
         {% if message.sender == user %}
         <div class="chat-block from-me">
@@ -44,16 +45,49 @@
             </div>
         </div>
     {% endfor %}
+    </div>
 </div>
 <div class="input-section">
-    <form>
-
+    <form class= "messaging-form" method="POST" name="messaging-form" autocomplete="off" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ message_form.text }} {% comment '' %} class = "message-text-input-field" %}{% endcomment %}
+        <div class="messaging-btns">
+            <img class="messaging-options-btn" id="messageThread-{{messageThread.id}}" src="{% static 'tradeboard/svg/options.svg' %}" onclick="showOptions({{messageThread.id}})" height=15px width=15px>
+            <div class="messaging-options inactive">
+                Upload an image <br>
+                Make an offer
+            </div>
+            <button class= "send-btn" type = "button" name="send" onclick="sendMessage()">
+                <img src="{% static 'tradeboard/svg/send.svg' %}" height= 15px width=15px>
+            </button>
+        </div>
+        <input class="invisible" type="text" name="action" value="send-message">
+        <input class="invisible" type="text" name="messageThread" value="{{context.pk}}"> 
     </form>
 </div>
 <script type="text/javascript">
     function removeMessageThread(){
         $('.messagethread-panel').toggleClass("inactive", true)
         $('.messagethread-panel').html("");
+    }
+    function sendMessage(){
+        var frm = $('.messaging-form');
+        frm = frm.serialize()
+        console.log(frm)
+        $.ajax({
+            url: "{% url 'tradeboard-home' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            method: "POST",
+            data: frm,
+            success: function (resp) {
+                $('.messagethread-panel').toggleClass("inactive", false)
+                $('.messagethread-panel').html(resp);
+            },
+            error: function(resp) {
+                console.log("error detected when loading MessageThread")
+                console.log(error)
+            }
+        });
     }
 </script>
 <style type="text/css">
@@ -91,9 +125,10 @@
     }
     .message-thread-scroll{
         flex:1;
-        overflow: scroll;
+        overflow-y: auto;
         background-color: #f4f4f4;
         overflow-x: hidden;
+
         display:flex;
         flex-direction: column-reverse;
     }
@@ -138,7 +173,6 @@
     }
 
     .message-image{
-        /*margin: 10px;*/
         border-radius: 5px;
         max-width:100%;
         height: auto;
@@ -167,11 +201,44 @@
     .chat-block.from-other-user  .message-time{
         color: #374582;
     }
+
+
     .input-section{
-        border-width: 2px 0 2px 0;
+        border-width: 2px 0 0px 0;
         border-style: solid;
         border-color: #eee;
         background-color: #fff;
-        height: 50px;
+        max-height: 100px;
+    }
+    .messaging-form{
+        padding: 6px;
+        display: flex;
+        align-items: stretch;
+        margin:0;
+    }
+    .message-text-input-field{
+        padding: 5px 10px;
+        margin: 0 5px 0 0;
+        outline: none;
+        flex: 1;
+        border: none;
+        border-radius: 10px;
+        background-color: #ddd;
+        resize: None;
+    }
+    .messaging-btns{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 0 3px;
+    }
+    .messaging-options.inactive{
+        display: None;
+    }
+    .send-btn{
+        padding: 0;
+        background-color: rgba(0,0,0,0);
+        margin:0 0 3px 0;
+        border: none;
     }
 </style>

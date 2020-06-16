@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator, MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from .models import Post
+from .models import Post, Message
 # ************************************************************************
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.functions import Least, Greatest
@@ -170,3 +170,16 @@ class BookSellForm(forms.ModelForm):
         model = Post
         fields = ('title', 'ISBN', 'author', 'description',
                   'image', 'edition', 'price', 'post_type')
+
+
+class MessagingForm(forms.ModelForm):
+    text = forms.CharField(label="message-text", max_length=250, validators=[MaxLengthValidator(250)],
+                           widget=forms.Textarea(attrs={'class': "message-text-input-field", 'placeholder': 'Type a message', "max_length": "250", "rows": 2, 'autofocus': 'autofocus'}))
+    image = forms.ImageField(label="message image", required=False, widget=forms.FileInput(
+        attrs={'class': 'message-image-input-field', 'onchange': 'upload_img(this);'}))
+    offer = forms.IntegerField(label="Offered price", required=False, widget=forms.NumberInput(
+        attrs={'class': "message-offer-input-field"}))
+
+    class Meta:
+        model = Message
+        fields = ('text', 'image', 'offer')

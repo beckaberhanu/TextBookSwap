@@ -1,19 +1,19 @@
 {% load static %}
 {% for messageThread in context %}
-    <div class="message-tile flex-row flex-cross-stretch" onclick="loadMessageThread({{messageThread.pk}})">
-        <img class="message-tile-profile-pic"src="{{messageThread.post.seller.profile.image.url}}">
-        <div class="message-tile-text flex-column">
-            <p class="message-tile-seller-name"> {{messageThread.post.seller.first_name}} {{messageThread.post.seller.last_name}}</p>
-            <p class="message-tile-hint">
+    <div class="message-thread-tile flex-row flex-cross-stretch" onclick="loadMessageThread({{messageThread.pk}})">
+        <img class="message-thread-tile-profile-pic"src="{{messageThread.post.seller.profile.image.url}}">
+        <div class="message-thread-tile-text flex-column">
+            <p class="message-thread-tile-seller-name"> {{messageThread.post.seller.first_name}} {{messageThread.post.seller.last_name}}</p>
+            <p class="message-thread-tile-hint">
                 {% if messageThread.highlighted_message.offer %} <b>[Offer: ${{messageThread.highlighted_message.offer}} offered] </b>{% endif %}
                 {% if messageThread.highlighted_message.text %} {{messageThread.highlighted_message.text}} {% endif %}
                 {% if messageThread.highlighted_message.image %} <b>| [Image]:</b> {{messageThread.highlighted_message.image.url}} {% endif %}
             </p>
         </div>
         <div class="flex-column flex-cross-end">
-            <small class="message-tile-time"> {{messageThread.highlighted_message.time_sent|date:"m/d/Y"}} </small>
-            <img class="message-tile-option-btn" id="messageThread-{{messageThread.id}}" src="{% static 'tradeboard/svg/options.svg' %}" onclick="showOptions({{messageThread.id}})" height=20px width=20px>
-            <div class="message-tile-options inactive">
+            <small class="message-thread-tile-time"> {{messageThread.highlighted_message.time_sent|date:"m/d/Y"}} </small>
+            <img class="message-thread-tile-option-btn" id="messageThread-{{messageThread.id}}" src="{% static 'tradeboard/svg/options.svg' %}" onclick="showOptions({{messageThread.id}})" height=20px width=20px>
+            <div class="message-thread-tile-options inactive">
                 * option 1
                 * option 2
                 * option 3
@@ -32,7 +32,7 @@
     }
 </script>
 <style type="text/css" scoped>
-    .message-tile{
+    .message-thread-tile{
         background-color: #ffffff;
         border-radius: 7px;
         border: 2px solid #273572;
@@ -40,10 +40,10 @@
         margin: 10px 10px;
         padding: 5px 5px;
     }
-    .message-tile:hover{
+    .message-thread-tile:hover{
         cursor: pointer;
     }
-    .message-tile-profile-pic{
+    .message-thread-tile-profile-pic{
         border-radius: 5px;
         border: 2px solid #273572;
         height: 35px;
@@ -51,17 +51,17 @@
         object-fit: cover;
         overflow: hidden;
     }
-    .message-tile-text{
+    .message-thread-tile-text{
         margin: 0px 10px;
         flex: 1;
     }
-    .message-tile-seller-name{
+    .message-thread-tile-seller-name{
         font-family: Arial, Helvetica, sans-serif;
         font-size: 0.8em;
         font-weight: 700;
         color: ##273572;
     }
-    .message-tile-hint{
+    .message-thread-tile-hint{
         font-family: Arial, Helvetica, sans-serif;
         font-size: 0.6em;
         font-weight: 500;
@@ -72,19 +72,19 @@
         -webkit-line-clamp: 2; /* number of lines to show */
         -webkit-box-orient: vertical;
     }
-    .message-tile-time{
+    .message-thread-tile-time{
         font-family: Arial, Helvetica, sans-serif;
         font-size: 0.5em;
         font-weight: 500;
         color: #808080;
     }
-    .message-tile-option-btn{
+    .message-thread-tile-option-btn{
         margin: 0 5px 0 0;
     }
-    .message-tile-options.inactive{
+    .message-thread-tile-options.inactive{
         display: None;
     }
-    .message-tile-options{
+    .message-thread-tile-options{
         position: absolute;
         right:30px;
         top:-10px;

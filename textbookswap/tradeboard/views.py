@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from .forms import BookSearchForm, BookSellForm
+from .forms import BookSearchForm, BookSellForm, MessagingForm
 from .models import Post, Bookmark, MessageThread, Message
 from django.views.generic import DetailView
 from django.urls import reverse_lazy
@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.db.models import BooleanField, Case, Value, When
+from django.db import models
 import json
 
 
@@ -57,13 +58,33 @@ def handleAJAXrequest(request):
         return loadSellersTab(request)
     elif request.POST.get("action") == "load-message-thread":
         return loadMessageThread(request)
+    elif request.POST.get("action") == "send-message":
+        return sendMessage(request)
     else:
         return handleForm(request)
 
 
+def sendMessage(request):
+    user = request.user
+    messageThread = MessageThread.objects.get(
+        pk=request.POST.get("messageThread"))
+    if(messageThread.buyer == user or messageThread.post.seller == user):
+        message_form_recieved = MessagingForm(request.POST, request.FILES)
+        if message_form_recieved.is_valid():
+            message = message_form_recieved.save(commit=False)
+            message.sender = user
+            message.messageThread = messageThread
+            message.save()
+            message_form = MessagingForm()
+            html = render_to_string('tradeboard/components/message_chat_screen.html',
+                                    {'context': messageThread, 'message_form': message_form}, request)
+            return HttpResponse(html)
+
+
 def loadBuyersTab(request):
     user = request.user
-    posts = user.posts.all()
+    posts = user.posts.annotate(messageThreads_count=models.Count(
+        'messageThreads')).filter(messageThreads_count__gt=0)
     html = render_to_string('tradeboard/components/message_tab_buyers.html',
                             {'context': posts}, request)
     return HttpResponse(html)
@@ -81,10 +102,9 @@ def loadMessageThread(request):
     user = request.user
     messageThread = MessageThread.objects.get(pk=request.POST.get("id"))
     if(messageThread.buyer == user or messageThread.post.seller == user):
-        print("\n\n\n\n\n\n valid \n\n\n\n\n\n")
+        message_form = MessagingForm()
         html = render_to_string('tradeboard/components/message_chat_screen.html',
-                                {'context': messageThread}, request)
-        print(html)
+                                {'context': messageThread, 'message_form': message_form}, request)
         return HttpResponse(html)
     else:
         HttpResponse(status=403)

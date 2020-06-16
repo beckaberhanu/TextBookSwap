@@ -66,6 +66,9 @@ body {
   flex-direction: row;
   align-self: stretch;
 }
+html {
+  overflow-y: hidden;
+}
 .panels {
   margin-top: 20px;
   display: flex;

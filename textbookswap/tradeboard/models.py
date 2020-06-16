@@ -123,7 +123,7 @@ class Message(models.Model):
         'self', on_delete=models.SET_NULL, null=True, blank=True)
 
     time_sent = models.DateTimeField(default=timezone.now)
-    seen = models.BooleanField()
+    seen = models.BooleanField(null=True)
 
     def save(self, *args, **kwargs):
         self.messageThread.last_updated = timezone.now
