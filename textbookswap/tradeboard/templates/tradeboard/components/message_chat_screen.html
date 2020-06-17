@@ -48,14 +48,16 @@
     </div>
 </div>
 <div class="input-section">
-    <form class= "messaging-form" method="POST" name="messaging-form" autocomplete="off" enctype="multipart/form-data">
+    <div class="message-image-upload-preview inactive"></div>
+    <form class= "messaging-form" id= "messaging-form" method="POST" name="messaging-form" autocomplete="off" enctype="multipart/form-data">
         {% csrf_token %}
+        {{ message_form.image }}
         {{ message_form.text }} {% comment '' %} class = "message-text-input-field" %}{% endcomment %}
         <div class="messaging-btns">
-            <img class="messaging-options-btn" id="messageThread-{{messageThread.id}}" src="{% static 'tradeboard/svg/options.svg' %}" onclick="showOptions({{messageThread.id}})" height=15px width=15px>
+            <img class="messaging-options-btn" id="messageThread-{{messageThread.id}}" src="{% static 'tradeboard/svg/options.svg' %}" onclick="showOtherActions()" height=15px width=15px>
             <div class="messaging-options inactive">
-                Upload an image <br>
-                Make an offer
+                <label class = "messaging-option image-upload-opt" for="{{ message_form.image.id_for_label }}" onclick="showOtherActions()">Upload an image</label>
+                <label class = "messaging-option make-an-offer-opt">Make an Offer</label>
             </div>
             <button class= "send-btn" type = "button" name="send" onclick="sendMessage()">
                 <img src="{% static 'tradeboard/svg/send.svg' %}" height= 15px width=15px>
@@ -66,20 +68,31 @@
     </form>
 </div>
 <script type="text/javascript">
+    function previewMsgImg(input){
+        if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('.message-image-upload-preview').attr('style', "background-image:url('"+e.target.result+"'); background-size: cover; background-position: center;");
+                    $('.message-image-upload-preview').toggleClass('inactive')
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+    }
+    function showOtherActions(){
+        console.log('show other actions called')
+        $('.messaging-options').toggleClass("inactive")
+    }
     function removeMessageThread(){
         $('.messagethread-panel').toggleClass("inactive", true)
         $('.messagethread-panel').html("");
     }
     function sendMessage(){
-        var frm = $('.messaging-form');
-        frm = frm.serialize()
-        console.log(frm)
-        $.ajax({
+        options = {
             url: "{% url 'tradeboard-home' %}",
+            type: 'POST',
             headers: {'X-CSRFToken': '{{ csrf_token }}'},
-            method: "POST",
-            data: frm,
-            success: function (resp) {
+            success: function(resp) {
                 $('.messagethread-panel').toggleClass("inactive", false)
                 $('.messagethread-panel').html(resp);
             },
@@ -87,7 +100,10 @@
                 console.log("error detected when loading MessageThread")
                 console.log(error)
             }
-        });
+        };
+
+        $('#messaging-form').ajaxSubmit(options);
+        console.log("confirmed new post function called")
     }
 </script>
 <style type="text/css">
@@ -215,6 +231,7 @@
         display: flex;
         align-items: stretch;
         margin:0;
+        position: relative;
     }
     .message-text-input-field{
         padding: 5px 10px;
@@ -231,14 +248,55 @@
         flex-direction: column;
         justify-content: space-between;
         margin: 0 3px;
+        position: relative;
+    }
+    .messaging-options{
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        box-shadow: 0px 3px 10px rgba(0,0,0,0.3);
+        border: 2px solid #5371f2;
+        border-radius: 7px;
+        align-items: center;
     }
     .messaging-options.inactive{
         display: None;
+    }
+    .messaging-option{
+        width: max-content;
+        padding: 5px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.8em;
+        font-weight: 700;
+        color: #273572;
+    }
+    .image-upload-opt{
+        border-width: 0 0 2px 0;
+        border-color: #5371f2;
+        border-style: solid;
     }
     .send-btn{
         padding: 0;
         background-color: rgba(0,0,0,0);
         margin:0 0 3px 0;
         border: none;
+    }
+
+
+
+    .message-image-upload-preview{
+        height:60px;
+        width: 60px;
+        position: absolute;
+        bottom: 37px;
+        left: 20px;
+        border-radius: 10px;
+    }
+    .message-image-upload-preview.inactive{
+        display: None;
     }
 </style>

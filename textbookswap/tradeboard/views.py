@@ -69,6 +69,8 @@ def sendMessage(request):
     messageThread = MessageThread.objects.get(
         pk=request.POST.get("messageThread"))
     if(messageThread.buyer == user or messageThread.post.seller == user):
+        print("\n\n\n\n", request.POST, "\n**************\n",
+              request.FILES, "\n\n\n\n")
         message_form_recieved = MessagingForm(request.POST, request.FILES)
         if message_form_recieved.is_valid():
             message = message_form_recieved.save(commit=False)
