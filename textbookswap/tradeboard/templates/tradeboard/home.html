@@ -135,6 +135,10 @@
             }
         }
 
+        {% comment %} 
+        https://stackoverflow.com/questions/6608095/preview-image-before-form-submit/6608265 
+        {% endcomment %}
+
         function upload_img(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();

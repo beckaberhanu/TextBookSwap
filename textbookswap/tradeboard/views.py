@@ -66,12 +66,13 @@ def handleAJAXrequest(request):
 
 def sendMessage(request):
     user = request.user
+    # print("\n\n\n\n", request.POST.get("messageThread"), "\n\n\n\n")
     messageThread = MessageThread.objects.get(
         pk=request.POST.get("messageThread"))
+    messages = messageThread.messages.all().order_by('-time_sent')
     if(messageThread.buyer == user or messageThread.post.seller == user):
-        print("\n\n\n\n", request.POST, "\n**************\n",
-              request.FILES, "\n\n\n\n")
         message_form_recieved = MessagingForm(request.POST, request.FILES)
+        print("is the message valid?", message_form_recieved.is_valid())
         if message_form_recieved.is_valid():
             message = message_form_recieved.save(commit=False)
             message.sender = user
@@ -79,7 +80,7 @@ def sendMessage(request):
             message.save()
             message_form = MessagingForm()
             html = render_to_string('tradeboard/components/message_chat_screen.html',
-                                    {'context': messageThread, 'message_form': message_form}, request)
+                                    {'messages': messages, 'messageThread': messageThread, 'message_form': message_form}, request)
             return HttpResponse(html)
 
 
@@ -103,10 +104,11 @@ def loadSellersTab(request):
 def loadMessageThread(request):
     user = request.user
     messageThread = MessageThread.objects.get(pk=request.POST.get("id"))
+    messages = messageThread.messages.all().order_by('-time_sent')
     if(messageThread.buyer == user or messageThread.post.seller == user):
         message_form = MessagingForm()
         html = render_to_string('tradeboard/components/message_chat_screen.html',
-                                {'context': messageThread, 'message_form': message_form}, request)
+                                {'messages': messages, 'messageThread': messageThread, 'message_form': message_form}, request)
         return HttpResponse(html)
     else:
         HttpResponse(status=403)

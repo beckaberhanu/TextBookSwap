@@ -1,22 +1,22 @@
 {% load static %}
 <div class="message-thread-header">
     <img class="close-message-thread-btn" src="{% static 'tradeboard/svg/back-btn.svg' %}" onclick="removeMessageThread()">
-    {% if context.buyer == user %}
-    <img class="message-thread-header-profile-pic" src="{{context.post.seller.profile.image.url}}">
-    <p class="message-thread-header-reciever-name">{{context.post.seller.first_name}} {{context.post.seller.last_name}}</p>
+    {% if messageThread.buyer == user %}
+    <img class="message-thread-header-profile-pic" src="{{messageThread.post.seller.profile.image.url}}">
+    <p class="message-thread-header-reciever-name">{{messageThread.post.seller.first_name}} {{messageThread.post.seller.last_name}}</p>
     {% else %} 
-    <img class="message-thread-header-profile-pic" src="{{context.buyer.profile.image.url}}">
-    <p class="message-thread-header-reciever-name">{{context.buyer.first_name}} {{context.buyer.last_name}}</p>
+    <img class="message-thread-header-profile-pic" src="{{messageThread.buyer.profile.image.url}}">
+    <p class="message-thread-header-reciever-name">{{messageThread.buyer.first_name}} {{messageThread.buyer.last_name}}</p>
     {% endif %}
 </div>
 <div class="message-thread-scroll">
-    {% if context.pinned_message %}
+    {% if messageThread.pinned_message %}
         <div class="pinned-message">
 
         </div>
     {% endif %}
-    <div style="display:flex; flex-direction:column;">
-    {% for message in context.messages.all %}
+    {% comment %} <div style="display:flex; flex-direction:column;"> {% endcomment %}
+    {% for message in messages %}
         {% if message.sender == user %}
         <div class="chat-block from-me">
         {% elif not message.sender == user %} 
@@ -30,6 +30,17 @@
 
                 {% if message.offer%}
                     <div class="offer-panel">
+                        {% if message.sender == user %}
+                        <p class="message-offer"> You have offered <b>${{message.offer}}</b> for the book.</p>
+                        <button class="offer-response-btn" id="retract-offer"> Retract Offer </button>
+                        {% elif not message.sender == user %} 
+                        <p class="message-offer"> {{message.sender}} has offered you <b>${{message.offer}}</b> for the book.</p>
+                        <div class="offer-response-btns">
+                            <button class="offer-response-btn" id="response-accept"> Accept </button>
+                            <button class="offer-response-btn" id="response-refuse"> Refuse</button>
+                        </div>
+                        {% endif %}
+                        
                     </div>
                 {% endif %}
 
@@ -41,30 +52,36 @@
                     <p class="message-text">{{message.text}}</p>
                 {% endif %}
 
-                <p class="message-time">{{message.time_sent}}</p>
+                {% comment %} <p class="message-time">{{message.time_sent}}</p> {% endcomment %}
             </div>
         </div>
     {% endfor %}
-    </div>
+    {% comment %} </div> {% endcomment %}
 </div>
 <div class="input-section">
-    <div class="message-image-upload-preview inactive"></div>
     <form class= "messaging-form" id= "messaging-form" method="POST" name="messaging-form" autocomplete="off" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ message_form.image }}
-        {{ message_form.text }} {% comment '' %} class = "message-text-input-field" %}{% endcomment %}
-        <div class="messaging-btns">
-            <img class="messaging-options-btn" id="messageThread-{{messageThread.id}}" src="{% static 'tradeboard/svg/options.svg' %}" onclick="showOtherActions()" height=15px width=15px>
-            <div class="messaging-options inactive">
-                <label class = "messaging-option image-upload-opt" for="{{ message_form.image.id_for_label }}" onclick="showOtherActions()">Upload an image</label>
-                <label class = "messaging-option make-an-offer-opt">Make an Offer</label>
-            </div>
-            <button class= "send-btn" type = "button" name="send" onclick="sendMessage()">
-                <img src="{% static 'tradeboard/svg/send.svg' %}" height= 15px width=15px>
-            </button>
+        <div class="message-image-upload-preview inactive">
         </div>
-        <input class="invisible" type="text" name="action" value="send-message">
-        <input class="invisible" type="text" name="messageThread" value="{{context.pk}}"> 
+        <div class="message-offer-input-panel inactive">
+            <p class="offer-prompt">Name your price please:</p> {{ message_form.offer }}
+        </div>
+        <div class="message-text-image-input-panel">
+            {{ message_form.image }}
+            {{ message_form.text }} {% comment '' %} class = "message-text-input-field" %}{% endcomment %}
+            <div class="messaging-btns">
+                <img class="messaging-options-btn" id="messageThread-{{messageThread.id}}" src="{% static 'tradeboard/svg/options.svg' %}" onclick="showOtherActions()" height=15px width=15px>
+                <div class="messaging-options inactive">
+                    <label class = "messaging-option image-upload-opt" for="{{ message_form.image.id_for_label }}" onclick="showOtherActions()">Upload an image</label>
+                    <label class = "messaging-option make-an-offer-opt" onclick='showOfferPanel()'>Make an Offer</label>
+                </div>
+                <button class= "send-btn" type = "button" name="send" onclick="sendMessage()">
+                    <img src="{% static 'tradeboard/svg/send.svg' %}" height= 15px width=15px>
+                </button>
+            </div>
+            <input class="invisible" type="text" name="action" value="send-message">
+            <input class="invisible" type="text" name="messageThread" value="{{messageThread.pk}}"> 
+        </div>
     </form>
 </div>
 <script type="text/javascript">
@@ -78,6 +95,10 @@
 
                 reader.readAsDataURL(input.files[0]);
             }
+    }
+    function showOfferPanel(){
+        $('.message-offer-input-panel').toggleClass("inactive")
+        showOtherActions()
     }
     function showOtherActions(){
         console.log('show other actions called')
@@ -156,6 +177,7 @@
         max-width: 80%;
         align-items: flex-end;
         margin: 10px 0;
+        flex: none;
     }
     .chat-block.from-me{
         flex-direction: row-reverse;
@@ -171,6 +193,8 @@
         overflow: hidden;
         width: 25px;
         height: 25px;
+        min-width: 25px;
+        min-height: 25px;
         margin: 0 10px;
     }
     .message-instance{
@@ -178,15 +202,80 @@
         flex-direction: column;
         width: 80%;
         overflow: hidden;
+        border-width: 4px;
+        border-style: solid;
     }
     .chat-block.from-me .message-instance{
+        border-color: #304396;
         background-color: #304396;
         border-radius: 20px 20px 10px 20px;
     }
     .chat-block.from-other-user .message-instance{
+        border-color: #E6EBFF;
         background-color: #E6EBFF;
         border-radius: 20px 20px 20px 10px;
     }
+    
+
+    .offer-panel{
+        margin: 15px 10px 10px;
+        padding: 0px 0px 5px;
+        border-width: 0 0 2px 0;
+        border-style: solid;
+    }
+    .chat-block.from-other-user .offer-panel{
+        border-color: #273572;
+    }
+    .chat-block.from-me .offer-panel{
+        border-color: #ffffff;
+    }
+    .message-offer{
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.8em;
+        font-weight: 500;
+    }
+    .chat-block.from-other-user .message-offer{
+        color: #273572;
+    }
+    .chat-block.from-me .message-offer{
+        color: #ffffff;
+    }
+
+    .offer-response-btns{
+        display: flex;
+        justify-content: flex-end;
+    }
+    .offer-response-btn{
+        border-width: 2px;
+        border-style: solid;
+        border-radius: 5px;
+        font-family: "Courier Prime", monospace;
+        font-size: 0.8em;
+        font-weight: 500;
+        padding: 6px 10px;
+        flex: 1;
+        margin: 4px 0 4px 0;
+    }
+    #response-accept{
+        color: #00e444;
+        border-color: #00e444;
+        background-color: rgba(0,0,0,0);
+        margin-right: 5px;
+    }
+    #response-refuse{
+        color: #ff0800;
+        border-color: #ff0800;
+        background-color: rgba(0,0,0,0);
+        margin-left: 5px;
+    }
+    #retract-offer{
+        color: #ff0800;
+        border-color: #ff0800;
+        background-color: rgba(0,0,0,0);
+        width: 100%;
+    }
+
 
     .message-image{
         border-radius: 5px;
@@ -224,14 +313,44 @@
         border-style: solid;
         border-color: #eee;
         background-color: #fff;
-        max-height: 100px;
     }
     .messaging-form{
+        margin: 0;
+    }
+    .message-text-image-input-panel{
         padding: 6px;
         display: flex;
         align-items: stretch;
         margin:0;
         position: relative;
+    }
+    .message-offer-input-panel{
+        padding: 6px;
+        display: flex;
+        position: relative;
+    }
+    .message-offer-input-panel.inactive{
+        display: None;
+    }
+    .offer-prompt{
+        font-family: "Courier Prime", monospace;
+        font-weight: 300;
+        font-size: 1rem;
+        color: #7181e1;
+        position: absolute;
+        top: 14px;
+        left: 20px;
+    }
+    .message-offer-input-field{
+        width: 313px;
+        height: 35px;
+        padding-left: 240px;
+        background-color: #ffffff;
+        color: #4191e2;
+        font-family: "Courier Prime", monospace;
+        font-size: 15;
+        border: 2px solid #5371f2;
+        border-radius: 5px;
     }
     .message-text-input-field{
         padding: 5px 10px;
@@ -289,12 +408,11 @@
 
 
     .message-image-upload-preview{
-        height:60px;
-        width: 60px;
-        position: absolute;
-        bottom: 37px;
-        left: 20px;
+        height:50px;
+        width: auto;
         border-radius: 10px;
+        margin: 6px;
+        margin-bottom: 0;
     }
     .message-image-upload-preview.inactive{
         display: None;

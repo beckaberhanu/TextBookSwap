@@ -99,6 +99,8 @@ class MessageThread(models.Model):
     pinned_message = models.OneToOneField(
         'Message', on_delete=models.SET_NULL, null=True, blank=True, related_name="pinned_by")
 
+    objects = Manager()
+
     def __str__(self):
         return(f"Seller: {self.post.seller.username} | Buyer: {self.buyer.username} | ID: {self.pk}")
 
@@ -130,6 +132,8 @@ class Message(models.Model):
         super(Message, self).save(*args, **kwargs)
         self.messageThread.highlighted_message = self
 
+    objects = Manager()
+
     def __str__(self):
         return(f"Sender: {self.sender.username} | Senn: {self.seen} | ID: {self.pk}")
 
@@ -146,6 +150,8 @@ class Bookmark(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE)
     date_bookmarked = models.DateTimeField(default=timezone.now)  # UTC time
+
+    objects = Manager()
 
     def __str__(self):
         return f"Post with id: {self.post.pk} bookmarked by {self.user.username} at time {self.date_bookmarked }"
