@@ -1,5 +1,4 @@
 {% load static %}
-
     {% for post in posts %}
         <div class = "post" id= "post-{{post.pk}}">
             <div class = "post-minimized" id="post-min-{{post.pk}}">
@@ -94,7 +93,7 @@
                 </div>
                 <div class = "right-tile">
                     <p class = "description">{{post.description}}</p>
-                    <img class = "book-pic" src = "{{ post.image.url }}">
+                    <img class = "book-pic" src = "{{ post.image.url }}" onclick="inlargeImage(this)">
                 </div>
                 {% if tab == 'SellList' %}
                 <div class = "seller-actions">

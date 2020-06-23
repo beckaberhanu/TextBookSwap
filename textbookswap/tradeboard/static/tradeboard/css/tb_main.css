@@ -970,6 +970,9 @@ a:visited {
 .popup {
   visibility: hidden;
   width: 0%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .popup.visible {
   z-index: 3;

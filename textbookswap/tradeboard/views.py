@@ -1,15 +1,19 @@
-from django.shortcuts import render, redirect
-from django.template.loader import render_to_string
-from .forms import BookSearchForm, BookSellForm, MessagingForm
-from .models import Post, Bookmark, MessageThread, Message
-from django.views.generic import DetailView
-from django.urls import reverse_lazy
-from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse
-from django.db.models import BooleanField, Case, Value, When
+from django.core.exceptions import PermissionDenied
 from django.db import models
+from django.db.models import BooleanField, Case, Value, When
+from django.db.models.expressions import OuterRef, Subquery
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.views.generic import DetailView
+
+from .forms import BookSearchForm, BookSellForm, MessagingForm
+from .models import Post, Bookmark, MessageThread, Message
+
+
 import json
 
 
@@ -17,16 +21,10 @@ import json
 def home(request):
     """function based view for homepage"""
     user = request.user
-    posts = Post.objects.exclude(seller=request.user)
     search_form = BookSearchForm()
     if request.method == "POST":
         if request.is_ajax():
             return handleAJAXrequest(request)
-
-    bookmarked = []
-    if hasattr(user, 'bookmark'):
-        bookmarked = user.bookmark.posts.all()
-
     return render(request, 'tradeboard/home.html', {'search_form': search_form})
 
 
@@ -205,23 +203,32 @@ def tagPostSold(request):
 def loadBookmark(request):
     """renders and returns an html with all bookmarked posts"""
     user = request.user
-    bookmarks = user.bookmarked_post.all().annotate(
-        bookmarked=Case(default=Value(True), output_field=BooleanField(),))
+    posts = user.bookmarked_post.all()
+    bookmarks = Bookmark.objects.filter(
+        user=request.user,
+        post__id=OuterRef('id')
+    )[:1].values('user__id')
+    posts = posts.annotate(bookmarked=Subquery(bookmarks))
     if_empty = {
         'small': 'Posts that you have bookmarked will show up in this tab',
         'main': "It seems that you don't have anything bookmarked at the moment."
     }
-    print("bookmarks: ====> ", bookmarks)
-    bookmarks = bookmarks.order_by('-bookmark__date_bookmarked')
+    print("bookmarks: ====> ", posts)
+    posts = posts.order_by('-bookmark__date_bookmarked')
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': bookmarks, 'tab': 'Bookmark', 'if_empty': if_empty}, request)
+                            {'posts': posts, 'tab': 'Bookmark', 'if_empty': if_empty}, request)
     return HttpResponse(html)
 
 
 def loadSellList(request):
     """renders and returns an html with all posts being sold by the current user"""
     posts = Post.objects.filter(
-        seller=request.user, transaction_state='In progress').annotate(bookmarked=Case(When(bookmarks__in=[request.user], then=Value(True)), default=Value(False), output_field=BooleanField(),))
+        seller=request.user, transaction_state='In progress')
+    bookmarks = Bookmark.objects.filter(
+        user=request.user,
+        post__id=OuterRef('id')
+    )[:1].values('user__id')
+    posts = posts.annotate(bookmarked=Subquery(bookmarks))
     posts = posts.order_by('-date_posted')
     if_empty = {
         'main': "Hi there! It looks like you haven't put up anything for sale yet.",
@@ -244,8 +251,12 @@ def filterPosts(request):
     """accepts a search form through the request and returns posts that match the data from the search form"""
     search_form = BookSearchForm(request.POST)
     if search_form.is_valid():
-        posts = search_form.filter().exclude(seller=request.user).annotate(bookmarked=Case(When(
-            bookmarks__in=[request.user], then=Value(True)), default=Value(False), output_field=BooleanField(),))
+        posts = search_form.filter().exclude(seller=request.user)
+        bookmarks = Bookmark.objects.filter(
+            user=request.user,
+            post__id=OuterRef('id')
+        )[:1].values('user__id')
+        posts = posts.annotate(bookmarked=Subquery(bookmarks))
         bookmarked = []
         if hasattr(request.user, 'bookmark'):
             bookmarked = request.user.bookmark.posts.all()
@@ -266,15 +277,22 @@ def filterPosts(request):
 
 def initialize(request):
     """returns the tradeboard in it's default state"""
-    posts = Post.objects.filter(transaction_state='In progress').annotate(bookmarked=Case(When(
-        bookmarks__in=[request.user], then=Value(True)), default=Value(False), output_field=BooleanField(),))
-    posts = posts.exclude(seller=request.user)
+    posts = Post.objects.exclude(seller=request.user)
+    # Got the Idea from https://stackoverflow.com/questions/38471260/django-filtering-by-user-id-in-class-based-listview
+    posts = posts.filter(transaction_state='In progress')
+    bookmarks = Bookmark.objects.filter(
+        user=request.user,
+        post__id=OuterRef('id')
+    )[:1].values('user__id')
+    posts = posts.annotate(bookmarked=Subquery(bookmarks))
+
     if_empty = {
         'main': "Sorry! It seems that there are no books being sold here at the moment.",
         'small': 'Come back a different time and maybe you\'ll have better luck'
     }
+    print(posts.order_by('-date_posted').values('title'))
     html = render_to_string('tradeboard/postpopulate.html',
-                            {'posts': posts.order_by('-date_posted'), 'tab': 'Tradeboard', 'if_empty': if_empty}, request)
+                            {'posts': posts.order_by('-date_posted').distinct(), 'tab': 'Tradeboard', 'if_empty': if_empty}, request)
     return HttpResponse(html)
 
 
