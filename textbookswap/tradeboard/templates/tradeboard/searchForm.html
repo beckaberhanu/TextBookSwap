@@ -71,7 +71,6 @@
             {{ search_form.sort_by.errors }}
         </div>
     </div>
-    <img src="{% static 'tradeboard/svg/search2.svg' %}" height=190px width=190px style="align-self:center; margin: 0px 0px 40px;">
     <div class= "arrange-as-row flex-justify-end">
         <button class= "clear-btn" type = "button" value = "clear" name="clear" onclick="clearForm()">
             <svg viewBox="0 0 19.998 25.383" margin-right="2px">
@@ -88,5 +87,8 @@
 <style>
     .title-search:hover{
         cursor: pointer;
+    }
+    .search-filters-panel.inactive {
+        flex: none;
     }
 </style>

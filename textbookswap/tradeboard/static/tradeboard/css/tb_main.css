@@ -67,7 +67,7 @@ body {
   align-self: stretch;
 }
 html {
-  overflow-y: hidden;
+  overflow: overlay;
 }
 .panels {
   margin-top: 20px;

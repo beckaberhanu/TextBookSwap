@@ -204,10 +204,8 @@ def loadBookmark(request):
     """renders and returns an html with all bookmarked posts"""
     user = request.user
     posts = user.bookmarked_post.all()
-    bookmarks = Bookmark.objects.filter(
-        user=request.user,
-        post__id=OuterRef('id')
-    )[:1].values('user__id')
+    bookmarks = Bookmark.objects.filter(user=request.user, post__id=OuterRef('id'))[
+        :1].values('user__id')
     posts = posts.annotate(bookmarked=Subquery(bookmarks))
     if_empty = {
         'small': 'Posts that you have bookmarked will show up in this tab',
@@ -224,10 +222,8 @@ def loadSellList(request):
     """renders and returns an html with all posts being sold by the current user"""
     posts = Post.objects.filter(
         seller=request.user, transaction_state='In progress')
-    bookmarks = Bookmark.objects.filter(
-        user=request.user,
-        post__id=OuterRef('id')
-    )[:1].values('user__id')
+    bookmarks = Bookmark.objects.filter(user=request.user, post__id=OuterRef('id'))[
+        :1].values('user__id')
     posts = posts.annotate(bookmarked=Subquery(bookmarks))
     posts = posts.order_by('-date_posted')
     if_empty = {
@@ -252,10 +248,8 @@ def filterPosts(request):
     search_form = BookSearchForm(request.POST)
     if search_form.is_valid():
         posts = search_form.filter().exclude(seller=request.user)
-        bookmarks = Bookmark.objects.filter(
-            user=request.user,
-            post__id=OuterRef('id')
-        )[:1].values('user__id')
+        bookmarks = Bookmark.objects.filter(user=request.user, post__id=OuterRef('id'))[
+            :1].values('user__id')
         posts = posts.annotate(bookmarked=Subquery(bookmarks))
         bookmarked = []
         if hasattr(request.user, 'bookmark'):
@@ -280,10 +274,8 @@ def initialize(request):
     posts = Post.objects.exclude(seller=request.user)
     # Got the Idea from https://stackoverflow.com/questions/38471260/django-filtering-by-user-id-in-class-based-listview
     posts = posts.filter(transaction_state='In progress')
-    bookmarks = Bookmark.objects.filter(
-        user=request.user,
-        post__id=OuterRef('id')
-    )[:1].values('user__id')
+    bookmarks = Bookmark.objects.filter(user=request.user, post__id=OuterRef('id'))[
+        :1].values('user__id')
     posts = posts.annotate(bookmarked=Subquery(bookmarks))
 
     if_empty = {

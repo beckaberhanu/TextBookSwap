@@ -61,10 +61,10 @@
 <div class="input-section">
     <form class= "messaging-form" id= "messaging-form" method="POST" name="messaging-form" autocomplete="off" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="message-image-upload-preview inactive">
-        </div>
+        <img class="message-image-upload-preview inactive">
         <div class="message-offer-input-panel inactive">
             <p class="offer-prompt">Name your price please:</p> {{ message_form.offer }}
+            <img src="{% static 'tradeboard/svg/close2.svg' %}" height=15px width=15px>
         </div>
         <div class="message-text-image-input-panel">
             {{ message_form.image }}
@@ -73,7 +73,7 @@
                 <img class="messaging-options-btn" id="messageThread-{{messageThread.id}}" src="{% static 'tradeboard/svg/options.svg' %}" onclick="showOtherActions()" height=15px width=15px>
                 <div class="messaging-options inactive">
                     <label class = "messaging-option image-upload-opt" for="{{ message_form.image.id_for_label }}" onclick="showOtherActions()">Upload an image</label>
-                    <label class = "messaging-option make-an-offer-opt" onclick='showOfferPanel()'>Make an Offer</label>
+                    <label class = "messaging-option make-an-offer-opt" onclick='showOfferPanel(true)'>Make an Offer</label>
                 </div>
                 <button class= "send-btn" type = "button" name="send" onclick="sendMessage()">
                     <img src="{% static 'tradeboard/svg/send.svg' %}" height= 15px width=15px>
@@ -89,15 +89,15 @@
         if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
-                    $('.message-image-upload-preview').attr('style', "background-image:url('"+e.target.result+"'); background-size: cover; background-position: center;");
+                    $('.message-image-upload-preview').attr('src', e.target.result);
                     $('.message-image-upload-preview').toggleClass('inactive')
                 }
 
                 reader.readAsDataURL(input.files[0]);
             }
     }
-    function showOfferPanel(){
-        $('.message-offer-input-panel').toggleClass("inactive")
+    function showOfferPanel(show){
+        $('.message-offer-input-panel').toggleClass("inactive",!show)
         showOtherActions()
     }
     function showOtherActions(){
