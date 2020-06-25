@@ -91,8 +91,9 @@ class MessageThread(models.Model):
         User, on_delete=models.CASCADE, related_name='messageThreads')
     archived_by_seller = models.BooleanField(default=False)
     archived_by_buyer = models.BooleanField(default=False)
-    date_started = models.DateTimeField(default=timezone.now)
-    last_updated = models.DateTimeField(auto_now_add=True)
+
+    date_started = models.DateTimeField(auto_now_add=True, auto_now=False)
+    last_updated = models.DateTimeField(auto_now=True)
 
     highlighted_message = models.OneToOneField(
         'Message', on_delete=models.SET_NULL, null=True, blank=True, related_name="highlighted_by")
@@ -120,22 +121,26 @@ class Message(models.Model):
     image = models.ImageField(blank=True, upload_to='message_pics')
     offer = models.PositiveSmallIntegerField(blank=True, null=True)
     offer_accepted = models.BooleanField(null=True)
+    offer_retracted = models.BooleanField(null=True)
 
     reference = models.ForeignKey(
         'self', on_delete=models.SET_NULL, null=True, blank=True)
 
-    time_sent = models.DateTimeField(default=timezone.now)
+    time_sent = models.DateTimeField(auto_now_add=True, auto_now=False)
     seen = models.BooleanField(null=True)
 
+    def retractPreviousOffers(self):
+        Message.objects.filter(
+            sender=self.sender, messageThread=self.messageThread, offer__isnull=False, time_sent__lte=timezone.now()).update(offer_retracted=True)
+
     def save(self, *args, **kwargs):
-        self.messageThread.last_updated = timezone.now
-        super(Message, self).save(*args, **kwargs)
         self.messageThread.highlighted_message = self
+        super(Message, self).save(*args, **kwargs)
 
     objects = Manager()
 
     def __str__(self):
-        return(f"Sender: {self.sender.username} | Senn: {self.seen} | ID: {self.pk}")
+        return(f"Sender: {self.sender.username} | Seen: {self.seen} | ID: {self.pk}")
 
     class Meta:
         get_latest_by = 'time_sent'

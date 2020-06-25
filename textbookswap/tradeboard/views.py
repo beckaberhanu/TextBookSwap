@@ -30,6 +30,19 @@ def home(request):
 
 def handleAJAXrequest(request):
     """sends ajax requests to the proper function"""
+    commandToFunction = {
+        "load-tradeboard-tab": "",
+        "load-selling-list-tab": "",
+        "load-bookmark-tab": "",
+        "bookmark-post": "",
+        "delete-post": "",
+        "edit-post": "",
+        "sell-post": "",
+        "create-new-post": "",
+        "initialize": "",
+        "initialize": "",
+        "initialize": "",
+    }
     if request.POST.get("action") == "bookmark":
         return bookmark(request)
     elif request.POST.get("action") == "initialize":
@@ -58,8 +71,25 @@ def handleAJAXrequest(request):
         return loadMessageThread(request)
     elif request.POST.get("action") == "send-message":
         return sendMessage(request)
+    elif request.POST.get("action") == "retract-offer":
+        return retractOffer(request)
     else:
         return handleForm(request)
+
+
+def retractOffer(request):
+    print("retract offer called")
+    user = request.user
+    msg = Message.objects.get(id=request.POST.get("id"))
+    if(user == msg.sender and msg.offer):
+        msg.offer_retracted = True
+        msg.save()
+        messageThread = msg.messageThread
+        messages = messageThread.messages.all().order_by('-time_sent')
+        message_form = MessagingForm()
+        html = render_to_string('tradeboard/components/message_chat_screen.html',
+                                {'messages': messages, 'messageThread': messageThread, 'message_form': message_form}, request)
+        return HttpResponse(html)
 
 
 def sendMessage(request):
@@ -75,11 +105,12 @@ def sendMessage(request):
             message = message_form_recieved.save(commit=False)
             message.sender = user
             message.messageThread = messageThread
+            if(message.offer):
+                message.retractPreviousOffers()
             message.save()
             message_form = MessagingForm()
             html = render_to_string('tradeboard/components/message_chat_screen.html',
                                     {'messages': messages, 'messageThread': messageThread, 'message_form': message_form}, request)
-            return HttpResponse(html)
 
 
 def loadBuyersTab(request):
@@ -272,7 +303,7 @@ def filterPosts(request):
 def initialize(request):
     """returns the tradeboard in it's default state"""
     posts = Post.objects.exclude(seller=request.user)
-    # Got the Idea from https://stackoverflow.com/questions/38471260/django-filtering-by-user-id-in-class-based-listview
+    # Got the Idea for the Subquery from https://stackoverflow.com/questions/38471260/django-filtering-by-user-id-in-class-based-listview
     posts = posts.filter(transaction_state='In progress')
     bookmarks = Bookmark.objects.filter(user=request.user, post__id=OuterRef('id'))[
         :1].values('user__id')

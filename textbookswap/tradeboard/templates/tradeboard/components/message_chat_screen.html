@@ -31,14 +31,24 @@
                 {% if message.offer%}
                     <div class="offer-panel">
                         {% if message.sender == user %}
-                        <p class="message-offer"> You have offered <b>${{message.offer}}</b> for the book.</p>
-                        <button class="offer-response-btn" id="retract-offer"> Retract Offer </button>
+                            {% if message.offer_retracted %}
+                            <p class="message-offer"> <del>You have offered <b>${{message.offer}}</b> for the book.</del></p>
+                            <p class="message-offer"> <b>You have retracted this offer</b></p>
+                            {% else %}
+                            <p class="message-offer"> You have offered <b>${{message.offer}}</b> for the book.</p>
+                            <button class="offer-response-btn" id="retract-offer" onclick="retractOffer({{message.id}})"> Retract Offer </button>
+                            {% endif %}
                         {% elif not message.sender == user %} 
-                        <p class="message-offer"> {{message.sender}} has offered you <b>${{message.offer}}</b> for the book.</p>
-                        <div class="offer-response-btns">
-                            <button class="offer-response-btn" id="response-accept"> Accept </button>
-                            <button class="offer-response-btn" id="response-refuse"> Refuse</button>
-                        </div>
+                            {% if message.offer_retracted %}
+                            <p class="message-offer"> <del>{{message.sender.first_name}} {{message.sender.last_name}} has offered you <b>${{message.offer}}</b> for the book. </del> </p>
+                            <p class="message-offer"> <b>This offer has been retracted by {{message.sender.first_name}} {{message.sender.last_name}}</b> </p>
+                            {% else %}
+                            <p class="message-offer"> {{message.sender}} has offered you <b>${{message.offer}}</b> for the book. </p>
+                            <div class="offer-response-btns">
+                                <button class="offer-response-btn" id="response-accept"> Accept </button>
+                                <button class="offer-response-btn" id="response-refuse"> Refuse</button>
+                            </div>
+                            {% endif %}
                         {% endif %}
                         
                     </div>
@@ -85,6 +95,25 @@
     </form>
 </div>
 <script type="text/javascript">
+    function retractOffer(msgId){
+        $.ajax({
+            url: "{% url 'tradeboard-home' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            method: "POST",
+            data: {
+                'action':'retract-offer',
+                'id':msgId
+            },
+            success: function (resp) {
+                $('.messagethread-panel').toggleClass("inactive", false)
+                $('.messagethread-panel').html(resp);
+            },
+            error: function(error) {
+                console.log("error detected with confirmation popup")
+                console.log(error)
+            }
+        });
+    }
     function previewMsgImg(input){
         if (input.files && input.files[0]) {
                 var reader = new FileReader();
