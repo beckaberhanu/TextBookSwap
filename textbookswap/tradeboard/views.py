@@ -15,6 +15,7 @@ from .models import Post, Bookmark, MessageThread, Message
 
 
 import json
+import datetime
 
 
 @login_required
@@ -73,12 +74,53 @@ def handleAJAXrequest(request):
         return sendMessage(request)
     elif request.POST.get("action") == "retract-offer":
         return retractOffer(request)
+    elif request.POST.get("action") == "respond-to-offer":
+        return respondToOffer(request)
+    elif request.POST.get("action") == "reload-message-thread":
+        return reloadMessageThread(request)
     else:
         return handleForm(request)
 
 
+def reloadMessageThread(request):
+    user = request.user
+    messageThread = MessageThread.objects.get(pk=request.POST.get("id"))
+    if(messageThread.buyer == user or messageThread.post.seller == user):
+        html = ""
+        date_time_obj = datetime.datetime.strptime(
+            request.POST.get("since"), '%Y-%m-%d %H:%M:%S.%f %Z%z')
+        print(messageThread.messages.filter(
+            time_sent__gt=date_time_obj).count())
+        if(messageThread.messages.filter(time_sent__gt=date_time_obj)):
+            messages = messageThread.messages.all().order_by('-time_sent')
+            latestMessageTime = messageThread.messages.latest().time_sent
+            print("latestMessageTime", latestMessageTime)
+            html = render_to_string('tradeboard/components/message_thread_scroll.html',
+                                    {'messages': messages, 'messageThread': messageThread, 'latestMessageTime': latestMessageTime}, request)
+        return HttpResponse(html)
+    else:
+        HttpResponse(status=403)
+
+
+def respondToOffer(request):
+    print("respond to offer called")
+    user = request.user
+    msg = Message.objects.get(id=request.POST.get("id"))
+    messageThread = msg.messageThread
+    if(user != msg.sender and (user == messageThread.post.seller or user == messageThread.buyer) and not msg.offer_retracted):
+        print("condition passed")
+        print(msg.offer_accepted)
+        msg.offer_accepted = True if request.POST.get(
+            "response") == "true" else False
+        msg.save()
+        messages = messageThread.messages.all().order_by('-time_sent')
+        message_form = MessagingForm()
+        html = render_to_string('tradeboard/components/message_chat_screen.html',
+                                {'messages': messages, 'messageThread': messageThread, 'message_form': message_form}, request)
+        return HttpResponse(html)
+
+
 def retractOffer(request):
-    print("retract offer called")
     user = request.user
     msg = Message.objects.get(id=request.POST.get("id"))
     if(user == msg.sender and msg.offer):
@@ -94,7 +136,6 @@ def retractOffer(request):
 
 def sendMessage(request):
     user = request.user
-    # print("\n\n\n\n", request.POST.get("messageThread"), "\n\n\n\n")
     messageThread = MessageThread.objects.get(
         pk=request.POST.get("messageThread"))
     messages = messageThread.messages.all().order_by('-time_sent')
@@ -111,6 +152,7 @@ def sendMessage(request):
             message_form = MessagingForm()
             html = render_to_string('tradeboard/components/message_chat_screen.html',
                                     {'messages': messages, 'messageThread': messageThread, 'message_form': message_form}, request)
+            return HttpResponse(html)
 
 
 def loadBuyersTab(request):
@@ -136,8 +178,9 @@ def loadMessageThread(request):
     messages = messageThread.messages.all().order_by('-time_sent')
     if(messageThread.buyer == user or messageThread.post.seller == user):
         message_form = MessagingForm()
+        latestMessageTime = messageThread.messages.latest().time_sent
         html = render_to_string('tradeboard/components/message_chat_screen.html',
-                                {'messages': messages, 'messageThread': messageThread, 'message_form': message_form}, request)
+                                {'messages': messages, 'messageThread': messageThread, 'message_form': message_form, 'latestMessageTime': latestMessageTime}, request)
         return HttpResponse(html)
     else:
         HttpResponse(status=403)

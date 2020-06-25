@@ -9,64 +9,8 @@
     <p class="message-thread-header-reciever-name">{{messageThread.buyer.first_name}} {{messageThread.buyer.last_name}}</p>
     {% endif %}
 </div>
-<div class="message-thread-scroll">
-    {% if messageThread.pinned_message %}
-        <div class="pinned-message">
-
-        </div>
-    {% endif %}
-    {% comment %} <div style="display:flex; flex-direction:column;"> {% endcomment %}
-    {% for message in messages %}
-        {% if message.sender == user %}
-        <div class="chat-block from-me">
-        {% elif not message.sender == user %} 
-        <div class="chat-block from-other-user">
-        {% endif %}
-            <img class="message-profile-pic" src="{{message.sender.profile.image.url}}">
-            <div class="message-instance">
-                {% if message.reference%}
-                    <p class="message-reference">{{message.reference.text}}</p>
-                {% endif %}
-
-                {% if message.offer%}
-                    <div class="offer-panel">
-                        {% if message.sender == user %}
-                            {% if message.offer_retracted %}
-                            <p class="message-offer"> <del>You have offered <b>${{message.offer}}</b> for the book.</del></p>
-                            <p class="message-offer"> <b>You have retracted this offer</b></p>
-                            {% else %}
-                            <p class="message-offer"> You have offered <b>${{message.offer}}</b> for the book.</p>
-                            <button class="offer-response-btn" id="retract-offer" onclick="retractOffer({{message.id}})"> Retract Offer </button>
-                            {% endif %}
-                        {% elif not message.sender == user %} 
-                            {% if message.offer_retracted %}
-                            <p class="message-offer"> <del>{{message.sender.first_name}} {{message.sender.last_name}} has offered you <b>${{message.offer}}</b> for the book. </del> </p>
-                            <p class="message-offer"> <b>This offer has been retracted by {{message.sender.first_name}} {{message.sender.last_name}}</b> </p>
-                            {% else %}
-                            <p class="message-offer"> {{message.sender}} has offered you <b>${{message.offer}}</b> for the book. </p>
-                            <div class="offer-response-btns">
-                                <button class="offer-response-btn" id="response-accept"> Accept </button>
-                                <button class="offer-response-btn" id="response-refuse"> Refuse</button>
-                            </div>
-                            {% endif %}
-                        {% endif %}
-                        
-                    </div>
-                {% endif %}
-
-                {% if message.image%}
-                    <img class="message-image" src="{{message.image.url}}">
-                {% endif %}
-
-                {% if message.text%}
-                    <p class="message-text">{{message.text}}</p>
-                {% endif %}
-
-                {% comment %} <p class="message-time">{{message.time_sent}}</p> {% endcomment %}
-            </div>
-        </div>
-    {% endfor %}
-    {% comment %} </div> {% endcomment %}
+<div class="message-thread-scroll" id={{messageThread.pk}}>
+    {% include "tradeboard/components/message_thread_scroll.html" %}
 </div>
 <div class="input-section">
     <form class= "messaging-form" id= "messaging-form" method="POST" name="messaging-form" autocomplete="off" enctype="multipart/form-data">
@@ -95,6 +39,68 @@
     </form>
 </div>
 <script type="text/javascript">
+    function periodicMessageThreadReload(){
+        if($(".message-thread-scroll").length>0){
+            if($(".message-thread-scroll")[0].scrollHeight - $(".message-thread-scroll").height() - $(".message-thread-scroll")[0].scrollTop < 10){
+                reloadMessageThread($(".message-thread-scroll")[0].id, $("#latest-loaded-message-time").attr("datetime"));
+            }
+        }
+        console.log($(".message-thread-scroll").length>0)
+        {% comment %} console.log($(".message-thread-scroll")[0].scrollHeight - $(".message-thread-scroll").height() - $(".message-thread-scroll")[0].scrollTop)
+        console.log("periodic relod called")
+        console.log($(".message-thread-scroll")[0].scrollTop)
+        console.log($(".message-thread-scroll")[0].scrollHeight - $(".message-thread-scroll").height()) {% endcomment %}
+    }
+    function reloadMessageThread(id, since){
+        {% comment %} var date = new Date(since);
+        console.log(date); {% endcomment %}
+        $.ajax({
+            url: "{% url 'tradeboard-home' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            method: "POST",
+            data: {
+                "action":"reload-message-thread",
+                "id":id,
+                "since": since
+            },
+            success: function (resp) {
+                console.log("reloaded", resp)
+                if(resp){
+                    $('.message-thread-scroll').html(resp);
+                }
+                else{
+                    console.log("nothing more here")
+                }
+            },
+            error: function(error) {
+                console.log("error detected when reloading MessageThread")
+                console.log(error)
+            }
+        });
+    }
+
+    setInterval(periodicMessageThreadReload, 6000);
+
+    function respondToOffer(response, msgId){
+        $.ajax({
+            url: "{% url 'tradeboard-home' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            method: "POST",
+            data: {
+                'action':'respond-to-offer',
+                'response':response,
+                'id': msgId
+            },
+            success: function (resp) {
+                $('.messagethread-panel').toggleClass("inactive", false)
+                $('.messagethread-panel').html(resp);
+            },
+            error: function(error) {
+                console.log("error detected with confirmation popup")
+                console.log(error)
+            }
+        });
+    }
     function retractOffer(msgId){
         $.ajax({
             url: "{% url 'tradeboard-home' %}",
