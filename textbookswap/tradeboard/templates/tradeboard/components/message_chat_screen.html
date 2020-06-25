@@ -45,15 +45,9 @@
                 reloadMessageThread($(".message-thread-scroll")[0].id, $("#latest-loaded-message-time").attr("datetime"));
             }
         }
-        console.log($(".message-thread-scroll").length>0)
-        {% comment %} console.log($(".message-thread-scroll")[0].scrollHeight - $(".message-thread-scroll").height() - $(".message-thread-scroll")[0].scrollTop)
-        console.log("periodic relod called")
-        console.log($(".message-thread-scroll")[0].scrollTop)
-        console.log($(".message-thread-scroll")[0].scrollHeight - $(".message-thread-scroll").height()) {% endcomment %}
+        console.log("date time",$("#latest-loaded-message-time").attr("datetime"))
     }
     function reloadMessageThread(id, since){
-        {% comment %} var date = new Date(since);
-        console.log(date); {% endcomment %}
         $.ajax({
             url: "{% url 'tradeboard-home' %}",
             headers: {'X-CSRFToken': '{{ csrf_token }}'},
@@ -64,7 +58,7 @@
                 "since": since
             },
             success: function (resp) {
-                console.log("reloaded", resp)
+                console.log("message thread reloaded")
                 if(resp){
                     $('.message-thread-scroll').html(resp);
                 }
@@ -316,6 +310,14 @@
         border-radius: 5px;
         max-width:100%;
         height: auto;
+        background-image:
+            linear-gradient(45deg, #808080 25%, transparent 25%), 
+            linear-gradient(-45deg, #808080 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, #808080 75%),
+            linear-gradient(-45deg, transparent 75%, #808080 75%);
+        background-size:10px 10px;
+        background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+        background-color: #fff;
     }
     .message-text{
         margin: 10px;

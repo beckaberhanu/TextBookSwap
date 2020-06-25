@@ -134,8 +134,9 @@ class Message(models.Model):
             sender=self.sender, messageThread=self.messageThread, offer__isnull=False, time_sent__lte=timezone.now()).update(offer_retracted=True)
 
     def save(self, *args, **kwargs):
-        self.messageThread.highlighted_message = self
         super(Message, self).save(*args, **kwargs)
+        self.messageThread.highlighted_message = self
+        self.messageThread.save()
 
     objects = Manager()
 

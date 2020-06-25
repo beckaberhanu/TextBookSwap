@@ -91,12 +91,11 @@ def reloadMessageThread(request):
             request.POST.get("since"), '%Y-%m-%d %H:%M:%S.%f %Z%z')
         print(messageThread.messages.filter(
             time_sent__gt=date_time_obj).count())
-        if(messageThread.messages.filter(time_sent__gt=date_time_obj)):
+        if(date_time_obj < messageThread.last_updated):
             messages = messageThread.messages.all().order_by('-time_sent')
-            latestMessageTime = messageThread.messages.latest().time_sent
-            print("latestMessageTime", latestMessageTime)
+            print("latestMessageTime", messageThread.last_updated)
             html = render_to_string('tradeboard/components/message_thread_scroll.html',
-                                    {'messages': messages, 'messageThread': messageThread, 'latestMessageTime': latestMessageTime}, request)
+                                    {'messages': messages, 'messageThread': messageThread}, request)
         return HttpResponse(html)
     else:
         HttpResponse(status=403)
@@ -178,7 +177,7 @@ def loadMessageThread(request):
     messages = messageThread.messages.all().order_by('-time_sent')
     if(messageThread.buyer == user or messageThread.post.seller == user):
         message_form = MessagingForm()
-        latestMessageTime = messageThread.messages.latest().time_sent
+        latestMessageTime = messageThread.last_updated
         html = render_to_string('tradeboard/components/message_chat_screen.html',
                                 {'messages': messages, 'messageThread': messageThread, 'message_form': message_form, 'latestMessageTime': latestMessageTime}, request)
         return HttpResponse(html)
