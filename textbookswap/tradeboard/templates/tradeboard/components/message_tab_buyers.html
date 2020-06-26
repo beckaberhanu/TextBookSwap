@@ -25,7 +25,7 @@
                     <p class="message-thread-tile-hint">
                         {% if messageThread.highlighted_message.offer %} <b>[Offer: ${{messageThread.highlighted_message.offer}} offered] </b>{% endif %}
                         {% if messageThread.highlighted_message.text %} {{messageThread.highlighted_message.text}} {% endif %}
-                        {% if messageThread.highlighted_message.image %} <b>| [Image]:</b> {{messageThread.highlighted_message.image.url}} {% endif %}
+                        {% if messageThread.highlighted_message.image %}<b> [Image]</b>{% endif %}
                     </p>
                 </div>
                 <small class="message-thread-tile-time"> {{messageThread.highlighted_message.time_sent|date:"m/d/Y"}} </small>

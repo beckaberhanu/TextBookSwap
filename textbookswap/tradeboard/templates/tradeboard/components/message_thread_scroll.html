@@ -1,0 +1,73 @@
+{% load static %}
+
+{% if messageThread.pinned_message %}
+    <div class="pinned-message">
+
+    </div>
+{% endif %}
+{% comment %} <div style="display:flex; flex-direction:column;"> {% endcomment %}
+{% for message in messages %}
+    {% if message.sender == user %}
+    <div class="chat-block from-me">
+    {% elif not message.sender == user %} 
+    <div class="chat-block from-other-user">
+    {% endif %}
+        <img class="message-profile-pic" src="{{message.sender.profile.image.url}}">
+        <div class="message-instance">
+            {% if message.reference%}
+                <p class="message-reference">{{message.reference.text}}</p>
+            {% endif %}
+
+            {% if message.offer%}
+                <div class="offer-panel">
+                    {% if message.sender == user %}
+                        {% if message.offer_retracted %}
+                        <p class="message-offer"> <del>You have offered <b>${{message.offer}}</b> for the book.</del></p>
+                        <p class="message-offer"> <b>You have retracted this offer</b></p>
+                        {% else %}
+                            <p class="message-offer"> You have offered <b>${{message.offer}}</b> for the book.</p>
+                            {% if message.offer_accepted == True %}
+                            <p class="message-offer"> <i><b>Your offer has been accepted</b></i> </p>
+                            {% elif message.offer_accepted == False %}
+                            <p class="message-offer"> <i><b>Your offer has been refused</b></i> </p>
+                            {% else %} 
+                            <button class="offer-response-btn" id="retract-offer" onclick="retractOffer({{message.id}})"> Retract Offer </button>
+                            {% endif %}
+                        {% endif %}
+                    {% elif not message.sender == user %} 
+                        {% if message.offer_retracted %}
+                        <p class="message-offer"> <del>{{message.sender.first_name}} {{message.sender.last_name}} has offered you <b>${{message.offer}}</b> for the book. </del> </p>
+                        <p class="message-offer"> <b>This offer has been retracted by {{message.sender.first_name}} {{message.sender.last_name}}</b> </p>
+                        {% else %}
+                            <p class="message-offer"> {{message.sender}} has offered you <b>${{message.offer}}</b> for the book. </p>
+                            {% if message.offer_accepted == True %}
+                            <p class="message-offer"> <i><b>You have accepted this offer</b></i> </p>
+                            {% elif message.offer_accepted == False %}
+                            <p class="message-offer"> <i><b>You have refused this offer</b></i> </p>
+                            {% else %}
+                            <div class="offer-response-btns">
+                                <button class="offer-response-btn" id="response-accept" onclick="respondToOffer(true, {{message.id}})"> Accept </button>
+                                <button class="offer-response-btn" id="response-refuse" onclick="respondToOffer(false, {{message.id}})"> Refuse</button>
+                            </div>
+                            {% endif %}
+                        {% endif %}
+
+                    {% endif %}
+                    
+                </div>
+            {% endif %}
+
+            {% if message.image%}
+                <img class="message-image" src="{{message.image.url}}">
+            {% endif %}
+
+            {% if message.text%}
+                <p class="message-text">{{message.text}}</p>
+            {% endif %}
+
+            {% comment %} <p class="message-time">{{message.time_sent}}</p> {% endcomment %}
+        </div>
+    </div>
+{% endfor %}
+<time id="latest-loaded-message-time" style="display:none;" datetime="{{messageThread.last_updated|date:'Y-m-d H:i:s.u TO'}}">
+{% comment %} </div> {% endcomment %}

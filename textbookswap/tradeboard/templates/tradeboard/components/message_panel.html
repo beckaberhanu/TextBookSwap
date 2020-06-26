@@ -78,6 +78,8 @@
 <style>
     .message-panel {
         flex:1;
+        display: flex;
+        flex-direction: column;
         margin-bottom: 20px;
         position: relative;
         width: 325px;
@@ -107,6 +109,9 @@
     #sellers-tab{
         border-width: 1px 0px 0px 1px;
     }
+    .messagethread-panel:not(.inactive) + .message-panel-tabs{
+        display: none;
+    }
     .message-panel-tab{
         border-style: solid;
         border-color: #eee;
@@ -130,15 +135,19 @@
         overflow-y: auto;
         overflow-x: hidden;
     }
+    .messagethread-panel:not(.inactive) ~ .message-scroll-panel{
+        display: none;
+    }
 
 
 
 
     .messagethread-panel{
-        position: absolute;
+        /* position: absolute;
         left:0px;
-        top:56px;
-        height: 711;
+        top:56px; */
+        height: 1px; /* oh boy is this a hack. Chrome bug https://support.google.com/chrome/thread/3101009?hl=en */
+        flex: 1;
         width: 100%;
         display: flex;
         flex-direction: column;
